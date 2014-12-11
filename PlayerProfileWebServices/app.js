@@ -10,8 +10,8 @@ var mongo = require('mongodb');
 var monk = require('monk');
 var db = monk('localhost:27017/nodetest');
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
+//var routes = require('./routes/index');
+//var users = require('./routes/users');
 
 var app = express();
 
@@ -33,10 +33,16 @@ app.use(function(req, res, next) {
     next();
 })
 
-app.use('/', routes);
-app.use('/users', users);
+//app.use('/', routes);
+//app.use('/users', users);
 
-// catch 404 and forward to error handler
+var baseRoute = require('./routes/index');
+var userRoute = require('./routes/users');
+
+app.use('/', baseRoute);
+app.use('/users', userRoute);
+
+// For other undefined paths, catch 404 and forward to error handler
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
@@ -58,7 +64,7 @@ if (app.get('env') === 'development') {
 }
 
 // production error handler
-// no stacktraces leaked to user
+// no stacktraces leaked to users
 app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.render('error', {
