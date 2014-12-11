@@ -1,4 +1,4 @@
-PlayerProfileWebScraper
+PlayerProfileWebServices
 =======================
 
-Web Scraper project using Node.js
+Player profile web services

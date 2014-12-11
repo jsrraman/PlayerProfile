@@ -10,9 +10,6 @@ var mongo = require('mongodb');
 var monk = require('monk');
 var db = monk('localhost:27017/nodetest');
 
-//var routes = require('./routes/index');
-//var users = require('./routes/users');
-
 var app = express();
 
 // view engine setup
@@ -32,9 +29,6 @@ app.use(function(req, res, next) {
     req.db = db;
     next();
 })
-
-//app.use('/', routes);
-//app.use('/users', users);
 
 var baseRoute = require('./routes/index');
 var userRoute = require('./routes/users');

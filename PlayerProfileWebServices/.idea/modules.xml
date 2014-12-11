@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/PlayerProfileWebScraper.iml" filepath="$PROJECT_DIR$/.idea/PlayerProfileWebScraper.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/PlayerProfileWebServices.iml" filepath="$PROJECT_DIR$/.idea/PlayerProfileWebServices.iml" />
     </modules>
   </component>
 </project>
