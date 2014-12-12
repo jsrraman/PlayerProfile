@@ -3,20 +3,16 @@ var debug = require('debug')('PlayerProfileWebServices');
 var express = require('express');
 var router = express.Router();
 
-/* GET users listing. */
+/* GET users */
 router.get('/userlist', function(req, res) {
   var db = req.db;
   var collection = db.get('users');
-
-  debug("Getting the userlist ...");
 
   collection.find({}, {}, function(err, docs) {
     if (err) {
       res.send("Users list could not be fetched");
     } else {
-      res.render('users/userlist', {
-        "userlist": docs
-      });
+      res.json(docs);
     }
   });
 });
