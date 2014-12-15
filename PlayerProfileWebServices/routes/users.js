@@ -9,11 +9,19 @@ router.get('/userlist', function(req, res) {
   var collection = db.get('users');
 
   collection.find({}, {}, function(err, docs) {
+
+    var resObj = {};
+
     if (err) {
-      res.send("Users list could not be fetched");
+      resObj.status = "failure";
+      resObj.description = "Users list could not be fetched";
     } else {
-      res.json(docs);
+      //res.json(docs);
+      resObj.status = "success";
+      resObj.userlist = docs;
     }
+
+    res.send(resObj);
   });
 });
 
@@ -36,15 +44,23 @@ router.post('/adduser', function(req, res) {
   // Set our collection
   var collection = db.get('users');
 
+
   // Submit to DB
   var doc = {"username": username, "email" : useremail};
 
   collection.insert(doc, function(err, doc) {
 
+    var resObj = {};
+
     if (err) {
-      res.send("There was error in adding the users");
-    } else {
-      //User added successfully, so redirect to the userlist
+      resObj.status = "failure";
+      resObj.description = "There was error in adding the users";
+
+      res.send(resObj);
+  } else {
+      resObj.status = "success";
+      resObj.description = "User added successfully";
+
       res.location("userlist");
       res.redirect("userlist");
     }
