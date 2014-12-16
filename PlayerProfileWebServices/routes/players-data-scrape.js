@@ -11,77 +11,86 @@ router.get('/players/countries', function(req, res) {
 
   debug("Going to get the list of cricket playing countries and store it in the database");
 
-  // var resObj = {};
+  var resObj = {};
 
   // Scrape the country list from the following URL
   url = 'http://www.espncricinfo.com/ci/content/site/cricket_squads_teams/index.html';
 
   // Go ahead and scrape the data
-  request(url, function (err, res, html) {
-    if (err) {
+  request(url, function (error, response, html) {
+    if (error) {
+
       resObj.status = "failure";
       resObj.description = "There was error in getting the country list from " + url;
-    }
+      res.send(resObj);
 
-    debug("Got the scraped data...");
+    } else {
 
-    // URL fetched successfully so load the html using cheerio library to give us jQuery functionality
-    var $ = cheerio.load(html);
+      debug("Got the scraped data...");
 
-    var docCountryList = []; // new Array literal syntax :)
+      // URL fetched successfully so load the html using cheerio library to give us jQuery functionality
+      var $ = cheerio.load(html);
 
-    // Filter the team list data from the html
-    $('.teamList').filter(function () {
+      var docCountryList = []; // new Array literal syntax :)
 
-      // Get the filtered data
-      var data = $(this);
+      // Filter the team list data from the html
+      $('.teamList').filter(function () {
 
-      //debug("Teamlist data:\n" + data);
+        // Get the filtered data
+        var data = $(this);
 
-      // Extract a country's thumbnail image url, id and name
-      $('.teamList tr').each(function () {
+        //debug("Teamlist data:\n" + data);
 
-        $(this).find('td').each(function () {
+        // Extract a country's thumbnail image url, id and name
+        $('.teamList tr').each(function () {
 
-          var colData = $(this);
-          var imgData = colData.find('img');
+          $(this).find('td').each(function () {
 
-          if ((imgData !== null) && (imgData !== undefined)) {
+            var colData = $(this);
+            var imgData = colData.find('img');
 
-            // Thumbnail image url
-            var thumbnailUrl = imgData.attr('src');
+            if ((imgData !== null) && (imgData !== undefined)) {
 
-            if ((thumbnailUrl !== null) && (thumbnailUrl !== undefined)) {
+              // Thumbnail image url
+              var thumbnailUrl = imgData.attr('src');
 
-              var docCountry = {}; // new Object literal syntax
+              if ((thumbnailUrl !== null) && (thumbnailUrl !== undefined)) {
 
-              docCountry.thumbnailUrl = thumbnailUrl;
+                var docCountry = {}; // new Object literal syntax
 
-              // id
-              var tempIndex1 = thumbnailUrl.lastIndexOf('/');
-              var tempIndex2 = thumbnailUrl.indexOf('.jpg');
-              docCountry.id = thumbnailUrl.substring(tempIndex1 + 1, tempIndex2);
+                docCountry.thumbnailUrl = thumbnailUrl;
 
-              // Name
-              docCountry.name = imgData.attr('title');
+                // id
+                var tempIndex1 = thumbnailUrl.lastIndexOf('/');
+                var tempIndex2 = thumbnailUrl.indexOf('.jpg');
+                docCountry.id = thumbnailUrl.substring(tempIndex1 + 1, tempIndex2);
 
-              docCountryList.push(docCountry);
+                // Name
+                docCountry.name = imgData.attr('title');
+
+                docCountryList.push(docCountry);
+              }
             }
-          }
+          });
         });
       });
-    });
 
-    var resObj = {};
+      // Save country info to the database
+      db.saveCountryList(docCountryList, function (error, result) {
 
-    // Save country info to the database
-    resObj = db.saveCountryList(docCountryList);
+        if (error) {
+          resObj.status = "failure";
+          resObj.description = error;
+        } else {
+          resObj.status = "success";
+          resObj.description = 'Country list stored successfully';
+        }
 
-    debug(resObj);
+        // Send the response to the API caller
+        res.send(resObj);
+      });
+    }
   });
-
-  res.send(resObj);
-
 });
 
 module.exports = router;
