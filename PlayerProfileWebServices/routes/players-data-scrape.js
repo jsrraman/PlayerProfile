@@ -1,17 +1,17 @@
 var debug = require('debug')('PlayerProfileWebServices');
 
-var db = require('../db/players-dao');
 var request = require('request');
 var cheerio = require('cheerio');
 var express = require('express');
 var router = express.Router();
+var db = require('../db/players-dao');
 
 /* GET the list of cricket playing countries and store it in the database */
-router.get('/players/countries', function(req, res) {
+router.get('/players/countries', function(httpReq, httpRes) {
 
   debug("Going to get the list of cricket playing countries and store it in the database");
 
-  var resObj = {};
+  var fnResponse = {};
 
   // Scrape the country list from the following URL
   url = 'http://www.espncricinfo.com/ci/content/site/cricket_squads_teams/index.html';
@@ -20,9 +20,9 @@ router.get('/players/countries', function(req, res) {
   request(url, function (error, response, html) {
     if (error) {
 
-      resObj.status = "failure";
-      resObj.description = "There was error in getting the country list from " + url;
-      res.send(resObj);
+      fnResponse.status = "failure";
+      fnResponse.description = "There was error in getting the country list from " + url;
+      httpRes.send(fnResponse);
 
     } else {
 
@@ -79,15 +79,15 @@ router.get('/players/countries', function(req, res) {
       db.saveCountryList(docCountryList, function (error, result) {
 
         if (error) {
-          resObj.status = "failure";
-          resObj.description = error;
+          fnResponse.status = "failure";
+          fnResponse.description = error;
         } else {
-          resObj.status = "success";
-          resObj.description = 'Country list stored successfully';
+          fnResponse.status = "success";
+          fnResponse.description = 'Country list stored successfully';
         }
 
         // Send the response to the API caller
-        res.send(resObj);
+        httpRes.send(fnResponse);
       });
     }
   });

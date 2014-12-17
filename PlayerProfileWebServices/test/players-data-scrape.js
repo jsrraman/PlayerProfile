@@ -26,4 +26,4 @@ describe('Player Data Scrape Unit Test Report', function() {
             done();
         });
     });
- });
+});

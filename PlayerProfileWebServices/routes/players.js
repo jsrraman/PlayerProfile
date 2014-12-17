@@ -2,68 +2,24 @@ var debug = require('debug')('PlayerProfileWebServices');
 
 var express = require('express');
 var router = express.Router();
+var db = require('../db/players-dao');
 
 /* GET the list of cricket playing countries */
-router.get('/players/countries', function(req, res) {
-  var db = req.db;
-  var collection = db.get('users');
+router.get('/countries', function(httpReq, httpRes) {
 
-  collection.find({}, {}, function(err, docs) {
+  var fnResponse = {};
 
-    var resObj = {};
-
-    if (err) {
-      resObj.status = "failure";
-      resObj.description = "Users list could not be fetched";
+  db.getCountryList(function (error, result) {
+    if (error) {
+      fnResponse.status = "failure";
+      fnResponse.description = error;
     } else {
-      //res.json(docs);
-      resObj.status = "success";
-      resObj.userlist = docs;
+      fnResponse.status = "success";
+      fnResponse.countryList = result;
     }
 
-    res.send(resObj);
-  });
-});
-
-/* Show new users page. */
-router.get('/adduser', function(req, res) {
-  res.render('users/adduser', {title:'Add New User'});
-});
-
-
-/* ADD new users. */
-router.post('/adduser', function(req, res) {
-
-  // Set our db value
-  var db = req.db;
-
-  // Get the form values
-  var username = req.body.username;
-  var useremail = req.body.useremail;
-
-  // Set our collection
-  var collection = db.get('users');
-
-
-  // Submit to DB
-  var doc = {"username": username, "email" : useremail};
-
-  collection.insert(doc, function(err, doc) {
-
-    var resObj = {};
-
-    if (err) {
-      resObj.status = "failure";
-      resObj.description = "There was error in adding the users";
-
-      res.send(resObj);
-  } else {
-      resObj.status = "success";
-      resObj.description = "User added successfully";
-
-      res.location("userlist");
-      res.redirect("userlist");
-    }
+    // Send the response to the API caller
+    httpRes.send(fnResponse);
   });
 });
 
