@@ -12,18 +12,52 @@ describe('Player Data Scrape Unit Test Report', function() {
     // This is going to take a while so set a longer timeout (15 seconds)
     this.timeout(15000);
 
-    it('should store the list of cricket playing countries successfully', function(done) {
+    //it('should store the list of cricket playing countries successfully', function(done) {
+    //
+    //request(url)
+    //    .get('/scrape/countries')
+    //    .expect(200)
+    //    .end(function(err, res) {
+    //        if (err) {
+    //            throw err;
+    //        }
+    //
+    //        res.body.should.have.property('status', 'success');
+    //        done();
+    //    });
+    //});
 
-    request(url)
-        .get('/scrape/players/countries')
-        .expect(200)
-        .end(function(err, res) {
-            if (err) {
-                throw err;
-            }
+    describe("Download the list of all players playing for the downloaded " +
+                                                "countries", function() {
 
-            res.body.should.have.property('status', 'success');
-            done();
+        it("should store the list of all players playing for England", function(done) {
+
+            request(url)
+                .get("/scrape/players/country?id=1&name=england")
+                .expect(200)
+                .end(function (err, res) {
+                    if (err) {
+                        throw err;
+                    }
+
+                    res.body.should.have.property('status', 'success');
+                    done();
+                });
+        });
+
+        it("should store the list of all players playing for Australia", function(done) {
+
+            request(url)
+                .get("/scrape/players/country?id=2&name=australia")
+                .expect(200)
+                .end(function (err, res) {
+                    if (err) {
+                        throw err;
+                    }
+
+                    res.body.should.have.property('status', 'success');
+                    done();
+                });
         });
     });
 });

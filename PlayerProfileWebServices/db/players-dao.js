@@ -8,12 +8,12 @@ var playersDao = {};
 
 playersDao.dbName = "players-profile";
 playersDao.mongoClient = require('mongodb').MongoClient;
-playersDao.connectionUrl = 'mongodb://localhost:27017/' + this.dbName;
+playersDao.connectionUrl = "mongodb://localhost:27017/" + playersDao.dbName;
 
 // Deletes the database
 playersDao.deleteDbs = function() {
 
-    this.mongoClient.connect(connectionUrl, function (err, db) {
+    this.mongoClient.connect(this.connectionUrl, function (err, db) {
 
         if (err) {
             debug("Could not open " + this.dbName + " database: " + err );
@@ -89,5 +89,30 @@ playersDao.getCountryList = function(callback) {
         }
     });
 };
+
+// Saves the scraped players list for a particular country to the database
+playersDao.savePlayerList = function(docPlayerList, callback) {
+
+    this.mongoClient.connect(this.connectionUrl, function (err, db) {
+
+        if (err) {
+            debug("Could not open " + this.dbName + " database: " + err );
+            callback(err, db);
+        } else {
+
+            var playerCollection = db.collection('players');
+
+            playerCollection.insert(docPlayerList, function (err, result) {
+                if (!err) {
+                    debug('Player list saved successfully');
+                }
+
+                db.close();
+                callback(err, result);
+            });
+        }
+    });
+};
+
 
 module.exports = playersDao;
