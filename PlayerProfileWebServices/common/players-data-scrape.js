@@ -1,37 +1,33 @@
 var debug = require('debug')('PlayerProfileWebServices');
 
-var request = require('request');
-var cheerio = require('cheerio');
-var express = require('express');
-var router = express.Router();
-var db = require('../db/players-dao');
-var baseScrapeUrl = "http://www.espncricinfo.com";
+// Create the root namespace and make sure it is not overwritten
+var PlayersDataScrape = PlayersDataScrape || {};
 
-/* GET the list of cricket playing countries and store it in the database */
-router.get("/countries", function(httpReq, httpRes) {
+PlayersDataScrape.request = require('request');
+PlayersDataScrape.cheerio = require('cheerio');
+PlayersDataScrape.fs = require('fs');
+PlayersDataScrape.db = require('../db/players-dao');
+PlayersDataScrape.baseScrapeUrl = "http://www.espncricinfo.com";
+
+// Scrape the country list data and save it to the database
+PlayersDataScrape.scrapeAndSaveCountryList = function(callback) {
 
   debug("Going to get the list of cricket playing countries and store it in the database");
 
-  var fnResponse = {};
-
   // Scrape the country list from the following URL
   var countryListUrl = '/ci/content/site/cricket_squads_teams/index.html';
-  var actualScrapeUrl = baseScrapeUrl + countryListUrl;
+  var actualScrapeUrl = PlayersDataScrape.baseScrapeUrl + countryListUrl;
 
   // Go ahead and scrape the data
-  request(actualScrapeUrl, function (error, response, html) {
+  PlayersDataScrape.request(actualScrapeUrl, function (error, response, html) {
     if (error) {
-
-      fnResponse.status = "failure";
-      fnResponse.description = "There was error in getting the country list from " + actualScrapeUrl;
-      httpRes.send(fnResponse);
-
+        callback(error, response);
     } else {
 
-      debug("Got the scraped data...");
+      debug("Got the scraped data for " + actualScrapeUrl);
 
       // URL fetched successfully so load the html using cheerio library to give us jQuery functionality
-      var $ = cheerio.load(html);
+      var $ = PlayersDataScrape.cheerio.load(html);
 
       var docCountryList = []; // new Array literal syntax :)
 
@@ -78,59 +74,42 @@ router.get("/countries", function(httpReq, httpRes) {
       });
 
       // Save country info to the database
-      db.saveCountryList(docCountryList, function (error, result) {
-
-        if (error) {
-          fnResponse.status = "failure";
-          fnResponse.description = error;
-        } else {
-          fnResponse.status = "success";
-          fnResponse.description = 'Country list stored successfully';
-        }
-
+      PlayersDataScrape.db.saveCountryList(docCountryList, function (error, result) {
         // Send the response to the API caller
-        httpRes.send(fnResponse);
+        callback(error, result);
       });
     }
   });
-});
+};
 
-// GET the players for the requested country id
-router.get("/players/country", function(httpReq, httpRes) {
+// Scrape and save player list for a particular country
+PlayersDataScrape.scrapeAndSavePlayerListForCountry = function(countryId, countryName, callback) {
 
   var fnResponse = {};
 
-  var countryId = httpReq.param("id");
-  var countryName = httpReq.param("name");
-
-  if ((countryId == null ) || ((countryId == undefined )) ||
-      (countryName == null ) || ((countryName == undefined ))) {
-    fnResponse.status = "failure";
-    fnResponse.description = "Country id cannot be empty";
-    httpRes.send(fnResponse);
+  if ( (countryId == null ) || (countryId == undefined ) ||
+      (countryName == null ) || (countryName == undefined ) ) {
+    fnResponse.description = "Country id or(and) name cannot be empty";
+    callback(fnResponse, null);
   }
 
   debug("Going to get the list of players for the requested country id = " + countryId +
-                                      " and store them in the database");
+  " and store them in the database");
 
   // Scrape the players list from a particular country
   //actualScrapeUrl = "http://www.espncricinfo.com/australia/content/player/country.html?country=2";
   var playerListUrl = '/content/player/country.html?country=';
-  var actualScrapeUrl = baseScrapeUrl + "/" + countryName + playerListUrl + countryId;
+  var actualScrapeUrl = PlayersDataScrape.baseScrapeUrl + "/" + countryName + playerListUrl + countryId;
 
-  // Go ahead and scrape the data
-  request(actualScrapeUrl, function (error, response, html) {
+  PlayersDataScrape.request(actualScrapeUrl, function (error, response, html) {
     if (error) {
-      fnResponse.status = "failure";
-      fnResponse.description = error;
-      httpRes.send(fnResponse);
-
+      callback(error, null);
     } else {
 
-      debug("Got the scraped data...");
+      debug("Got the scraped data for " + actualScrapeUrl);
 
       // URL fetched successfully so load the html using cheerio library to give us jQuery functionality
-      var $ = cheerio.load(html);
+      var $ = PlayersDataScrape.cheerio.load(html);
 
       var docPlayerList = []; // new Array literal syntax :)
 
@@ -140,7 +119,7 @@ router.get("/players/country", function(httpReq, httpRes) {
         // Get the filtered data
         var data = $(this);
 
-       //debug("data:\n" + data);
+        //debug("data:\n" + data);
 
         // Extract a player's id and name
         $("#rectPlyr_Playerlistall .playersTable tr").each(function () {
@@ -155,8 +134,8 @@ router.get("/players/country", function(httpReq, httpRes) {
               var docPlayer = {};
 
               // Player URL
-              docPlayer.countryId = countryId;
-              docPlayer.playerUrl = baseScrapeUrl + playerUrlData.attr("href");
+              docPlayer.countryId = parseInt(countryId);
+              docPlayer.playerUrl = PlayersDataScrape.baseScrapeUrl + playerUrlData.attr("href");
               docPlayer.name = playerUrlData.text();
 
               //console.log(docPlayer);
@@ -168,22 +147,16 @@ router.get("/players/country", function(httpReq, httpRes) {
       });
 
       // Save country info to the database
-      db.savePlayerList(docPlayerList, function (error, result) {
-
-        if (error) {
-          fnResponse.status = "failure";
-          fnResponse.description = error;
-        } else {
-          fnResponse.status = "success";
-          fnResponse.description = 'Player list stored successfully';
-        }
-
+      PlayersDataScrape.db.savePlayerList(docPlayerList, function (error, result) {
         // Send the response to the API caller
-        httpRes.send(fnResponse);
+        if (error)
+          callback(error, null);
+        else {
+          callback(null, null);
+        }
       });
     }
   });
-});
+};
 
-
-module.exports = router;
+module.exports = PlayersDataScrape;

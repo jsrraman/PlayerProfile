@@ -20,12 +20,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 var baseRoute = require('./routes/index');
-var playersDataScrapeRoute = require('./routes/players-data-scrape');
+var scrapeRoute = require('./routes/scrape');
 var playersRoute = require('./routes/players');
 var userRoute = require('./routes/users');
 
 app.use('/', baseRoute);
-app.use('/scrape', playersDataScrapeRoute);
+app.use('/scrape', scrapeRoute);
 app.use('/players', playersRoute);
 app.use('/users', userRoute);
 
