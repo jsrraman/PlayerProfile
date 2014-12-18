@@ -65,7 +65,7 @@ router.get("/countries", function(httpReq, httpRes) {
                 // id
                 var tempIndex1 = thumbnailUrl.lastIndexOf('/');
                 var tempIndex2 = thumbnailUrl.indexOf('.jpg');
-                docCountry.country_id = thumbnailUrl.substring(tempIndex1 + 1, tempIndex2);
+                docCountry.countryId = parseInt(thumbnailUrl.substring(tempIndex1 + 1, tempIndex2));
 
                 // Name
                 docCountry.name = imgData.attr('title');

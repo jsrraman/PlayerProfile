@@ -13,18 +13,15 @@ playersDao.connectionUrl = "mongodb://localhost:27017/" + playersDao.dbName;
 // Deletes the database
 playersDao.deleteDbs = function() {
 
-    this.mongoClient.connect(this.connectionUrl, function (err, db) {
+    playersDao.mongoClient.connect(playersDao.connectionUrl, function (err, db) {
 
         if (err) {
-            debug("Could not open " + this.dbName + " database: " + err );
+            debug("Could not open " + playersDao.dbName + " database: " + err );
             callback(err, db);
         } else {
             db.dropDatabase(function (err, result) {
-
-                debug(this.dbName + " database opened successfully");
-
                 if (!err) {
-                    debug(this.dbName + " database dropped successfully");
+                    debug(playersDao.dbName + " database dropped successfully");
                 }
 
                 db.close();
@@ -36,21 +33,20 @@ playersDao.deleteDbs = function() {
 // Saves the scraped countries list to the database
 playersDao.saveCountryList = function(docCountryList, callback) {
 
-    this.mongoClient.connect(this.connectionUrl, function (err, db) {
+    playersDao.mongoClient.connect(playersDao.connectionUrl, function (err, db) {
 
         if (err) {
-            debug("Could not open " + this.dbName + " database: " + err );
+            debug("Could not open " + playersDao.dbName + " database: " + err );
             callback(err, db);
         } else {
 
-            var countryCollection = db.collection('countries');
-
-            // Remove the records from the collection before insert
-            countryCollection.remove({}, function (err, result) {
+            db.dropDatabase(function (err, result) {
                 if (!err) {
-                    debug('Country list removed successfully');
+                    debug(playersDao.dbName + " database cleaned up");
                 }
             });
+
+            var countryCollection = db.collection('countries');
 
             countryCollection.insert(docCountryList, function (err, result) {
                 if (!err) {
@@ -67,10 +63,10 @@ playersDao.saveCountryList = function(docCountryList, callback) {
 // Get the country list
 playersDao.getCountryList = function(callback) {
 
-    this.mongoClient.connect(this.connectionUrl, function (err, db) {
+    playersDao.mongoClient.connect(playersDao.connectionUrl, function (err, db) {
 
         if (err) {
-            debug("Could not open " + this.dbName + " database: " + err );
+            debug("Could not open " + playersDao.dbName + " database: " + err );
             callback(err, db);
         } else {
 
@@ -93,10 +89,10 @@ playersDao.getCountryList = function(callback) {
 // Saves the scraped players list for a particular country to the database
 playersDao.savePlayerList = function(docPlayerList, callback) {
 
-    this.mongoClient.connect(this.connectionUrl, function (err, db) {
+    playersDao.mongoClient.connect(playersDao.connectionUrl, function (err, db) {
 
         if (err) {
-            debug("Could not open " + this.dbName + " database: " + err );
+            debug("Could not open " + playersDao.dbName + " database: " + err );
             callback(err, db);
         } else {
 
@@ -113,6 +109,5 @@ playersDao.savePlayerList = function(docPlayerList, callback) {
         }
     });
 };
-
 
 module.exports = playersDao;
