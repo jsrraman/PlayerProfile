@@ -191,6 +191,7 @@ PlayersDataScrape.scrapeAndSavePlayerProfileForPlayer = function(countryId, play
 
       var docPlayerProfile = {};
       var docBattingAndFieldingAvg = {};
+      var docBowlingAvg = {};
 
       // Update the known fields so far
       docPlayerProfile.countryId = parseInt(countryId);
@@ -308,9 +309,45 @@ PlayersDataScrape.scrapeAndSavePlayerProfileForPlayer = function(countryId, play
         docOdiBattingAndFieldingAvg.fifties = odiBattingAndFieldingAvgData.eq(10).text().trim();
 
         docBattingAndFieldingAvg.odis = docOdiBattingAndFieldingAvg;
+
+        // Bowling averages
+        // Test matches
+        var docTestBowlingAvg = {};
+
+        var testBowlingAvgData = $(".pnl490M .engineTable").next().next()
+                                                      .children(":nth-child(2)")
+                                                      .children(":nth-child(1)").find("td");
+
+        docTestBowlingAvg.mat = testBowlingAvgData.eq(1).text().trim();
+        docTestBowlingAvg.wkts = testBowlingAvgData.eq(5).text().trim();
+        docTestBowlingAvg.bestMatchBowling = testBowlingAvgData.eq(7).text().trim();
+        docTestBowlingAvg.average = testBowlingAvgData.eq(8).text().trim();
+        docTestBowlingAvg.fourWicketsInInns = testBowlingAvgData.eq(11).text().trim();
+        docTestBowlingAvg.fiveWicketsInInns = testBowlingAvgData.eq(12).text().trim();
+        docTestBowlingAvg.tenWcktsInMatch = testBowlingAvgData.eq(13).text().trim();
+
+        docBowlingAvg.tests = docTestBowlingAvg;
+
+        // ODIs
+        var docOdiBowlingAvg = {};
+
+        var odiBowlingAvgData = $(".pnl490M .engineTable").next().next()
+                                                    .children(":nth-child(2)")
+                                                    .children(":nth-child(2)").find("td");
+
+        docOdiBowlingAvg.mat = odiBowlingAvgData.eq(1).text().trim();
+        docOdiBowlingAvg.wkts = odiBowlingAvgData.eq(5).text().trim();
+        docOdiBowlingAvg.bestMatchBowling = odiBowlingAvgData.eq(7).text().trim();
+        docOdiBowlingAvg.average = odiBowlingAvgData.eq(8).text().trim();
+        docOdiBowlingAvg.fourWicketsInInns = odiBowlingAvgData.eq(11).text().trim();
+        docOdiBowlingAvg.fiveWicketsInInns = odiBowlingAvgData.eq(12).text().trim();
+        docOdiBowlingAvg.tenWcktsInMatch = odiBowlingAvgData.eq(13).text().trim();;
+
+        docBowlingAvg.odis = docOdiBowlingAvg;
       });
 
       docPlayerProfile.battingAndFieldingAvg = docBattingAndFieldingAvg;
+      docPlayerProfile.bowlingAvg = docBowlingAvg;
 
       //console.log(docPlayerProfile);
 
@@ -326,19 +363,5 @@ PlayersDataScrape.scrapeAndSavePlayerProfileForPlayer = function(countryId, play
     }
   });
 };
-
-PlayersDataScrape.scrapeTopLevelDataForPlayerProfile = function(htmlData, callback) {
-
-
-  var $ = PlayersDataScrape.cheerio.load(htmlData);
-
-  //$(".pnl490M .ciPlayernametxt h1").filter(function () {
-
-
-
-
-
-
-}
 
 module.exports = PlayersDataScrape;
