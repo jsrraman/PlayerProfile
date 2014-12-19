@@ -38,8 +38,6 @@ router.get('/players/country', function(httpReq, httpRes) {
         httpRes.send(fnResponse);
     }
 
-    debug("coming here...");
-
     PlayersDataScrape.scrapeAndSavePlayerListForCountry(countryId,
                                                             countryName, function (error, result) {
         if (error) {
@@ -48,6 +46,37 @@ router.get('/players/country', function(httpReq, httpRes) {
         } else {
             fnResponse.status = "success";
             fnResponse.description = "Player list for country " + countryName + " saved successfully";
+        }
+
+        httpRes.send(fnResponse);
+    });
+});
+
+router.get('/player', function(httpReq, httpRes) {
+
+    var countryId = httpReq.param("countryId");
+    var playerId = httpReq.param("playerId");
+    var playerUrl = httpReq.param("url");
+
+    var fnResponse = {};
+
+    if ( (countryId == null) || (countryId == undefined) ||
+        (playerId == null) || (playerId == undefined) ||
+        (playerUrl == null) || (playerUrl == undefined) ) {
+
+        fnResponse.status = "failure";
+        fnResponse.description = "None of country id, player id, player URL should be empty";
+        httpRes.send(fnResponse);
+    }
+
+    PlayersDataScrape.scrapeAndSavePlayerProfileForPlayer(countryId, playerId, playerUrl,
+                                                                                function (error, result) {
+        if (error) {
+            fnResponse.status = "failure";
+            fnResponse.description = error;
+        } else {
+            fnResponse.status = "success";
+            fnResponse.description = "Player profile for " + playerUrl + " saved successfully";
         }
 
         httpRes.send(fnResponse);

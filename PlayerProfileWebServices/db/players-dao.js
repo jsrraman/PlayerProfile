@@ -110,4 +110,39 @@ PlayersDao.savePlayerList = function(docPlayerList, callback) {
     });
 };
 
+// Saves the scraped player profile data for a particular player to the database
+PlayersDao.savePlayerProfile = function(docPlayerProfile, callback) {
+
+    PlayersDao.mongoClient.connect(PlayersDao.connectionUrl, function (err, db) {
+
+        if (err) {
+            debug("Could not open " + PlayersDao.dbName + " database: " + err );
+            callback(err, null);
+        } else {
+
+            var playerCollection = db.collection('players');
+
+            var query = {};
+            query.playerId = docPlayerProfile.playerId;
+
+            console.log(query);
+
+            console.log("inside db...");
+            console.log(docPlayerProfile);
+
+            playerCollection.update(query, docPlayerProfile, function (err, result) {
+                if (!err) {
+                    debug('Player profile saved successfully');
+                }
+
+                //console.log("result");
+                //console.log(result);
+
+                db.close();
+                callback(null, null);
+            });
+        }
+    });
+};
+
 module.exports = PlayersDao;

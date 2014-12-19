@@ -25,10 +25,8 @@ describe('Player Data Scrape Unit Test Report', function() {
             });
     });
 
-    describe("Download player list for all countries", function() {
-
-        it("should store the player list for England", function(done) {
-
+    describe("Scrape and save player list", function() {
+        it("should store the player list for England successfully", function(done) {
             request(url)
                 .get("/scrape/players/country?id=1&name=england")
                 .expect(200)
@@ -42,10 +40,26 @@ describe('Player Data Scrape Unit Test Report', function() {
                 });
         });
 
-        it("should store the list of all players playing for Australia", function(done) {
+        //it("should store the list of all players playing for Australia successfully", function(done) {
+        //
+        //    request(url)
+        //        .get("/scrape/players/country?id=2&name=australia")
+        //        .expect(200)
+        //        .end(function (err, res) {
+        //            if (err) {
+        //                throw err;
+        //            }
+        //
+        //            res.body.should.have.property('status', 'success');
+        //            done();
+        //        });
+        //});
+    });
 
+    describe("Scrape and save player profile", function() {
+        it("should store the player list for a given player URL successfully", function (done) {
             request(url)
-                .get("/scrape/players/country?id=2&name=australia")
+                .get("/scrape/player?countryId=1&playerId=8917&url=http://www.espncricinfo.com/england/content/player/8917.html")
                 .expect(200)
                 .end(function (err, res) {
                     if (err) {
