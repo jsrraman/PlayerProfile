@@ -163,17 +163,36 @@ PlayersDataScrape.scrapeAndSavePlayerListForCountry = function(countryId, countr
   });
 };
 
-// Scrape and save player list for a particular country
-PlayersDataScrape.scrapeAndSavePlayerProfileForPlayer = function(countryId, playerId, playerUrl, callback) {
+// Scrape and save player list for a particular player id
+PlayersDataScrape.scrapeAndSavePlayerProfileForPlayer = function(playerId, callback) {
 
   var fnResponse = {};
+  var countryId = "";
+  var playerUrl = "";
 
-  if ( (countryId == null) || (countryId == undefined) ||
-      (playerId == null) || (playerId == undefined) ||
-      (playerUrl == null) || (playerUrl == undefined) ) {
-    fnResponse.description = "None of country id, player id, player URL should be empty";
+  if ((playerId == null) || (playerId == undefined)) {
+    fnResponse.description = "Player id cannot be empty";
     callback(fnResponse, null);
   }
+
+  PlayersDataScrape.db.getPlayerBasicInfo(parseInt(playerId), function (error, result) {
+    // Send the response to the API caller
+    if (error) {
+      fnResponse.description = "There was error in retrieving the player's basic info";
+      callback(fnResponse, null);
+    }
+    else {
+      countryId = result.countryId;
+      playerUrl = result.playerUrl;
+      PlayersDataScrape._scrapeAndSavePlayerProfileForPlayer(playerId, countryId, playerUrl, callback);
+    }
+  });
+}
+
+// Internal method to scrape and save player list for a particular country given player id, country id and
+// player url
+PlayersDataScrape._scrapeAndSavePlayerProfileForPlayer = function(playerId, countryId, playerUrl,
+                                                                                            callback) {
 
   debug("Going to get player profile for the requested player URL " + playerUrl +
                                                                 " and store them in the database");
@@ -198,153 +217,9 @@ PlayersDataScrape.scrapeAndSavePlayerProfileForPlayer = function(countryId, play
       docPlayerProfile.playerId = parseInt(playerId);
       docPlayerProfile.playerUrl = playerUrl;
 
-      // Filter player profile data from the html
-      $(".pnl490M").filter(function () {
-
-        // Get the filtered data
-        //var data = $(this);
-
-        // Player name
-        docPlayerProfile.name = $(".pnl490M .ciPlayernametxt div h1").text().trim();
-
-        // Player country
-        docPlayerProfile.country = $(".pnl490M .ciPlayernametxt div h3 b").text().trim();
-
-        // Get the age from the following structure (only the relevant context is shown here)
-        // <div class="pnl490M" ------------------------- 1
-        //    <div class=".ciPlayernametxt" ------------- 2
-        //    <div style="..." -------------------------- 3
-        //      <div style="..." ------------------------ 4
-        //        <p class="..." ------------------------ 5
-        //        <p class="..." ------------------------ 6
-        //        <p class="..." ------------------------ 7
-        //          <b>Current age</b> ------------------ 8
-        //          <span>27 years 184 days</span> ------ 9
-        //        </p>
-        //          ...
-        // Explanation for the navigation is given below
-        // 1) $(".pnl490M .ciPlayernametxt") will navigate to 2 above
-        //
-        // 2) $(".pnl490M .ciPlayernametxt").next() will navigate to next sibling i.e 3 above
-        //
-        // 3) $(".pnl490M .ciPlayernametxt").next().children(":nth-child(1)") will navigate to
-        // first child among its children i.e 4 above.
-        // Note:
-        // 3a) :nth-child selector is 1 based index since that concept is borrowed from css specification.
-        // according to jQuery documentation - http://api.jquery.com/nth-child-selector/
-        //
-        // 3b) This could also have been navigated like below
-        // $(".pnl490M .ciPlayernametxt").next().children().first()
-        //
-        // 4) $(".pnl490M .ciPlayernametxt").next().children(":nth-child(1)").find("p") will
-        // find all the "p" elements under 4.
-        //
-        // 5) $(".pnl490M .ciPlayernametxt").next().children(":nth-child(1)").find("p").eq(2) will
-        // go to the actual "p" element we are interested in. Note eq(index) is used because we
-        // have set of "p" elements and you need to go to a particular set, so eq(2) is a good option here.
-        // eq(2) can be used only for the identical elements. Most of the items this would cause confusion like
-        // applying this for non-matching elements, for ex, one <p> element and <div> element will behave
-        // differently.
-        //
-        // 6) Finally find("span") under the particular "p" element will give you the age i.e 27 years 184 days
-        //docPlayerProfile.age = $(".pnl490M .ciPlayernametxt").next().children(":nth-child(1)").
-        //                                                    find("p").eq(2).find("span").text().trim();
-
-        var tempData = $(".pnl490M .ciPlayernametxt").next().children(":nth-child(1)").find("p");
-
-        // Player age
-        docPlayerProfile.age = tempData.eq(2).find("span").text().trim();
-
-        // Player Batting Style
-        docPlayerProfile.battingStyle = tempData.eq(5).find("span").text().trim();
-
-        // Player Bowling Style
-        docPlayerProfile.bowlingStyle = tempData.eq(6).find("span").text().trim();
-
-        // Batting and fielding averages
-
-        // For reference*******Don't uncomment this**************
-        // Test macthes data
-        // temp = $(".pnl490M .engineTable tbody tr td");
-        // Note: This is another way of getting data from each td in a loop
-        //tempData.find("td").each(function () {
-        //  var value = $(this);
-        //});
-        // For reference*******Don't uncomment this**************
-
-        // Get the test match batting and field averages from the below data structure
-        // <div class="pnl490M"
-        //  <table class=engineTable>
-        //    <thead>
-        //      <tbody>
-        //        <tr class="..."
-        //          <td class="..." ------------ Test data
-        //          <td ...
-        //        <tr class="..."   ------------  ODI data
-
-        // Test matches
-        var docTestBattingAndFieldingAvg = {};
-
-        var testBattingAndFieldingAvgData = $(".pnl490M .engineTable tbody tr td");
-
-        docTestBattingAndFieldingAvg.mat = testBattingAndFieldingAvgData.eq(1).text().trim();
-        docTestBattingAndFieldingAvg.runs = testBattingAndFieldingAvgData.eq(4).text().trim();
-        docTestBattingAndFieldingAvg.highest = testBattingAndFieldingAvgData.eq(5).text().trim();
-        docTestBattingAndFieldingAvg.average = testBattingAndFieldingAvgData.eq(6).text().trim();
-        docTestBattingAndFieldingAvg.hundreds = testBattingAndFieldingAvgData.eq(9).text().trim();
-        docTestBattingAndFieldingAvg.fifties = testBattingAndFieldingAvgData.eq(10).text().trim();
-
-        docBattingAndFieldingAvg.tests = docTestBattingAndFieldingAvg;
-
-        // ODIs
-        var docOdiBattingAndFieldingAvg = {};
-
-        var odiBattingAndFieldingAvgData = $(".pnl490M .engineTable tbody tr").next().find("td");
-
-        docOdiBattingAndFieldingAvg.mat = odiBattingAndFieldingAvgData.eq(1).text().trim();
-        docOdiBattingAndFieldingAvg.runs = odiBattingAndFieldingAvgData.eq(4).text().trim();
-        docOdiBattingAndFieldingAvg.highest = odiBattingAndFieldingAvgData.eq(5).text().trim();
-        docOdiBattingAndFieldingAvg.average = odiBattingAndFieldingAvgData.eq(6).text().trim();
-        docOdiBattingAndFieldingAvg.hundreds = odiBattingAndFieldingAvgData.eq(9).text().trim();
-        docOdiBattingAndFieldingAvg.fifties = odiBattingAndFieldingAvgData.eq(10).text().trim();
-
-        docBattingAndFieldingAvg.odis = docOdiBattingAndFieldingAvg;
-
-        // Bowling averages
-        // Test matches
-        var docTestBowlingAvg = {};
-
-        var testBowlingAvgData = $(".pnl490M .engineTable").next().next()
-                                                      .children(":nth-child(2)")
-                                                      .children(":nth-child(1)").find("td");
-
-        docTestBowlingAvg.mat = testBowlingAvgData.eq(1).text().trim();
-        docTestBowlingAvg.wkts = testBowlingAvgData.eq(5).text().trim();
-        docTestBowlingAvg.bestMatchBowling = testBowlingAvgData.eq(7).text().trim();
-        docTestBowlingAvg.average = testBowlingAvgData.eq(8).text().trim();
-        docTestBowlingAvg.fourWicketsInInns = testBowlingAvgData.eq(11).text().trim();
-        docTestBowlingAvg.fiveWicketsInInns = testBowlingAvgData.eq(12).text().trim();
-        docTestBowlingAvg.tenWcktsInMatch = testBowlingAvgData.eq(13).text().trim();
-
-        docBowlingAvg.tests = docTestBowlingAvg;
-
-        // ODIs
-        var docOdiBowlingAvg = {};
-
-        var odiBowlingAvgData = $(".pnl490M .engineTable").next().next()
-                                                    .children(":nth-child(2)")
-                                                    .children(":nth-child(2)").find("td");
-
-        docOdiBowlingAvg.mat = odiBowlingAvgData.eq(1).text().trim();
-        docOdiBowlingAvg.wkts = odiBowlingAvgData.eq(5).text().trim();
-        docOdiBowlingAvg.bestMatchBowling = odiBowlingAvgData.eq(7).text().trim();
-        docOdiBowlingAvg.average = odiBowlingAvgData.eq(8).text().trim();
-        docOdiBowlingAvg.fourWicketsInInns = odiBowlingAvgData.eq(11).text().trim();
-        docOdiBowlingAvg.fiveWicketsInInns = odiBowlingAvgData.eq(12).text().trim();
-        docOdiBowlingAvg.tenWcktsInMatch = odiBowlingAvgData.eq(13).text().trim();;
-
-        docBowlingAvg.odis = docOdiBowlingAvg;
-      });
+      // Get the player profile data from the loaded html data into jQuery object
+      PlayersDataScrape.extractPlayerProfileData($, docPlayerProfile,
+                                                          docBattingAndFieldingAvg, docBowlingAvg);
 
       docPlayerProfile.battingAndFieldingAvg = docBattingAndFieldingAvg;
       docPlayerProfile.bowlingAvg = docBowlingAvg;
@@ -362,6 +237,155 @@ PlayersDataScrape.scrapeAndSavePlayerProfileForPlayer = function(countryId, play
       });
     }
   });
+};
+
+// Extracts the player profile data from the loaded html data
+PlayersDataScrape.extractPlayerProfileData = function($, docPlayerProfile,
+                                                     docBattingAndFieldingAvg, docBowlingAvg) {
+
+  // Player name
+  docPlayerProfile.name = $(".pnl490M .ciPlayernametxt div h1").text().trim();
+
+  // Player country
+  docPlayerProfile.country = $(".pnl490M .ciPlayernametxt div h3 b").text().trim();
+
+  // Get the age from the following structure (only the relevant context is shown here)
+  // <div class="pnl490M" ------------------------- 1
+  //    <div class=".ciPlayernametxt" ------------- 2
+  //    <div style="..." -------------------------- 3
+  //      <div style="..." ------------------------ 4
+  //        <p class="..." ------------------------ 5
+  //        <p class="..." ------------------------ 6
+  //        <p class="..." ------------------------ 7
+  //          <b>Current age</b> ------------------ 8
+  //          <span>27 years 184 days</span> ------ 9
+  //        </p>
+  //          ...
+  // Explanation for the navigation is given below
+  // 1) $(".pnl490M .ciPlayernametxt") will navigate to 2 above
+  //
+  // 2) $(".pnl490M .ciPlayernametxt").next() will navigate to next sibling i.e 3 above
+  //
+  // 3) $(".pnl490M .ciPlayernametxt").next().children(":nth-child(1)") will navigate to
+  // first child among its children i.e 4 above.
+  // Note:
+  // 3a) :nth-child selector is 1 based index since that concept is borrowed from css specification.
+  // according to jQuery documentation - http://api.jquery.com/nth-child-selector/
+  //
+  // 3b) This could also have been navigated like below
+  // $(".pnl490M .ciPlayernametxt").next().children().first()
+  //
+  // 4) $(".pnl490M .ciPlayernametxt").next().children(":nth-child(1)").find("p") will
+  // find all the "p" elements under 4.
+  //
+  // 5) $(".pnl490M .ciPlayernametxt").next().children(":nth-child(1)").find("p").eq(2) will
+  // go to the actual "p" element we are interested in. Note eq(index) is used because we
+  // have set of "p" elements and you need to go to a particular set, so eq(2) is a good option here.
+  // eq(2) can be used only for the identical elements. Most of the items this would cause confusion like
+  // applying this for non-matching elements, for ex, one <p> element and <div> element will behave
+  // differently.
+  //
+  // 6) Finally find("span") under the particular "p" element will give you the age i.e 27 years 184 days
+  //docPlayerProfile.age = $(".pnl490M .ciPlayernametxt").next().children(":nth-child(1)").
+  //                                                    find("p").eq(2).find("span").text().trim();
+
+  var tempData = $(".pnl490M .ciPlayernametxt")
+                                    .next().children(":nth-child(1)").find("p");
+
+  // Player age
+  docPlayerProfile.age = tempData.eq(2).find("span").text().trim();
+
+  // Player Batting Style
+  docPlayerProfile.battingStyle = tempData.eq(5).find("span").text().trim();
+
+  // Player Bowling Style
+  docPlayerProfile.bowlingStyle = tempData.eq(6).find("span").text().trim();
+
+  // Batting and fielding averages
+
+  // For reference*******Don't uncomment this**************
+  // Test macthes data
+  // temp = $(".pnl490M .engineTable tbody tr td");
+  // Note: This is another way of getting data from each td in a loop
+  //tempData.find("td").each(function () {
+  //  var value = $(this);
+  //});
+  // For reference*******Don't uncomment this**************
+
+  // Get the test match batting and field averages from the below data structure
+  // <div class="pnl490M"
+  //  <table class=engineTable>
+  //    <thead>
+  //      <tbody>
+  //        <tr class="..."
+  //          <td class="..." ------------ Test data
+  //          <td ...
+  //        <tr class="..."   ------------  ODI data
+
+  // Test matches
+  var docTestBattingAndFieldingAvg = {};
+
+  var testBattingAndFieldingAvgData = $(".pnl490M .engineTable tbody tr td");
+
+  docTestBattingAndFieldingAvg.mat = testBattingAndFieldingAvgData.eq(1).text().trim();
+  docTestBattingAndFieldingAvg.runs = testBattingAndFieldingAvgData.eq(4).text().trim();
+  docTestBattingAndFieldingAvg.highest = testBattingAndFieldingAvgData.eq(5).text().trim();
+  docTestBattingAndFieldingAvg.average = testBattingAndFieldingAvgData.eq(6).text().trim();
+  docTestBattingAndFieldingAvg.hundreds = testBattingAndFieldingAvgData.eq(9).text().trim();
+  docTestBattingAndFieldingAvg.fifties = testBattingAndFieldingAvgData.eq(10).text().trim();
+
+  docBattingAndFieldingAvg.tests = docTestBattingAndFieldingAvg;
+
+  // ODIs
+  var docOdiBattingAndFieldingAvg = {};
+
+  var odiBattingAndFieldingAvgData = $(".pnl490M .engineTable tbody tr")
+                                                            .next().find("td");
+
+  docOdiBattingAndFieldingAvg.mat = odiBattingAndFieldingAvgData.eq(1).text().trim();
+  docOdiBattingAndFieldingAvg.runs = odiBattingAndFieldingAvgData.eq(4).text().trim();
+  docOdiBattingAndFieldingAvg.highest = odiBattingAndFieldingAvgData.eq(5).text().trim();
+  docOdiBattingAndFieldingAvg.average = odiBattingAndFieldingAvgData.eq(6).text().trim();
+  docOdiBattingAndFieldingAvg.hundreds = odiBattingAndFieldingAvgData.eq(9).text().trim();
+  docOdiBattingAndFieldingAvg.fifties = odiBattingAndFieldingAvgData.eq(10).text().trim();
+
+  docBattingAndFieldingAvg.odis = docOdiBattingAndFieldingAvg;
+
+  // Bowling averages
+  // Test matches
+  var docTestBowlingAvg = {};
+
+  var testBowlingAvgData = $(".pnl490M .engineTable").next().next()
+                                                          .children(":nth-child(2)")
+                                                          .children(":nth-child(1)").find("td");
+
+  docTestBowlingAvg.mat = testBowlingAvgData.eq(1).text().trim();
+  docTestBowlingAvg.wkts = testBowlingAvgData.eq(5).text().trim();
+  docTestBowlingAvg.bestMatchBowling = testBowlingAvgData.eq(7).text().trim();
+  docTestBowlingAvg.average = testBowlingAvgData.eq(8).text().trim();
+  docTestBowlingAvg.fourWktsInInns = testBowlingAvgData.eq(11).text().trim();
+  docTestBowlingAvg.fiveWktsInInns = testBowlingAvgData.eq(12).text().trim();
+  docTestBowlingAvg.tenWktsInMatch = testBowlingAvgData.eq(13).text().trim();
+
+  docBowlingAvg.tests = docTestBowlingAvg;
+
+  // ODIs
+  var docOdiBowlingAvg = {};
+
+  var odiBowlingAvgData = $(".pnl490M .engineTable").next().next()
+                                                      .children(":nth-child(2)")
+                                                      .children(":nth-child(2)").find("td");
+
+  docOdiBowlingAvg.mat = odiBowlingAvgData.eq(1).text().trim();
+  docOdiBowlingAvg.wkts = odiBowlingAvgData.eq(5).text().trim();
+  docOdiBowlingAvg.bestMatchBowling = odiBowlingAvgData.eq(7).text().trim();
+  docOdiBowlingAvg.average = odiBowlingAvgData.eq(8).text().trim();
+  docOdiBowlingAvg.fourWksInInns = odiBowlingAvgData.eq(11).text().trim();
+  docOdiBowlingAvg.fiveWktsInInns = odiBowlingAvgData.eq(12).text().trim();
+  docOdiBowlingAvg.tenWktsInMatch = odiBowlingAvgData.eq(13).text().trim();
+  ;
+
+  docBowlingAvg.odis = docOdiBowlingAvg;
 };
 
 module.exports = PlayersDataScrape;

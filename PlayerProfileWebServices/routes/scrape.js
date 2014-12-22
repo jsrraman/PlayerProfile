@@ -54,29 +54,23 @@ router.get('/players/country', function(httpReq, httpRes) {
 
 router.get('/player', function(httpReq, httpRes) {
 
-    var countryId = httpReq.param("countryId");
     var playerId = httpReq.param("playerId");
-    var playerUrl = httpReq.param("url");
 
     var fnResponse = {};
 
-    if ( (countryId == null) || (countryId == undefined) ||
-        (playerId == null) || (playerId == undefined) ||
-        (playerUrl == null) || (playerUrl == undefined) ) {
-
+    if ( (playerId == null) || (playerId == undefined) ) {
         fnResponse.status = "failure";
-        fnResponse.description = "None of country id, player id, player URL should be empty";
+        fnResponse.description = "Player id cannot be empty";
         httpRes.send(fnResponse);
     }
 
-    PlayersDataScrape.scrapeAndSavePlayerProfileForPlayer(countryId, playerId, playerUrl,
-                                                                                function (error, result) {
+    PlayersDataScrape.scrapeAndSavePlayerProfileForPlayer(playerId, function (error, result) {
         if (error) {
             fnResponse.status = "failure";
             fnResponse.description = error;
         } else {
             fnResponse.status = "success";
-            fnResponse.description = "Player profile for " + playerUrl + " saved successfully";
+            fnResponse.description = "Player profile for player id=" + playerId + " saved successfully";
         }
 
         httpRes.send(fnResponse);

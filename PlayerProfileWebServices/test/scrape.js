@@ -59,7 +59,8 @@ describe('Player Data Scrape Unit Test Report', function() {
     describe("Scrape and save player profile", function() {
         it("should store the player list for a given player URL successfully", function (done) {
             request(url)
-                .get("/scrape/player?countryId=1&playerId=8917&url=http://www.espncricinfo.com/england/content/player/8917.html")
+                //.get("/scrape/player?countryId=1&playerId=8917&url=http://www.espncricinfo.com/england/content/player/8917.html")
+                .get("/scrape/player?playerId=8917")
                 .expect(200)
                 .end(function (err, res) {
                     if (err) {

@@ -110,6 +110,40 @@ PlayersDao.savePlayerList = function(docPlayerList, callback) {
     });
 };
 
+// Given a player id, retrieves his country id and url (basic info)
+PlayersDao.getPlayerBasicInfo = function(playerId, callback) {
+
+    PlayersDao.mongoClient.connect(PlayersDao.connectionUrl, function (err, db) {
+
+        if (err) {
+            debug("Could not open " + PlayersDao.dbName + " database: " + err );
+            callback(err, null);
+        } else {
+
+            var playerCollection = db.collection('players');
+
+            var query = {};
+            query.playerId = playerId;
+
+            playerCollection.findOne(query, function (err, result) {
+                if (err) {
+
+                    debug('Player basic info could not be retrieved successfully');
+
+                    db.close();
+                    callback(err, null);
+
+                } else {
+
+                    debug('Player basic info retrieved successfully');
+                    db.close();
+                    callback(null, result);
+                }
+            });
+        }
+    });
+}
+
 // Saves the scraped player profile data for a particular player to the database
 PlayersDao.savePlayerProfile = function(docPlayerProfile, callback) {
 
