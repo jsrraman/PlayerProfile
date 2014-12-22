@@ -72,8 +72,12 @@ PlayersDao.getCountryList = function(callback) {
 
             var countryCollection = db.collection('countries');
 
-            // Get the records without "_id" column and sorted by country id
-            countryCollection.find({},{_id:0}).sort({countryId:1}).toArray(function (err, result) {
+            // Get the records sorted by country id
+            var query = {}; // Get everything
+            var projection = {_id:0}; // Don't project the _id in the result
+            var sortCriteria = {countryId:1};
+
+            countryCollection.find(query, projection).sort(sortCriteria).toArray(function (err, result) {
                 if (!err) {
                     debug('Country list fetched successfully');
                 }
@@ -110,8 +114,10 @@ PlayersDao.savePlayerList = function(docPlayerList, callback) {
     });
 };
 
-// Given a player id, retrieves his country id and url (basic info)
-PlayersDao.getPlayerBasicInfo = function(playerId, callback) {
+// Retrieves a player's profile info for the following scenarios
+// If countryId is passed then it will retrieve all its players' profile info (ignores playerId parameter)
+// else it retrieves that particular player's id profile info
+PlayersDao.getPlayerProfile = function(countryId, playerId, callback) {
 
     PlayersDao.mongoClient.connect(PlayersDao.connectionUrl, function (err, db) {
 
@@ -123,19 +129,26 @@ PlayersDao.getPlayerBasicInfo = function(playerId, callback) {
             var playerCollection = db.collection('players');
 
             var query = {};
-            query.playerId = playerId;
 
-            playerCollection.findOne(query, function (err, result) {
+            if ( (countryId != null || countryId != undefined) ) {
+                query.countryId = countryId;
+            } else {
+                query.playerId = playerId;
+            }
+
+            var projection = {_id:0}; // We don't need the _id in the result
+
+            playerCollection.find(query, projection).toArray(function (err, result) {
                 if (err) {
 
-                    debug('Player basic info could not be retrieved successfully');
+                    debug('Player profile info could not be retrieved successfully');
 
                     db.close();
                     callback(err, null);
 
                 } else {
 
-                    debug('Player basic info retrieved successfully');
+                    debug('Player profile info retrieved successfully');
                     db.close();
                     callback(null, result);
                 }

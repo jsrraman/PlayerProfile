@@ -22,12 +22,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 var baseRoute = require('./routes/index');
 var scrapeRoute = require('./routes/scrape');
 var playersRoute = require('./routes/players');
-var userRoute = require('./routes/users');
 
 app.use('/', baseRoute);
 app.use('/scrape', scrapeRoute);
 app.use('/players', playersRoute);
-app.use('/users', userRoute);
 
 // For other undefined paths, catch 404 and forward to error handler
 app.use(function(req, res, next) {

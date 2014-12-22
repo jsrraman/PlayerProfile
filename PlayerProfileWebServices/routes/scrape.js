@@ -25,7 +25,7 @@ router.get('/countries', function(httpReq, httpRes) {
 
 router.get('/players/country', function(httpReq, httpRes) {
 
-    var countryId = httpReq.param("id");
+    var countryId = httpReq.param("countryId");
     var countryName = httpReq.param("name");
 
     var fnResponse = {};

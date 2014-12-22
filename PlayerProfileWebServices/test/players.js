@@ -22,4 +22,35 @@ describe("Player Profile REST APIs Unit Test Report", function() {
                 done();
             });
     });
- });
+
+    it('should return the profile info for player id = 8917', function(done) {
+
+        request(url)
+            .get("/players?playerId=8917")
+            .expect(200)
+            .end(function(err, res) {
+                if (err) {
+                    throw err;
+                }
+
+                res.body.should.have.property("status", "success");
+                done();
+            });
+    });
+
+    it('should return the profile info for all players of England', function(done) {
+
+        request(url)
+            .get("/players/country?countryId=1")
+            .expect(200)
+            .end(function(err, res) {
+                if (err) {
+                    throw err;
+                }
+
+                res.body.should.have.property("status", "success");
+                done();
+            });
+    });
+
+});

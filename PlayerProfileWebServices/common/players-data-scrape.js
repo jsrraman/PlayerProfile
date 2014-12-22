@@ -175,23 +175,24 @@ PlayersDataScrape.scrapeAndSavePlayerProfileForPlayer = function(playerId, callb
     callback(fnResponse, null);
   }
 
-  PlayersDataScrape.db.getPlayerBasicInfo(parseInt(playerId), function (error, result) {
+  PlayersDataScrape.db.getPlayerProfile(null, parseInt(playerId), function (error, result) {
     // Send the response to the API caller
     if (error) {
-      fnResponse.description = "There was error in retrieving the player's basic info";
+      fnResponse.description = "There was error in retrieving the player's profile";
       callback(fnResponse, null);
     }
     else {
-      countryId = result.countryId;
-      playerUrl = result.playerUrl;
-      PlayersDataScrape._scrapeAndSavePlayerProfileForPlayer(playerId, countryId, playerUrl, callback);
+      // We are expecting only one document, so retrieve it from first index
+      countryId = result[0].countryId;
+      playerUrl = result[0].playerUrl;
+      PlayersDataScrape._scrapeAndSavePlayerProfileForPlayer(countryId, playerId, playerUrl, callback);
     }
   });
 }
 
 // Internal method to scrape and save player list for a particular country given player id, country id and
 // player url
-PlayersDataScrape._scrapeAndSavePlayerProfileForPlayer = function(playerId, countryId, playerUrl,
+PlayersDataScrape._scrapeAndSavePlayerProfileForPlayer = function(countryId, playerId, playerUrl,
                                                                                             callback) {
 
   debug("Going to get player profile for the requested player URL " + playerUrl +
@@ -383,7 +384,6 @@ PlayersDataScrape.extractPlayerProfileData = function($, docPlayerProfile,
   docOdiBowlingAvg.fourWksInInns = odiBowlingAvgData.eq(11).text().trim();
   docOdiBowlingAvg.fiveWktsInInns = odiBowlingAvgData.eq(12).text().trim();
   docOdiBowlingAvg.tenWktsInMatch = odiBowlingAvgData.eq(13).text().trim();
-  ;
 
   docBowlingAvg.odis = docOdiBowlingAvg;
 };
