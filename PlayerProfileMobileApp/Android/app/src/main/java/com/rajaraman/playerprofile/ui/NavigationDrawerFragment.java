@@ -1,4 +1,4 @@
-package com.rajaraman.playerprofile;
+package com.rajaraman.playerprofile.ui;
 
 import android.support.v7.app.ActionBarActivity;
 import android.app.Activity;
@@ -22,12 +22,24 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.rajaraman.playerprofile.R;
+import com.rajaraman.playerprofile.network.data.entity.CountryEntity;
+import com.rajaraman.playerprofile.network.data.provider.DataProvider;
+import com.rajaraman.playerprofile.network.data.provider.PlayerProfileApiDataProvider;
+import com.rajaraman.playerprofile.utils.ApiResponseEntity;
+import com.rajaraman.playerprofile.utils.AppUtil;
+
+import java.util.ArrayList;
+
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
  * See the <a href="https://developer.android.com/design/patterns/navigation-drawer.html#Interaction">
  * design guidelines</a> for a complete explanation of the behaviors implemented here.
  */
-public class NavigationDrawerFragment extends Fragment {
+public class NavigationDrawerFragment extends Fragment implements
+                                                        DataProvider.OnDataReceivedListener {
+
+    private static final String TAG = NavigationDrawerFragment.class.getCanonicalName();
 
     /**
      * Remember the position of the selected item.
@@ -91,22 +103,32 @@ public class NavigationDrawerFragment extends Fragment {
                              Bundle savedInstanceState) {
         mDrawerListView = (ListView) inflater.inflate(
                 R.layout.fragment_navigation_drawer, container, false);
+
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 selectItem(position);
             }
         });
-        mDrawerListView.setAdapter(new ArrayAdapter<String>(
-                getActionBar().getThemedContext(),
-                android.R.layout.simple_list_item_activated_1,
-                android.R.id.text1,
-                new String[]{
-                        getString(R.string.title_section1),
-                        getString(R.string.title_section2),
-                        getString(R.string.title_section3),
-                }));
-        mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
+
+        // Get the country names list
+        PlayerProfileApiDataProvider playerProfileApiDataProvider =
+                                                    new PlayerProfileApiDataProvider();
+
+        playerProfileApiDataProvider.getCountryList(getActivity(), this);
+
+        AppUtil.showProgressDialog(getActivity());
+
+//        mDrawerListView.setAdapter(new ArrayAdapter<String>(
+//                getActionBar().getThemedContext(),
+//                android.R.layout.simple_list_item_activated_1,
+//                android.R.id.text1,
+//                new String[]{
+//                        getString(R.string.title_section1),
+//                        getString(R.string.title_section2),
+//                        getString(R.string.title_section3),
+//                }));
+//        mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerListView;
     }
 
@@ -268,6 +290,39 @@ public class NavigationDrawerFragment extends Fragment {
 
     private ActionBar getActionBar() {
         return ((ActionBarActivity) getActivity()).getSupportActionBar();
+    }
+
+    @Override
+    public void onDataFetched(Object obj) {
+        // We have received the notification from PlayerProfileDataProvider so
+        // dismiss the progress dialog
+        AppUtil.logDebugMessage(TAG, "onDataFetched callback");
+
+        AppUtil.dismissProgressDialog();
+
+        if (obj == null) {
+            AppUtil.showDialog(getActivity(),
+                            getActivity().getString(R.string.country_list_fetch_failed));
+
+            return;
+        }
+
+        CountryEntity [] countryEntityList = (CountryEntity [])obj;
+
+        ArrayList<String> countryNames = new ArrayList<String>();
+
+        for (int i = 0; i < countryEntityList.length; i++) {
+            CountryEntity countryEntity = countryEntityList[i];
+            countryNames.add(countryEntity.name);
+        }
+
+        mDrawerListView.setAdapter(new ArrayAdapter<String>(
+                getActionBar().getThemedContext(),
+                android.R.layout.simple_list_item_activated_1,
+                android.R.id.text1,
+                countryNames));
+
+        mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
     }
 
     /**
