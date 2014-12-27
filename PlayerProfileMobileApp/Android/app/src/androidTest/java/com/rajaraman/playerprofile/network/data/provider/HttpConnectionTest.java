@@ -40,9 +40,9 @@ public class HttpConnectionTest {
     @Test
     public void testWebServicesAreWorkingFine() throws Exception {
 
-        // Country list web service
+        // Just check whether PlayerProfile WebServices instance is up and running.
         String url = PlayerProfileApiDataProvider.profilePlayerWebServicesBaseUrl;
-        url += PlayerProfileApiDataProvider.countryListUrl;
+        //url += PlayerProfileApiDataProvider.countryListUrl;
 
         HttpConnection httpConn = new HttpConnection();
         InputStream inputStream = httpConn.getData(url);

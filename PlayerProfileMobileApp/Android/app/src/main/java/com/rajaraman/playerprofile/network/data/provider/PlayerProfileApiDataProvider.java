@@ -65,25 +65,28 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
 
         AppUtil.logDebugMessage(TAG, "onReceiveResult");
 
-        if (resultData == null) {
+        Object responseDataObj = resultData.getParcelable("RESPONSE_DATA");
+
+        if (responseDataObj == null) {
             AppUtil.logDebugMessage(TAG, "resultData is null. This is unexpected !!!");
             this.onDataReceivedListener.onDataFetched(null);
             return;
         }
+
+        // Get the parcelable data from the resultData
+        ApiReqResData apiReqResData = (ApiReqResData) responseDataObj;
+
+        // Get the actual response data from the parcelable data
+        String jsonData = apiReqResData.getResponseData();
 
         Gson gson = new Gson();
 
         switch (resultCode) {
             case GET_COUNTRY_LIST_CODE: {
 
-                // Get the parcelable data from the resultData
-                ApiReqResData apiReqResData = resultData.getParcelable("RESPONSE_DATA");
-
-                // Get the actual response data from the parcelable data
-                String jsonData = apiReqResData.getResponseData();
+                CountryEntity[] countryEntityList = null;
 
                 try {
-
                     // Get the root JSON object
                     JSONObject rootJsonObj = new JSONObject(jsonData);
 
@@ -97,12 +100,11 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
                     //AppUtil.logDebugMessage(TAG, countryListJsonString);
 
                     // convert (Deserialize) JSON string to the equivalent entity object
-                    CountryEntity[] countryEntityList =
-                            gson.fromJson(countryListJsonString, CountryEntity[].class);
-
-                    this.onDataReceivedListener.onDataFetched(countryEntityList);
+                    countryEntityList = gson.fromJson(countryListJsonString, CountryEntity[].class);
                 }catch (Exception e) {
                     e.printStackTrace();
+                }finally {
+                    this.onDataReceivedListener.onDataFetched(countryEntityList);
                 }
 
                 break;
@@ -112,5 +114,5 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
                 break;
             }
         }
-    }
+   }
 }

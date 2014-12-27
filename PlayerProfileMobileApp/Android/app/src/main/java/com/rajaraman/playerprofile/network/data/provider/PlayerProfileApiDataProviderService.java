@@ -36,15 +36,10 @@ public class PlayerProfileApiDataProviderService extends IntentService {
         // Request data is a web service url
         String url = apiReqResData.getRequestUrl();
 
+        HttpConnection httpConn = new HttpConnection();
         Bundle b = new Bundle();
 
         try {
-//            HttpURLConnection httpConn = (HttpURLConnection) (new URL(url)).openConnection();
-//            httpConn.setRequestMethod("GET");
-//            httpConn.connect();
-//            InputStream is = httpConn.getInputStream();
-
-            HttpConnection httpConn = new HttpConnection();
             InputStream inputStream = httpConn.getData(url);
 
             // Convert the input stream into JSON string
@@ -58,6 +53,7 @@ public class PlayerProfileApiDataProviderService extends IntentService {
             e.printStackTrace();
             b.putParcelable("RESPONSE_DATA", null);
         } finally {
+            httpConn.disconnect();
             resultReceiver.send(PlayerProfileApiDataProvider.GET_COUNTRY_LIST_CODE, b);
         }
     }

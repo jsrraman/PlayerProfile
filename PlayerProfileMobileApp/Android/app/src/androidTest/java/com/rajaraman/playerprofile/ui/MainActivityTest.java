@@ -43,12 +43,12 @@ public class MainActivityTest {
     }
 
     @Test
-    public void testActivityNotNull() throws Exception {
+    public void testMainActivityNotNull() throws Exception {
         assertNotNull(activity);
     }
 
     @Test
-    public void testWhetherNavigationDrawerListsAllCountries() throws Exception {
+    public void testWhetherNavigationDrawerIsShown() throws Exception {
         FragmentManager fragmentManager = activity.getSupportFragmentManager();
         Fragment drawerFragment = fragmentManager.findFragmentById(R.id.navigation_drawer);
 

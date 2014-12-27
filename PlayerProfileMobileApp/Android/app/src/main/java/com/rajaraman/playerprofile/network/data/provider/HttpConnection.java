@@ -8,21 +8,40 @@ import java.net.URL;
 
 public class HttpConnection {
 
+    HttpURLConnection httpCon = null;
+    InputStream inputStream = null;
+
+    private static int HTTP_CONN_TIMEOUT = 15 * 1000; // 15 seconds
+    private static int HTTP_READ_TIMEOUT = 10 * 1000; // 10 seconds
+
     public HttpConnection() {}
 
-    public InputStream getData(String url) {
-        HttpURLConnection httpCon = null;
-        InputStream inputStream = null;
+    public InputStream getData(String url) throws IOException {
 
-        try {
-            httpCon = (HttpURLConnection) (new URL(url)).openConnection();
-            httpCon.setRequestMethod("GET");
-            httpCon.connect();
-            inputStream = httpCon.getInputStream();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            return inputStream;
+        this.httpCon = (HttpURLConnection) (new URL(url)).openConnection();
+
+        this.httpCon.setRequestMethod("GET");
+        this.httpCon.setConnectTimeout(HTTP_CONN_TIMEOUT);
+        this.httpCon.setReadTimeout(HTTP_CONN_TIMEOUT);
+        this.httpCon.connect();
+
+        this.inputStream = httpCon.getInputStream();
+
+        return inputStream;
+    }
+
+    public void disconnect() {
+
+        if (inputStream != null) {
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (this.httpCon != null) {
+            httpCon.disconnect();
         }
     }
 }
