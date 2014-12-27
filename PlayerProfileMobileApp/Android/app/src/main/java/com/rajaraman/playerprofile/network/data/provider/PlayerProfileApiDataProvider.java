@@ -27,8 +27,8 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
     // Web service result codes which will be used during response from result receiver
     public static final int GET_COUNTRY_LIST_CODE = 0;
 
-    private final String profilePlayerWebServicesBaseUrl = "http://10.0.0.100:3000";
-    private final String countryListUrl = "/players/countries";
+    public static final String profilePlayerWebServicesBaseUrl = "http://10.0.0.100:3000";
+    public static final String countryListUrl = "/players/countries";
 
     public PlayerProfileApiDataProvider() {}
 
@@ -66,7 +66,7 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
         AppUtil.logDebugMessage(TAG, "onReceiveResult");
 
         if (resultData == null) {
-            AppUtil.logDebugMessage(TAG, "resultData is null !!! This is unexpected");
+            AppUtil.logDebugMessage(TAG, "resultData is null. This is unexpected !!!");
             this.onDataReceivedListener.onDataFetched(null);
             return;
         }
@@ -91,12 +91,12 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
                     JSONArray countryListKeyJsonArray = rootJsonObj.getJSONArray("countryList");
 
                     // Convert this again to JSON string so that we can use Gson to
-                    // easily serialize this to the actual entity object
+                    // easily convert (deserialize) this to the actual entity object
                     String countryListJsonString = countryListKeyJsonArray.toString();
 
                     //AppUtil.logDebugMessage(TAG, countryListJsonString);
 
-                    // Serialize JSON string to the equivalent entity object
+                    // convert (Deserialize) JSON string to the equivalent entity object
                     CountryEntity[] countryEntityList =
                             gson.fromJson(countryListJsonString, CountryEntity[].class);
 

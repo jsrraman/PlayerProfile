@@ -39,13 +39,16 @@ public class PlayerProfileApiDataProviderService extends IntentService {
         Bundle b = new Bundle();
 
         try {
-            HttpURLConnection httpCon = (HttpURLConnection) (new URL(url)).openConnection();
-            httpCon.setRequestMethod("GET");
-            httpCon.connect();
-            InputStream is = httpCon.getInputStream();
+//            HttpURLConnection httpConn = (HttpURLConnection) (new URL(url)).openConnection();
+//            httpConn.setRequestMethod("GET");
+//            httpConn.connect();
+//            InputStream is = httpConn.getInputStream();
+
+            HttpConnection httpConn = new HttpConnection();
+            InputStream inputStream = httpConn.getData(url);
 
             // Convert the input stream into JSON string
-            String json = inputStreamToJsonString(is).toString();
+            String json = inputStreamToJsonString(inputStream).toString();
 
             //AppUtil.logDebugMessage(TAG, json);
 

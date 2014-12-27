@@ -1,5 +1,6 @@
-//package com.rajaraman.playerprofile.network;
+//package com.rajaraman.playerprofile.network.data.provider;
 //
+//import com.rajaraman.playerprofile.network.data.provider.DataProvider;
 //import com.rajaraman.playerprofile.network.data.provider.OnDataReceivedListener;
 //import com.rajaraman.playerprofile.network.data.provider.PlayerProfileApiDataProvider;
 //import com.rajaraman.playerprofile.ui.MainActivity;
@@ -18,7 +19,8 @@
 //
 //@Config(emulateSdk = 18, manifest = "./src/main/AndroidManifest.xml")
 //@RunWith(RobolectricTestRunner.class)
-//public class PlayerProfileApiDataProviderTest implements OnDataReceivedListener {
+//public class PlayerProfileApiDataProviderTest implements
+//                                                DataProvider.OnDataReceivedListener {
 //
 //    MainActivity activity;
 //
@@ -34,11 +36,11 @@
 //    public void testGetCountriesApiReturnsAllCountries() throws Exception {
 //
 //        PlayerProfileApiDataProvider playerProfileApiDataProvider =
-//                                         new PlayerProfileApiDataProvider(activity, this);
+//                                         new PlayerProfileApiDataProvider();
 //
 //        assertNotNull(playerProfileApiDataProvider);
 //
-//        playerProfileApiDataProvider.getCountryList();
+//        playerProfileApiDataProvider.getCountryList(activity, this);
 //    }
 //
 //    @Override
