@@ -18,7 +18,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -26,7 +25,7 @@ import com.rajaraman.playerprofile.R;
 import com.rajaraman.playerprofile.network.data.entity.CountryEntity;
 import com.rajaraman.playerprofile.network.data.provider.DataProvider;
 import com.rajaraman.playerprofile.network.data.provider.PlayerProfileApiDataProvider;
-import com.rajaraman.playerprofile.utils.ApiResponseEntity;
+import com.rajaraman.playerprofile.ui.adapters.CountryListAdapter;
 import com.rajaraman.playerprofile.utils.AppUtil;
 
 import java.util.ArrayList;
@@ -119,16 +118,6 @@ public class NavigationDrawerFragment extends Fragment implements
 
         AppUtil.showProgressDialog(getActivity());
 
-//        mDrawerListView.setAdapter(new ArrayAdapter<String>(
-//                getActionBar().getThemedContext(),
-//                android.R.layout.simple_list_item_activated_1,
-//                android.R.id.text1,
-//                new String[]{
-//                        getString(R.string.title_section1),
-//                        getString(R.string.title_section2),
-//                        getString(R.string.title_section3),
-//                }));
-//        mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerListView;
     }
 
@@ -307,21 +296,12 @@ public class NavigationDrawerFragment extends Fragment implements
             return;
         }
 
-        CountryEntity [] countryEntityList = (CountryEntity [])obj;
+        // Get the data for the country list and show the list
+        ArrayList<CountryEntity> countryEntityList = (ArrayList<CountryEntity>)obj;
 
-        ArrayList<String> countryNames = new ArrayList<String>();
-
-        for (int i = 0; i < countryEntityList.length; i++) {
-            CountryEntity countryEntity = countryEntityList[i];
-            countryNames.add(countryEntity.name);
-        }
-
-        mDrawerListView.setAdapter(new ArrayAdapter<String>(
-                getActionBar().getThemedContext(),
-                android.R.layout.simple_list_item_activated_1,
-                android.R.id.text1,
-                countryNames));
-
+        CountryListAdapter countryListAdapter = new CountryListAdapter(getActivity(),
+                                                                                countryEntityList);
+        mDrawerListView.setAdapter(countryListAdapter);
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
     }
 

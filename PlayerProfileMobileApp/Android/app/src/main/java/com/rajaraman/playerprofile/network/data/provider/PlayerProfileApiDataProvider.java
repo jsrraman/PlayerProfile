@@ -6,11 +6,14 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.rajaraman.playerprofile.network.data.entity.CountryEntity;
 import com.rajaraman.playerprofile.utils.AppUtil;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 /**
  * Created by Rajaraman on 25/12/14.
@@ -84,7 +87,7 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
         switch (resultCode) {
             case GET_COUNTRY_LIST_CODE: {
 
-                CountryEntity[] countryEntityList = null;
+                ArrayList<CountryEntity> countryEntityList = null;
 
                 try {
                     // Get the root JSON object
@@ -100,7 +103,8 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
                     //AppUtil.logDebugMessage(TAG, countryListJsonString);
 
                     // convert (Deserialize) JSON string to the equivalent entity object
-                    countryEntityList = gson.fromJson(countryListJsonString, CountryEntity[].class);
+                    countryEntityList = gson.fromJson(countryListJsonString,
+                                                            new TypeToken<ArrayList<CountryEntity>>(){}.getType());
                 }catch (Exception e) {
                     e.printStackTrace();
                 }finally {
