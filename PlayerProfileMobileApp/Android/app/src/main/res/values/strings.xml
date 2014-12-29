@@ -11,5 +11,5 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="ok">Ok</string>
-    <string name="country_list_fetch_failed">Country list could not be fetched.The remote server might be down !!!</string>
+    <string name="webservice_failed_response">The call to the remote server has failed. It might be down!!!</string>
 </resources>

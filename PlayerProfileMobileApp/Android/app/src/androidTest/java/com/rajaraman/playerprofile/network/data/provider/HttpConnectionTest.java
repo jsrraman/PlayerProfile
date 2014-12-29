@@ -38,11 +38,23 @@ public class HttpConnectionTest {
     }
 
     @Test
-    public void testWebServicesAreWorkingFine() throws Exception {
+    public void testWhetherGetCountryListWebServiceIsWorking() throws Exception {
 
-        // Just check whether PlayerProfile WebServices instance is up and running.
         String url = PlayerProfileApiDataProvider.profilePlayerWebServicesBaseUrl;
-        //url += PlayerProfileApiDataProvider.countryListUrl;
+        url += PlayerProfileApiDataProvider.countryListUrl;
+
+        HttpConnection httpConn = new HttpConnection();
+        InputStream inputStream = httpConn.getData(url);
+
+        assertNotNull(inputStream);
+    }
+
+    @Test
+    public void testWhetherPlayerListForEnglandWebServiceIsWorking() throws Exception {
+
+        String url = PlayerProfileApiDataProvider.profilePlayerWebServicesBaseUrl;
+        url += PlayerProfileApiDataProvider.playerListUrl;
+        url += "1"; // England
 
         HttpConnection httpConn = new HttpConnection();
         InputStream inputStream = httpConn.getData(url);

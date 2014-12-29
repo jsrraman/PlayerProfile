@@ -14,6 +14,7 @@ import com.rajaraman.playerprofile.R;
 public class AppUtil {
 
     private static ProgressDialog pd = null;
+    private static boolean inProgress = false;
 
     public final static void logDebugMessage(String tag, String message) {
 		if (BuildConfig.DEBUG) {
@@ -35,17 +36,24 @@ public class AppUtil {
 
     public final static void showProgressDialog(Context context) {
 
-        pd = new ProgressDialog(context);
+        if (inProgress == false) {
+            pd = new ProgressDialog(context);
 
-        pd.setTitle("Processing...");
-        pd.setMessage("Please wait.");
-        pd.setCancelable(false);
-        pd.setIndeterminate(true);
-        pd.show();
+            pd.setTitle("Processing...");
+            pd.setMessage("Please wait.");
+            pd.setCancelable(false);
+            pd.setIndeterminate(true);
+            pd.show();
+
+            inProgress = true;
+        }
     }
 
     public final static void dismissProgressDialog() {
-        pd.dismiss();
+        if (inProgress) {
+            pd.dismiss();
+            inProgress = false;
+        }
     }
 
     public final static void showDialog(Context context, String message) {

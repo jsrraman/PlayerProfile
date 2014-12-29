@@ -7,18 +7,18 @@ import android.os.Parcelable;
 
 public class ApiReqResData implements Parcelable {
 
-    private String requestWebServiceName;
+    private int requestWebServiceApiId;
     private String requestUrl;
     private String responseData;
 
     public ApiReqResData() {}
 
-    public String getRequestWebServiceName() {
-        return requestWebServiceName;
+    public int getRequestWebServiceApiId() {
+        return requestWebServiceApiId;
     }
 
-    public void setRequestWebServiceName(String requestWebServiceName) {
-        this.requestWebServiceName = requestWebServiceName;
+    public void setRequestWebServiceApiId(int requestWebServiceApiId) {
+        this.requestWebServiceApiId = requestWebServiceApiId;
     }
 
     public String getRequestUrl() {
@@ -41,7 +41,7 @@ public class ApiReqResData implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         // We write the API data information in the parcel
         // Order is important, first request webservice name, requested url and then response data
-        dest.writeString(requestWebServiceName);
+        dest.writeInt(requestWebServiceApiId);
         dest.writeString(requestUrl);
         dest.writeString(responseData);
     }
@@ -52,7 +52,7 @@ public class ApiReqResData implements Parcelable {
         public ApiReqResData createFromParcel(Parcel source) {
             ApiReqResData apiReqResData = new ApiReqResData();
 
-            apiReqResData.setRequestWebServiceName(source.readString());
+            apiReqResData.setRequestWebServiceApiId(source.readInt());
             apiReqResData.setRequestUrl(source.readString());
             apiReqResData.setResponseData(source.readString());
 

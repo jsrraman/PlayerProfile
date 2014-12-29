@@ -8,20 +8,16 @@ import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.util.Log;
 
-import com.rajaraman.playerprofile.utils.AppUtil;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
-public class PlayerProfileApiDataProviderService extends IntentService {
-    private static final String TAG = PlayerProfileApiDataProviderService.class.getCanonicalName();
+public class ApiDataProviderService extends IntentService {
+    private static final String TAG = ApiDataProviderService.class.getCanonicalName();
 
-    public PlayerProfileApiDataProviderService() {
-        super("PlayerProfileApiDataProviderService");
+    public ApiDataProviderService() {
+        super("ApiDataProviderService");
     }
 
 
@@ -37,7 +33,7 @@ public class PlayerProfileApiDataProviderService extends IntentService {
         String url = apiReqResData.getRequestUrl();
 
         HttpConnection httpConn = new HttpConnection();
-        Bundle b = new Bundle();
+        Bundle bundle = new Bundle();
 
         try {
             InputStream inputStream = httpConn.getData(url);
@@ -48,13 +44,13 @@ public class PlayerProfileApiDataProviderService extends IntentService {
             //AppUtil.logDebugMessage(TAG, json);
 
             apiReqResData.setResponseData(json);
-            b.putParcelable("RESPONSE_DATA", apiReqResData);
+            bundle.putParcelable("RESPONSE_DATA", apiReqResData);
         } catch (Exception e) {
             e.printStackTrace();
-            b.putParcelable("RESPONSE_DATA", null);
+            bundle.putParcelable("RESPONSE_DATA", null);
         } finally {
             httpConn.disconnect();
-            resultReceiver.send(PlayerProfileApiDataProvider.GET_COUNTRY_LIST_CODE, b);
+            resultReceiver.send(apiReqResData.getRequestWebServiceApiId(), bundle);
         }
     }
 

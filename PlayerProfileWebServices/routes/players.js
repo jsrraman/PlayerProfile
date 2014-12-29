@@ -15,7 +15,7 @@ router.get('/countries', function(httpReq, httpRes) {
       fnResponse.description = error;
     } else {
       fnResponse.status = "success";
-      fnResponse.countryList = result;
+      fnResponse.result = result;
     }
 
     // Send the response to the API caller

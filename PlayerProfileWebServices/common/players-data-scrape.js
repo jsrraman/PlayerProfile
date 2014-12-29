@@ -302,6 +302,13 @@ PlayersDataScrape.extractPlayerProfileData = function($, docPlayerProfile,
   // Player Bowling Style
   docPlayerProfile.bowlingStyle = tempData.eq(6).find("span").text().trim();
 
+  // Player Thumbnail
+  var thumbnailUrl = $(".pnl490M .ciPlayernametxt").next().
+                                                children(":nth-child(2)").find("img").attr("src");
+
+  docPlayerProfile.thumbnailUrl = PlayersDataScrape.baseScrapeUrl + thumbnailUrl;
+
+
   // Batting and fielding averages
 
   // For reference*******Don't uncomment this**************

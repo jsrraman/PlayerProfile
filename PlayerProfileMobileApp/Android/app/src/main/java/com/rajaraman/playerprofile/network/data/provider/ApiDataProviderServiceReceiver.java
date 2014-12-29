@@ -5,11 +5,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
 
-public class PlayerProfileApiDataProviderServiceReceiver extends ResultReceiver {
+public class ApiDataProviderServiceReceiver extends ResultReceiver {
 
     private Listener listener;
 
-    public PlayerProfileApiDataProviderServiceReceiver(Handler handler) {
+    public ApiDataProviderServiceReceiver(Handler handler) {
         super(handler);
     }
 

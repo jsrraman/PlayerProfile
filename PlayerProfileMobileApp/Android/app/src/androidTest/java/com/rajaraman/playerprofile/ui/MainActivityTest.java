@@ -9,6 +9,7 @@ import android.widget.ListView;
 
 import com.rajaraman.playerprofile.R;
 import com.rajaraman.playerprofile.ui.MainActivity;
+import com.rajaraman.playerprofile.ui.adapters.CountryListAdapter;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -38,8 +39,9 @@ public class MainActivityTest {
 
         // Simulate activity's onCreate, onStart, onResume life cycle callbacks. This may be
         // needed if the fragment is not created in Activity.onCreate(). Just keep this for
-        // reference
-        activity = Robolectric.buildActivity(MainActivity.class).create().start().resume().get();
+        // reference. visible() call is for making sure Activity is visible
+        activity = Robolectric.buildActivity(MainActivity.class).create().
+                                                            visible().start().resume().get();
     }
 
     @Test
@@ -66,8 +68,8 @@ public class MainActivityTest {
                                                   findViewById(R.id.navigation_drawer_listview);
         assertNotNull(drawerListView);
 
-//        ArrayAdapter drawerList = (ArrayAdapter) drawerListView.getAdapter();
-
+//        CountryListAdapter drawerList = (CountryListAdapter) drawerListView.getAdapter();
+//
 //        assertNotNull(drawerList);
 //
 //        // Check whether the drawer list has at least one item

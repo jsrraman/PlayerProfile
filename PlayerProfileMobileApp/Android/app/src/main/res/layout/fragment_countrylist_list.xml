@@ -3,18 +3,8 @@
     android:layout_height="?android:attr/listPreferredItemHeight"
     android:padding="6dip" >
 
-    <!--<ImageView-->
-        <!--android:id="@+id/list_country_icon_country"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="fill_parent"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:layout_alignParentTop="true"-->
-        <!--android:layout_marginRight="6dip"-->
-        <!--android:contentDescription="TODO"-->
-        <!--android:src="@drawable/ic_launcher" />-->
-
     <com.android.volley.toolbox.NetworkImageView
-        android:id="@+id/list_country_icon_country"
+        android:id="@+id/fragment_countrylist_list_icon_country"
         android:layout_width="75dp"
         android:layout_height="75dp"
         android:layout_alignParentTop="true"
@@ -22,7 +12,7 @@
         android:layout_alignParentStart="true" />
 
     <TextView
-        android:id="@+id/list_country_textview_country_name"
+        android:id="@+id/fragment_countrylist_list_textview_country_name"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignWithParentIfMissing="true"
@@ -30,6 +20,6 @@
         android:text="Country"
         android:textSize="16sp"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/list_country_icon_country"
-        android:layout_toEndOf="@+id/list_country_icon_country" />
+        android:layout_toRightOf="@+id/fragment_countrylist_list_icon_country"
+        android:layout_toEndOf="@+id/fragment_countrylist_list_icon_country" />
 </RelativeLayout>

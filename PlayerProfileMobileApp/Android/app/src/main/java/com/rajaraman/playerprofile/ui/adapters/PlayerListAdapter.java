@@ -12,19 +12,20 @@ import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.rajaraman.playerprofile.R;
 import com.rajaraman.playerprofile.network.data.entity.CountryEntity;
+import com.rajaraman.playerprofile.network.data.entity.PlayerEntity;
 import com.rajaraman.playerprofile.network.data.provider.VolleySingleton;
 
 import java.util.ArrayList;
 
-public class CountryListAdapter extends ArrayAdapter<CountryEntity> {
+public class PlayerListAdapter extends ArrayAdapter<PlayerEntity> {
     private Context context;
-    private ArrayList<CountryEntity> countryEntityList = null;
+    private ArrayList<PlayerEntity> playerEntityList = null;
     private ImageLoader imageLoader;
 
-    public CountryListAdapter(Context context, ArrayList<CountryEntity> countryEntityList) {
-        super(context, R.layout.fragment_countrylist_list, countryEntityList);
+    public PlayerListAdapter(Context context, ArrayList<PlayerEntity> playerEntityList) {
+        super(context, R.layout.fragment_playerlist_list, playerEntityList);
         this.context = context;
-        this.countryEntityList = countryEntityList;
+        this.playerEntityList = playerEntityList;
         this.imageLoader = VolleySingleton.getInstance().getImageLoader();
     }
 
@@ -40,12 +41,12 @@ public class CountryListAdapter extends ArrayAdapter<CountryEntity> {
         NetworkImageView imageView = (NetworkImageView)
                               rowView.findViewById(R.id.fragment_countrylist_list_icon_country);
 
-        imageView.setImageUrl(countryEntityList.get(position).thumbnailUrl, this.imageLoader);
+        imageView.setImageUrl(playerEntityList.get(position).thumbnailUrl, this.imageLoader);
 
         TextView textView = (TextView) rowView.
                               findViewById(R.id.fragment_countrylist_list_textview_country_name);
 
-        textView.setText(countryEntityList.get(position).name);
+        textView.setText(playerEntityList.get(position).name);
 
         return rowView;
     }

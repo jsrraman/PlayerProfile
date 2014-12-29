@@ -291,7 +291,7 @@ public class NavigationDrawerFragment extends Fragment implements
 
         if (obj == null) {
             AppUtil.showDialog(getActivity(),
-                            getActivity().getString(R.string.country_list_fetch_failed));
+                            getActivity().getString(R.string.webservice_failed_response));
 
             return;
         }
