@@ -13,6 +13,6 @@ public abstract class DataProvider {
 
     // UI should implement this to get the data received from the web service
     public static interface OnDataReceivedListener {
-        public void onDataFetched(String status, int playerProfileApiId, Object responseData);
+        public void onDataFetched(boolean status, int playerProfileApiId, Object responseData);
     }
 }

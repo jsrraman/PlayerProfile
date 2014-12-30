@@ -136,13 +136,13 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
         if (responseDataObj == null) {
             AppUtil.logDebugMessage(TAG, "resultData is null. This is unexpected !!!");
             this.onDataReceivedListener.
-                        onDataFetched("failure",
+                        onDataFetched(false,
                                 this.apiReqResData.getRequestWebServiceApiId(), null);
             return;
         }
 
         Object parsedResponseData = null;
-        String status = "success";
+        boolean status = true;
 
         // Get the parcelable data from the resultData
         ApiReqResData apiReqResData = (ApiReqResData) responseDataObj;
@@ -155,7 +155,7 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
                 parsedResponseData = getCountryListFromJson(jsonData);
 
                 if (null == parsedResponseData) {
-                    status = "failure";
+                    status = false;
                 }
 
                 break;
@@ -165,7 +165,7 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
                 parsedResponseData = getPlayerListForCountryFromJson(jsonData);
 
                 if (null == parsedResponseData) {
-                    status = "failure";
+                    status = false;
                 }
 
                 break;
@@ -173,7 +173,7 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
 
             case SCRAPE_PLAYER_LIST_FOR_COUNTRY_ID_API: {
                 parsedResponseData = getScrapeResultFromJson(jsonData);
-                status = (String)parsedResponseData;
+                status = (boolean)parsedResponseData;
 
                 break;
             }
@@ -247,16 +247,18 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
         }
     }
 
-    private String getScrapeResultFromJson(String jsonData) {
+    private boolean getScrapeResultFromJson(String jsonData) {
 
-        String status = "failure";
+        boolean status = true;
 
         try {
             // Get the root JSON object
             JSONObject rootJsonObj = new JSONObject(jsonData);
 
             // Get the status value
-            status = (String) rootJsonObj.get("status");
+            String statusVal = (String) rootJsonObj.get("status");
+
+            status = statusVal.equalsIgnoreCase("success") ? true : false;
         }catch (Exception e) {
             e.printStackTrace();
         }finally {

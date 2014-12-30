@@ -179,12 +179,12 @@ public class PlayerListFragment extends Fragment implements
     }
 
     // Callback for the backend to let this fragment know the player list from the web service
-    public void onDataFetched(String status, int playerProfileApiId, Object responseData) {
+    public void onDataFetched(boolean status, int playerProfileApiId, Object responseData) {
         AppUtil.logDebugMessage(TAG, "onDataFetched callback");
 
         AppUtil.dismissProgressDialog();
 
-        if (status.equals("failure")) {
+        if (false == status) {
             // The app has failed to get a response from webservice. There is no point in
             // proceeding further as this is the starting point in the app, so show the error
             // and quit the app.
