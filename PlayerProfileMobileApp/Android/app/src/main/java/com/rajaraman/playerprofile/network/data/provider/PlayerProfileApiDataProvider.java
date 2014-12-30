@@ -14,7 +14,10 @@ import com.rajaraman.playerprofile.utils.AppUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import java.net.URI;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 /**
@@ -26,14 +29,28 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
 
     private static final String TAG = PlayerProfileApiDataProvider.class.getCanonicalName();
 
+    private ApiReqResData apiReqResData = new ApiReqResData();
+
     public static final int GET_COUNTRY_LIST_API = 0;
     public static final int GET_PLAYER_LIST_FOR_COUNTRY_ID_API = 1;
+    public static final int SCRAPE_PLAYER_LIST_FOR_COUNTRY_ID_API = 2;
 
     public static final String profilePlayerWebServicesBaseUrl = "http://10.0.0.100:3000";
     public static final String countryListUrl = "/players/countries";
     public static final String playerListUrl = "/players/country?countryId=";
+    public static final String scrapePlayerListUrlPart1 = "/scrape/players/country?countryId=";
+    public static final String scrapePlayerListUrlPart2 = "&name=";
 
-    public PlayerProfileApiDataProvider() {}
+    private static PlayerProfileApiDataProvider playerProfileApiDataProvider = null;
+
+    public static PlayerProfileApiDataProvider getInstance() {
+
+        if (null == playerProfileApiDataProvider) {
+            playerProfileApiDataProvider = new PlayerProfileApiDataProvider();
+        }
+
+        return playerProfileApiDataProvider;
+    }
 
     // Get the country list
     public void getCountryList(Context context, OnDataReceivedListener onDataReceivedListener) {
@@ -41,16 +58,15 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
         this.context = context;
         this.onDataReceivedListener = onDataReceivedListener;
 
-        String url = this.profilePlayerWebServicesBaseUrl + this.countryListUrl;
+        String fullUrl = this.profilePlayerWebServicesBaseUrl + this.countryListUrl;
 
-        ApiReqResData apiReqResData = new ApiReqResData();
-        apiReqResData.setRequestWebServiceApiId(GET_COUNTRY_LIST_API);
-        apiReqResData.setRequestUrl(url);
+        this.apiReqResData.setRequestWebServiceApiId(GET_COUNTRY_LIST_API);
+        this.apiReqResData.setRequestUrl(fullUrl);
 
-        this.context.startService(createApiDataProviderServiceIntent(apiReqResData));
+        this.context.startService(createApiDataProviderServiceIntent(this.apiReqResData));
     }
 
-    // Get the player list for a given country id
+    // Get the player list for the given country id
     public void getPlayerListForCountry(Context context,
                                OnDataReceivedListener onDataReceivedListener,
                                int countryId) {
@@ -58,15 +74,44 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
         this.context = context;
         this.onDataReceivedListener = onDataReceivedListener;
 
-        String url = this.profilePlayerWebServicesBaseUrl + this.playerListUrl;
+        String fullUrl = this.profilePlayerWebServicesBaseUrl + this.playerListUrl;
 
-        url += Integer.toString(countryId);
+        fullUrl += Integer.toString(countryId);
 
-        ApiReqResData apiReqResData = new ApiReqResData();
-        apiReqResData.setRequestWebServiceApiId(GET_PLAYER_LIST_FOR_COUNTRY_ID_API);
-        apiReqResData.setRequestUrl(url);
+        this.apiReqResData.setRequestWebServiceApiId(GET_PLAYER_LIST_FOR_COUNTRY_ID_API);
+        this.apiReqResData.setRequestUrl(fullUrl);
 
-        this.context.startService(createApiDataProviderServiceIntent(apiReqResData));
+        this.context.startService(createApiDataProviderServiceIntent(this.apiReqResData));
+    }
+
+    // Scrape the player list data for the given country id and name
+    public void scrapePlayerListForCountry(Context context,
+                                           OnDataReceivedListener onDataReceivedListener,
+                                           int countryId, String countryName) {
+
+        this.context = context;
+        this.onDataReceivedListener = onDataReceivedListener;
+
+        String remainingUrl = this.scrapePlayerListUrlPart1;
+        remainingUrl += countryId;
+        remainingUrl += this.scrapePlayerListUrlPart2;
+        remainingUrl += countryName.replace(" ", "");
+
+        // Handle space in the country name
+//      This is not valid for this project context. This is here for reference.
+//        try {
+//            // Android URLEncoder.encode replaces " " with + but we need %20, so this workaround
+//            remainingUrl += URLEncoder.encode(countryName, "UTF8").replace("+", "%20");
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        }
+
+        String fullUrl = this.profilePlayerWebServicesBaseUrl + remainingUrl;
+
+        this.apiReqResData.setRequestWebServiceApiId(SCRAPE_PLAYER_LIST_FOR_COUNTRY_ID_API);
+        this.apiReqResData.setRequestUrl(fullUrl);
+
+        this.context.startService(createApiDataProviderServiceIntent(this.apiReqResData));
     }
 
     private Intent createApiDataProviderServiceIntent(ApiReqResData apiReqResData) {
@@ -90,11 +135,14 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
 
         if (responseDataObj == null) {
             AppUtil.logDebugMessage(TAG, "resultData is null. This is unexpected !!!");
-            this.onDataReceivedListener.onDataFetched(null);
+            this.onDataReceivedListener.
+                        onDataFetched("failure",
+                                this.apiReqResData.getRequestWebServiceApiId(), null);
             return;
         }
 
         Object parsedResponseData = null;
+        String status = "success";
 
         // Get the parcelable data from the resultData
         ApiReqResData apiReqResData = (ApiReqResData) responseDataObj;
@@ -105,11 +153,29 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
         switch (resultCode) {
             case GET_COUNTRY_LIST_API: {
                 parsedResponseData = getCountryListFromJson(jsonData);
+
+                if (null == parsedResponseData) {
+                    status = "failure";
+                }
+
                 break;
             }
 
             case GET_PLAYER_LIST_FOR_COUNTRY_ID_API: {
                 parsedResponseData = getPlayerListForCountryFromJson(jsonData);
+
+                if (null == parsedResponseData) {
+                    status = "failure";
+                }
+
+                break;
+            }
+
+            case SCRAPE_PLAYER_LIST_FOR_COUNTRY_ID_API: {
+                parsedResponseData = getScrapeResultFromJson(jsonData);
+                status = (String)parsedResponseData;
+
+                break;
             }
 
             default: {
@@ -117,7 +183,10 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
             }
         }
 
-        this.onDataReceivedListener.onDataFetched(parsedResponseData);
+        this.onDataReceivedListener.
+                    onDataFetched(status,
+                            this.apiReqResData.getRequestWebServiceApiId(),
+                            parsedResponseData);
    }
 
    private ArrayList<CountryEntity> getCountryListFromJson(String jsonData) {
@@ -175,6 +244,23 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
             e.printStackTrace();
         }finally {
             return playerEntityList;
+        }
+    }
+
+    private String getScrapeResultFromJson(String jsonData) {
+
+        String status = "failure";
+
+        try {
+            // Get the root JSON object
+            JSONObject rootJsonObj = new JSONObject(jsonData);
+
+            // Get the status value
+            status = (String) rootJsonObj.get("status");
+        }catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            return status;
         }
     }
 

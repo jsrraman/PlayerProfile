@@ -85,7 +85,7 @@ PlayersDataScrape.scrapeAndSaveCountryList = function(callback) {
 // Scrape and save player list for a particular country
 PlayersDataScrape.scrapeAndSavePlayerListForCountry = function(countryId, countryName, callback) {
 
-  var fnResponse = {};
+  var fnResponse;
 
   if ( (countryId == null ) || (countryId == undefined ) ||
       (countryName == null ) || (countryName == undefined ) ) {
@@ -150,6 +150,15 @@ PlayersDataScrape.scrapeAndSavePlayerListForCountry = function(countryId, countr
         });
       });
 
+      // If the scrape is successful, docPlayerList should contain the list of players.
+      // If it's empty then send the error back to caller.
+      if (docPlayerList.length == 0) {
+        fnResponse = "Could not scrape player list for " + countryName;
+        debug(fnResponse);
+        callback(fnResponse, null);
+        return;
+      }
+
       // Save country info to the database
       PlayersDataScrape.db.savePlayerList(docPlayerList, function (error, result) {
         // Send the response to the API caller
@@ -166,7 +175,7 @@ PlayersDataScrape.scrapeAndSavePlayerListForCountry = function(countryId, countr
 // Scrape and save player list for a particular player id
 PlayersDataScrape.scrapeAndSavePlayerProfileForPlayer = function(playerId, callback) {
 
-  var fnResponse = {};
+  var fnResponse;
   var countryId = "";
   var playerUrl = "";
 
@@ -178,7 +187,7 @@ PlayersDataScrape.scrapeAndSavePlayerProfileForPlayer = function(playerId, callb
   PlayersDataScrape.db.getPlayerProfile(null, parseInt(playerId), function (error, result) {
     // Send the response to the API caller
     if (error) {
-      fnResponse.description = "There was error in retrieving the player's profile";
+      fnResponse = "There was error in retrieving the player's profile";
       callback(fnResponse, null);
     }
     else {

@@ -11,7 +11,7 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="ok">Ok</string>
-    <string name="webservice_failed_response">The call to the remote server has failed</string>
+    <string name="response_failed">Could not retrieve the requested data !!!</string>
     <string name="network_not_available">No network connection</string>
-    <string name="quit_application">The call to the remote server has failed. The application cannot proceed further</string>
+    <string name="quit_application">The call to the remote server has failed. The application cannot proceed further !!!</string>
 </resources>

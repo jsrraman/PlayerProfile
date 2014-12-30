@@ -85,9 +85,6 @@ public class NavigationDrawerFragment extends Fragment implements
             mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
             mFromSavedInstanceState = true;
         }
-
-        // Select either the default item (0) or the last selected item.
-        selectItem(mCurrentSelectedPosition);
     }
 
     @Override
@@ -289,15 +286,14 @@ public class NavigationDrawerFragment extends Fragment implements
     }
 
     @Override
-    public void onDataFetched(Object obj) {
+    public void onDataFetched(String status, int playerProfileApiId, Object responseData) {
         // We have received the notification from PlayerProfileDataProvider so
         // dismiss the progress dialog
         AppUtil.logDebugMessage(TAG, "onDataFetched callback");
 
         AppUtil.dismissProgressDialog();
 
-        if (obj == null) {
-
+        if (status.equals("failure")) {
             // The app has failed to get a response from webservice. There is no point in
             // proceeding further as this is the starting point in the app, so show the error
             // and quit the app.
@@ -308,13 +304,21 @@ public class NavigationDrawerFragment extends Fragment implements
             return;
         }
 
-        // Get the data for the country list and show the list
-        ArrayList<CountryEntity> countryEntityList = (ArrayList<CountryEntity>)obj;
+        switch (playerProfileApiId) {
+            default:
+            case PlayerProfileApiDataProvider.GET_COUNTRY_LIST_API : {
+                // Get the data for the country list and show the list
+                ArrayList<CountryEntity> countryEntityList = (ArrayList<CountryEntity>)responseData;
 
-        CountryListAdapter countryListAdapter = new CountryListAdapter(getActivity(),
-                                                                                countryEntityList);
-        mDrawerListView.setAdapter(countryListAdapter);
-        mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
+                CountryListAdapter countryListAdapter = new CountryListAdapter(getActivity(),
+                        countryEntityList);
+                mDrawerListView.setAdapter(countryListAdapter);
+                mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
+
+                // Select either the default item (0) or the last selected item.
+                selectItem(mCurrentSelectedPosition);
+            }
+        }
     }
 
     /**

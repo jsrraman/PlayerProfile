@@ -5,6 +5,7 @@
 
     <com.android.volley.toolbox.NetworkImageView
         android:id="@+id/fragment_countrylist_list_icon_country"
+        android:src="@drawable/ic_launcher"
         android:layout_width="75dp"
         android:layout_height="75dp"
         android:layout_alignParentTop="true"

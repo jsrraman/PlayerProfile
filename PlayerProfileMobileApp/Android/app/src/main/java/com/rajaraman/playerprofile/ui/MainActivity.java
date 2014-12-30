@@ -12,7 +12,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
+import android.widget.ListView;
+
 import com.rajaraman.playerprofile.R;
+import com.rajaraman.playerprofile.network.data.entity.CountryEntity;
+import com.rajaraman.playerprofile.ui.adapters.CountryListAdapter;
 import com.rajaraman.playerprofile.utils.AppUtil;
 
 
@@ -57,11 +61,21 @@ public class MainActivity extends ActionBarActivity implements
     @Override
     public void onNavigationDrawerItemSelected(int position) {
 
-        // Update the player content
+        // Get the country id from the selected item in the navigation drawer
         FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment navDrawerfragment = fragmentManager.findFragmentById(R.id.navigation_drawer);
+
+        ListView navdrawerListView = (ListView) navDrawerfragment.getView().
+                                                findViewById(R.id.listview_navigation_drawer);
+
+        CountryListAdapter countryListAdapter = (CountryListAdapter)navdrawerListView.getAdapter();
+
+        CountryEntity countryEntity = (CountryEntity) countryListAdapter.getItem(position);
+
+        // Update the player content
         fragmentManager.beginTransaction()
-                .replace(R.id.player_content, PlayerListFragment.newInstance(1))
-                .commit();
+            .replace(R.id.player_content, PlayerListFragment.newInstance(countryEntity))
+            .commit();
     }
 
     public void onSectionAttached(int number) {

@@ -4,7 +4,7 @@ var express = require('express');
 var router = express.Router();
 var PlayersDataScrape = require("../common/players-data-scrape");
 
-/* GET the list of cricket playing countries */
+// GET the list of cricket playing countries
 router.get('/countries', function(httpReq, httpRes) {
 
     var fnResponse = {};
@@ -23,6 +23,7 @@ router.get('/countries', function(httpReq, httpRes) {
     });
 });
 
+// GET the list of players for a given country
 router.get('/players/country', function(httpReq, httpRes) {
 
     var countryId = httpReq.param("countryId");
@@ -52,6 +53,7 @@ router.get('/players/country', function(httpReq, httpRes) {
     });
 });
 
+// GET a player profile given player id
 router.get('/player', function(httpReq, httpRes) {
 
     var playerId = httpReq.param("playerId");

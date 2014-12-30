@@ -40,7 +40,8 @@ public class PlayerListFragment extends Fragment implements
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "CountryId";
+    private static final String ARG_PARAM1 = "countryId";
+    private static final String ARG_PARAM2 = "countryName";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -58,17 +59,16 @@ public class PlayerListFragment extends Fragment implements
      * Views.
      */
     private ListAdapter mAdapter;
+    private PlayerProfileApiDataProvider playerProfileApiDataProvider;
 
     // TODO: Rename and change types of parameters
-    public static PlayerListFragment newInstance(int countryId) {
+    public static PlayerListFragment newInstance(CountryEntity countryEntity) {
         PlayerListFragment fragment = new PlayerListFragment();
 
         Bundle args = new Bundle();
 
-        //args.putString(ARG_PARAM1, param1);
-        //args.putString(ARG_PARAM2, param2);
-
-        args.putInt(ARG_PARAM1, countryId);
+        args.putInt(ARG_PARAM1, countryEntity.countryId);
+        args.putString(ARG_PARAM2, countryEntity.name);
 
         fragment.setArguments(args);
 
@@ -80,6 +80,7 @@ public class PlayerListFragment extends Fragment implements
      * fragment (e.g. upon screen orientation changes).
      */
     public PlayerListFragment() {
+        this.playerProfileApiDataProvider = new PlayerProfileApiDataProvider();
     }
 
     @Override
@@ -111,13 +112,11 @@ public class PlayerListFragment extends Fragment implements
 //        mListView.setOnItemClickListener(this);
 
         // Get the player list
-        PlayerProfileApiDataProvider playerProfileApiDataProvider =
-                                                        new PlayerProfileApiDataProvider();
 
         // Get the country id passed as a parameter during this fragment's creation
         int countryId = getArguments().getInt(ARG_PARAM1);
 
-        playerProfileApiDataProvider.getPlayerListForCountry(getActivity(), this, countryId);
+        this.playerProfileApiDataProvider.getPlayerListForCountry(getActivity(), this, countryId);
 
         AppUtil.showProgressDialog(getActivity());
 
@@ -180,26 +179,71 @@ public class PlayerListFragment extends Fragment implements
     }
 
     // Callback for the backend to let this fragment know the player list from the web service
-    public void onDataFetched(Object obj) {
+    public void onDataFetched(String status, int playerProfileApiId, Object responseData) {
         AppUtil.logDebugMessage(TAG, "onDataFetched callback");
 
         AppUtil.dismissProgressDialog();
 
-        if (obj == null) {
+        if (status.equals("failure")) {
             // The app has failed to get a response from webservice. There is no point in
             // proceeding further as this is the starting point in the app, so show the error
             // and quit the app.
-            String message = getActivity().getString(R.string.quit_application);
-            AppUtil.showErrorDialogAndQuitApp(getActivity(), message);
+            String message = getActivity().getString(R.string.response_failed);
+            AppUtil.showDialog(getActivity(), message);
 
             return;
         }
 
-        // Get the data for the country list and show the list
-        ArrayList<PlayerEntity> playerEntityList = (ArrayList<PlayerEntity>)obj;
+        switch (playerProfileApiId) {
+            case PlayerProfileApiDataProvider.GET_PLAYER_LIST_FOR_COUNTRY_ID_API: {
+                HandleGetPlayerListResponse(responseData);
+                break;
+            }
+
+            case PlayerProfileApiDataProvider.SCRAPE_PLAYER_LIST_FOR_COUNTRY_ID_API: {
+                HandleScrapePlayerListResponse(responseData);
+                break;
+            }
+
+            default: break;
+        }
+    }
+
+    private void HandleGetPlayerListResponse(Object responseData) {
+
+        // Try getting the data for the country list and show the list
+        ArrayList<PlayerEntity> playerEntityList = (ArrayList<PlayerEntity>)responseData;
+
+        // If there is no player list yet available for this country, first scrape the data
+        // and then try getting the data again.
+        if (null != playerEntityList) {
+            if ( 0 == playerEntityList.size() ) {
+                int countryId = getArguments().getInt(ARG_PARAM1);
+                String countryName = getArguments().getString(ARG_PARAM2);
+
+                this.playerProfileApiDataProvider.
+                        scrapePlayerListForCountry(getActivity(), this, countryId, countryName);
+
+                AppUtil.showProgressDialog(getActivity());
+
+                return;
+            }
+        }
 
         PlayerListAdapter playerListAdapter = new PlayerListAdapter(getActivity(),
-                                                                             playerEntityList);
+                                                                            playerEntityList);
+
         mListView.setAdapter(playerListAdapter);
+    }
+
+    // Player list scrapped successfully, so try getting the player list for the country again
+    private void HandleScrapePlayerListResponse(Object responseData) {
+
+        // Get the country id passed as a parameter during this fragment's creation
+        int countryId = getArguments().getInt(ARG_PARAM1);
+
+        this.playerProfileApiDataProvider.getPlayerListForCountry(getActivity(), this, countryId);
+
+        AppUtil.showProgressDialog(getActivity());
     }
 }
