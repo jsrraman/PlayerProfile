@@ -13,11 +13,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import com.rajaraman.playerprofile.R;
+import com.rajaraman.playerprofile.utils.AppUtil;
 
 
 public class MainActivity extends ActionBarActivity implements
                                 NavigationDrawerFragment.NavigationDrawerCallbacks,
                                 PlayerListFragment.OnFragmentInteractionListener {
+
+    private static final String TAG = MainActivity.class.getCanonicalName();
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -42,6 +45,13 @@ public class MainActivity extends ActionBarActivity implements
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        AppUtil.logDebugMessage(TAG, "onResume");
     }
 
     @Override

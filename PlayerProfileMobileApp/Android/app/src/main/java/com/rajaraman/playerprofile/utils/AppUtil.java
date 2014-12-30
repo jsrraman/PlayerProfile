@@ -1,9 +1,11 @@
 package com.rajaraman.playerprofile.utils;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.net.ConnectivityManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
@@ -12,6 +14,8 @@ import com.rajaraman.playerprofile.BuildConfig;
 import com.rajaraman.playerprofile.R;
 
 public class AppUtil {
+
+    private static final String TAG = AppUtil.class.getCanonicalName();
 
     private static ProgressDialog pd = null;
     private static boolean inProgress = false;
@@ -56,7 +60,7 @@ public class AppUtil {
         }
     }
 
-    public final static void showDialog(Context context, String message) {
+    public final static void showDialog(final Context context, String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage(message);
         builder.setCancelable(true);
@@ -69,5 +73,33 @@ public class AppUtil {
 
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    public final static void showErrorDialogAndQuitApp(final Context context, String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage(message);
+        builder.setCancelable(true);
+        builder.setPositiveButton(R.string.ok,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                        AppUtil.logDebugMessage(TAG, "Going to kill the application...");
+                        AppUtil.QuitApp(context);
+                    }
+                });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+
+    public final static boolean isNetworkAvailable(Context context) {
+        return ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).
+                                                                    getActiveNetworkInfo() != null;
+    }
+
+    public final static void QuitApp(Context context) {
+        ((Activity)context).finish();
+        System.exit(0);
     }
 }

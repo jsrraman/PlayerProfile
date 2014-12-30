@@ -36,8 +36,7 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
     public PlayerProfileApiDataProvider() {}
 
     // Get the country list
-    public void getCountryList(Context context,
-                               OnDataReceivedListener onDataReceivedListener) {
+    public void getCountryList(Context context, OnDataReceivedListener onDataReceivedListener) {
 
         this.context = context;
         this.onDataReceivedListener = onDataReceivedListener;

@@ -186,8 +186,11 @@ public class PlayerListFragment extends Fragment implements
         AppUtil.dismissProgressDialog();
 
         if (obj == null) {
-            AppUtil.showDialog(getActivity(),
-                    getActivity().getString(R.string.webservice_failed_response));
+            // The app has failed to get a response from webservice. There is no point in
+            // proceeding further as this is the starting point in the app, so show the error
+            // and quit the app.
+            String message = getActivity().getString(R.string.quit_application);
+            AppUtil.showErrorDialogAndQuitApp(getActivity(), message);
 
             return;
         }

@@ -65,7 +65,7 @@ public class MainActivityTest {
         // So when I created an unique id for this view (navigation_drawer_listview) and then
         // retrieve as below it could return ListView.
         ListView drawerListView = (ListView) drawerFragment.getView().
-                                                  findViewById(R.id.navigation_drawer_listview);
+                                                  findViewById(R.id.listview_navigation_drawer);
         assertNotNull(drawerListView);
 
 //        CountryListAdapter drawerList = (CountryListAdapter) drawerListView.getAdapter();
