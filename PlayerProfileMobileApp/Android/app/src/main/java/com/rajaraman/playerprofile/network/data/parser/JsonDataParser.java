@@ -2,7 +2,7 @@ package com.rajaraman.playerprofile.network.data.parser;
 
 import android.util.JsonReader;
 
-import com.rajaraman.playerprofile.network.data.entity.CountryEntity;
+import com.rajaraman.playerprofile.network.data.entities.CountryEntity;
 
 import java.io.IOException;
 import java.io.InputStream;

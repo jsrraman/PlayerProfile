@@ -1,8 +1,4 @@
-package com.rajaraman.playerprofile.network.data.entity;
-
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+package com.rajaraman.playerprofile.network.data.entities;
 
 // Created by rajaraman on Dec 25, 2014
 

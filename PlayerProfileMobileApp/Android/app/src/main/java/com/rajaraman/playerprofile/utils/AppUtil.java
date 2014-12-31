@@ -44,7 +44,7 @@ public class AppUtil {
             pd = new ProgressDialog(context);
 
             pd.setTitle("Processing...");
-            pd.setMessage("Please wait.");
+            pd.setMessage("Please wait");
             pd.setCancelable(false);
             pd.setIndeterminate(true);
             pd.show();

@@ -7,17 +7,13 @@ import android.os.Handler;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.rajaraman.playerprofile.network.data.entity.CountryEntity;
-import com.rajaraman.playerprofile.network.data.entity.PlayerEntity;
+import com.rajaraman.playerprofile.network.data.entities.CountryEntity;
+import com.rajaraman.playerprofile.network.data.entities.PlayerEntity;
 import com.rajaraman.playerprofile.utils.AppUtil;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Type;
-import java.net.URI;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 
 /**

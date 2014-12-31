@@ -1,4 +1,4 @@
-package com.rajaraman.playerprofile.network.data.entity;
+package com.rajaraman.playerprofile.network.data.entities;
 
 // Created by rajaraman on Dec 25, 2014
 

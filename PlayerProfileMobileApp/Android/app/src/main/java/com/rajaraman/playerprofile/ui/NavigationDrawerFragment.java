@@ -22,7 +22,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.rajaraman.playerprofile.R;
-import com.rajaraman.playerprofile.network.data.entity.CountryEntity;
+import com.rajaraman.playerprofile.network.data.entities.CountryEntity;
 import com.rajaraman.playerprofile.network.data.provider.DataProvider;
 import com.rajaraman.playerprofile.network.data.provider.PlayerProfileApiDataProvider;
 import com.rajaraman.playerprofile.ui.adapters.CountryListAdapter;

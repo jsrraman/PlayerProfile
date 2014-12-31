@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.rajaraman.playerprofile.R;
-import com.rajaraman.playerprofile.network.data.entity.CountryEntity;
+import com.rajaraman.playerprofile.network.data.entities.CountryEntity;
 import com.rajaraman.playerprofile.network.data.provider.VolleySingleton;
 
 import java.util.ArrayList;

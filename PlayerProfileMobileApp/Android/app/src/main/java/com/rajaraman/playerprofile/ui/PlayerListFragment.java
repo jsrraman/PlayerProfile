@@ -13,11 +13,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.rajaraman.playerprofile.R;
-import com.rajaraman.playerprofile.network.data.entity.CountryEntity;
-import com.rajaraman.playerprofile.network.data.entity.PlayerEntity;
+import com.rajaraman.playerprofile.network.data.entities.CountryEntity;
+import com.rajaraman.playerprofile.network.data.entities.PlayerEntity;
 import com.rajaraman.playerprofile.network.data.provider.DataProvider;
 import com.rajaraman.playerprofile.network.data.provider.PlayerProfileApiDataProvider;
-import com.rajaraman.playerprofile.ui.adapters.CountryListAdapter;
 import com.rajaraman.playerprofile.ui.adapters.PlayerListAdapter;
 import com.rajaraman.playerprofile.utils.AppUtil;
 

@@ -6,8 +6,8 @@
     <com.android.volley.toolbox.NetworkImageView
         android:id="@+id/fragment_playerlist_list_icon_player"
         android:src="@drawable/ic_launcher"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
@@ -19,7 +19,7 @@
         android:layout_alignWithParentIfMissing="true"
         android:gravity="center_vertical"
         android:text="Player"
-        android:textSize="16sp"
+        android:textSize="12sp"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/fragment_playerlist_list_icon_player"
         android:layout_toEndOf="@+id/fragment_playerlist_list_icon_player" />
