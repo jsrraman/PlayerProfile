@@ -1,6 +1,7 @@
 package com.rajaraman.playerprofile.ui;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -107,8 +108,8 @@ public class PlayerListFragment extends Fragment implements
 //        mListView = (AbsListView) view.findViewById(android.R.id.list);
 //        ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
 //
-//        // Set OnItemClickListener so we can be notified on item clicks
-//        mListView.setOnItemClickListener(this);
+        // Set OnItemClickListener so we can be notified on item clicks
+        mListView.setOnItemClickListener(this);
 
         // Get the player list
 
@@ -146,6 +147,9 @@ public class PlayerListFragment extends Fragment implements
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
             //mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
+
+            Intent intent = new Intent(getActivity(), PlayerProfileActivity.class);
+            startActivity(intent);
         }
     }
 

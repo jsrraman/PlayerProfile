@@ -70,7 +70,7 @@ public class MainActivity extends ActionBarActivity implements
 
         // Update the player content
         fragmentManager.beginTransaction()
-            .replace(R.id.player_content, PlayerListFragment.newInstance(countryEntity))
+            .replace(R.id.player_list_fragment_container, PlayerListFragment.newInstance(countryEntity))
             .commit();
     }
 
