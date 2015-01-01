@@ -18,6 +18,7 @@ PlayersDao.deleteDbs = function() {
         if (err) {
             debug("Could not open " + PlayersDao.dbName + " database: " + err );
             callback(err, db);
+            return;
         } else {
             db.dropDatabase(function (err, result) {
                 if (!err) {
@@ -38,6 +39,7 @@ PlayersDao.saveCountryList = function(docCountryList, callback) {
         if (err) {
             debug("Could not open " + PlayersDao.dbName + " database: " + err );
             callback(err, db);
+            return;
         } else {
 
             db.dropDatabase(function (err, result) {
@@ -55,6 +57,7 @@ PlayersDao.saveCountryList = function(docCountryList, callback) {
 
                 db.close();
                 callback(err);
+                return;
             });
         }
     });
@@ -68,6 +71,7 @@ PlayersDao.getCountryList = function(callback) {
         if (err) {
             debug("Could not open " + PlayersDao.dbName + " database: " + err );
             callback(err, db);
+            return;
         } else {
 
             var countryCollection = db.collection('countries');
@@ -83,8 +87,8 @@ PlayersDao.getCountryList = function(callback) {
                 }
 
                 db.close();
-
                 callback(err, result);
+                return;
             });
         }
     });
@@ -98,6 +102,7 @@ PlayersDao.savePlayerList = function(docPlayerList, callback) {
         if (err) {
             debug("Could not open " + PlayersDao.dbName + " database: " + err );
             callback(err, null);
+            return;
         } else {
 
             var playerCollection = db.collection('players');
@@ -109,6 +114,7 @@ PlayersDao.savePlayerList = function(docPlayerList, callback) {
 
                 db.close();
                 callback(null, null);
+                return;
             });
         }
     });
@@ -124,6 +130,7 @@ PlayersDao.getPlayerProfile = function(countryId, playerId, callback) {
         if (err) {
             debug("Could not open " + PlayersDao.dbName + " database: " + err );
             callback(err, null);
+            return;
         } else {
 
             var playerCollection = db.collection('players');
@@ -136,21 +143,24 @@ PlayersDao.getPlayerProfile = function(countryId, playerId, callback) {
                 query.playerId = playerId;
             }
 
+            debug(query);
+
             var projection = {_id:0}; // We don't need the _id in the result
 
             playerCollection.find(query, projection).toArray(function (err, result) {
                 if (err) {
-
                     debug('Player profile info could not be retrieved successfully');
 
                     db.close();
                     callback(err, null);
+                    return;
 
                 } else {
-
                     debug('Player profile info retrieved successfully');
+
                     db.close();
                     callback(null, result);
+                    return;
                 }
             });
         }
@@ -165,6 +175,7 @@ PlayersDao.savePlayerProfile = function(docPlayerProfile, callback) {
         if (err) {
             debug("Could not open " + PlayersDao.dbName + " database: " + err );
             callback(err, null);
+            return;
         } else {
 
             var playerCollection = db.collection('players');
@@ -179,6 +190,7 @@ PlayersDao.savePlayerProfile = function(docPlayerProfile, callback) {
 
                 db.close();
                 callback(null, null);
+                return;
             });
         }
     });

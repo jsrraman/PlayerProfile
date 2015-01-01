@@ -22,6 +22,7 @@ PlayersDataScrape.scrapeAndSaveCountryList = function(callback) {
   PlayersDataScrape.request(actualScrapeUrl, function (error, response, html) {
     if (error) {
         callback(error, response);
+      return;
     } else {
 
       debug("Got the scraped data for " + actualScrapeUrl);
@@ -77,6 +78,7 @@ PlayersDataScrape.scrapeAndSaveCountryList = function(callback) {
       PlayersDataScrape.db.saveCountryList(docCountryList, function (error, result) {
         // Send the response to the API caller
         callback(error, result);
+        return;
       });
     }
   });
@@ -91,6 +93,7 @@ PlayersDataScrape.scrapeAndSavePlayerListForCountry = function(countryId, countr
       (countryName == null ) || (countryName == undefined ) ) {
     fnResponse.description = "Country id or(and) name cannot be empty";
     callback(fnResponse, null);
+    return;
   }
 
   debug("Going to get the list of players for the requested country id = " + countryId +
@@ -104,6 +107,7 @@ PlayersDataScrape.scrapeAndSavePlayerListForCountry = function(countryId, countr
   PlayersDataScrape.request(actualScrapeUrl, function (error, response, html) {
     if (error) {
       callback(error, null);
+      return;
     } else {
 
       debug("Got the scraped data for " + actualScrapeUrl);
@@ -162,10 +166,13 @@ PlayersDataScrape.scrapeAndSavePlayerListForCountry = function(countryId, countr
       // Save country info to the database
       PlayersDataScrape.db.savePlayerList(docPlayerList, function (error, result) {
         // Send the response to the API caller
-        if (error)
+        if (error) {
           callback(error, null);
+          return;
+        }
         else {
           callback(null, null);
+          return;
         }
       });
     }
@@ -182,6 +189,7 @@ PlayersDataScrape.scrapeAndSavePlayerProfileForPlayer = function(playerId, callb
   if ((playerId == null) || (playerId == undefined)) {
     fnResponse.description = "Player id cannot be empty";
     callback(fnResponse, null);
+    return;
   }
 
   PlayersDataScrape.db.getPlayerProfile(null, parseInt(playerId), function (error, result) {
@@ -189,9 +197,17 @@ PlayersDataScrape.scrapeAndSavePlayerProfileForPlayer = function(playerId, callb
     if (error) {
       fnResponse = "There was error in retrieving the player's profile";
       callback(fnResponse, null);
+      return;
     }
     else {
-      // We are expecting only one document, so retrieve it from first index
+      // The result array length should be 1 (i.e we are expecting only one document), if it's not
+      // send the status accordingly else retrieve it from first index
+      if (result.length == 0) {
+        fnResponse = "Could not retrieve the player's profile";
+        callback(fnResponse, null);
+        return;
+      }
+
       countryId = result[0].countryId;
       playerUrl = result[0].playerUrl;
       PlayersDataScrape._scrapeAndSavePlayerProfileForPlayer(countryId, playerId, playerUrl, callback);
@@ -211,6 +227,7 @@ PlayersDataScrape._scrapeAndSavePlayerProfileForPlayer = function(countryId, pla
   PlayersDataScrape.request(playerUrl, function (error, response, html) {
     if (error) {
       callback(error, null);
+      return;
     } else {
 
       debug("Got the scraped data for " + playerUrl);
@@ -239,10 +256,13 @@ PlayersDataScrape._scrapeAndSavePlayerProfileForPlayer = function(countryId, pla
       // Save country info to the database
       PlayersDataScrape.db.savePlayerProfile(docPlayerProfile, function (error, result) {
         // Send the response to the API caller
-        if (error)
+        if (error) {
           callback(error, null);
+          return;
+        }
         else {
           callback(null, null);
+          return;
         }
       });
     }

@@ -13,10 +13,10 @@ router.get('/countries', function(httpReq, httpRes) {
 
         if (error) {
             fnResponse.status = "failure";
-            fnResponse.description = error1;
+            fnResponse.result = error;
         } else {
             fnResponse.status = "success";
-            fnResponse.description = "Country list saved successfully";
+            fnResponse.result = "Country list saved successfully";
         }
 
         httpRes.send(fnResponse);
@@ -34,7 +34,7 @@ router.get('/players/country', function(httpReq, httpRes) {
     if ( (countryId == null) || (countryId == undefined) ||
         (countryName == null) || (countryName == undefined) ) {
         fnResponse.status = "failure";
-        fnResponse.description = "Country id or(and) name cannot be empty";
+        fnResponse.result = "Country id or(and) name cannot be empty";
 
         httpRes.send(fnResponse);
     }
@@ -43,10 +43,10 @@ router.get('/players/country', function(httpReq, httpRes) {
                                                             countryName, function (error, result) {
         if (error) {
             fnResponse.status = "failure";
-            fnResponse.description = error;
+            fnResponse.result = error;
         } else {
             fnResponse.status = "success";
-            fnResponse.description = "Player list for country " + countryName + " saved successfully";
+            fnResponse.result = "Player list for country " + countryName + " saved successfully";
         }
 
         httpRes.send(fnResponse);
@@ -62,17 +62,17 @@ router.get('/player', function(httpReq, httpRes) {
 
     if ( (playerId == null) || (playerId == undefined) ) {
         fnResponse.status = "failure";
-        fnResponse.description = "Player id cannot be empty";
+        fnResponse.result = "Player id cannot be empty";
         httpRes.send(fnResponse);
     }
 
     PlayersDataScrape.scrapeAndSavePlayerProfileForPlayer(playerId, function (error, result) {
         if (error) {
             fnResponse.status = "failure";
-            fnResponse.description = error;
+            fnResponse.result = error;
         } else {
             fnResponse.status = "success";
-            fnResponse.description = "Player profile for player id=" + playerId + " saved successfully";
+            fnResponse.result = "Player profile for player id=" + playerId + " saved successfully";
         }
 
         httpRes.send(fnResponse);

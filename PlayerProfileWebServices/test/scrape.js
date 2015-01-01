@@ -27,7 +27,7 @@ describe('Player Data Scrape Unit Test Report', function() {
 
     it("should store the player list for England successfully", function(done) {
         request(url)
-            .get("/scrape/players/country?countryId=11&name=USA")
+            .get("/scrape/players/country?countryId=1&name=England")
             .expect(200)
             .end(function (err, res) {
                 if (err) {
@@ -39,20 +39,20 @@ describe('Player Data Scrape Unit Test Report', function() {
             });
     });
 
-    //it("should store the list of all players playing for Australia successfully", function(done) {
-    //
-    //    request(url)
-    //        .get("/scrape/players/country?id=2&name=australia")
-    //        .expect(200)
-    //        .end(function (err, res) {
-    //            if (err) {
-    //                throw err;
-    //            }
-    //
-    //            res.body.should.have.property('status', 'success');
-    //            done();
-    //        });
-    //});
+    it("should store the list of all players playing for USA successfully", function(done) {
+
+        request(url)
+            .get("/scrape/players/country?id=11&name=USA")
+            .expect(200)
+            .end(function (err, res) {
+                if (err) {
+                    throw err;
+                }
+
+                res.body.should.have.property('status', 'success');
+                done();
+            });
+    });
 
     it("should store the player list for player id = 8917 successfully", function (done) {
         request(url)

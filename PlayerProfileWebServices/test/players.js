@@ -8,7 +8,7 @@ var request = require('supertest');
 describe("Player Profile REST APIs Unit Test Report", function() {
     var url = "http://localhost:3000";
 
-    it('should return the list of cricket playing countries successfully', function(done) {
+    it('should retrieve the list of cricket playing countries successfully', function(done) {
 
         request(url)
             .get("/players/countries")
@@ -23,7 +23,7 @@ describe("Player Profile REST APIs Unit Test Report", function() {
             });
     });
 
-    it('should return the profile info for player id = 8917', function(done) {
+    it('should retrieve the profile info for player id = 8917', function(done) {
 
         request(url)
             .get("/players?playerId=8917")
@@ -38,7 +38,7 @@ describe("Player Profile REST APIs Unit Test Report", function() {
             });
     });
 
-    it('should return the profile info for all players of England', function(done) {
+    it('should retrieve the profile info for all players of England', function(done) {
 
         request(url)
             .get("/players/country?countryId=1")
