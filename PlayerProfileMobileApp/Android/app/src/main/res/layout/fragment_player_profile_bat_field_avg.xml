@@ -1,0 +1,150 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.rajaraman.playerprofile.ui.PlayerProfileBattingAndFieldingAvg">
+
+    <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ffffff"
+        android:shrinkColumns="*"
+        android:stretchColumns="*">
+
+        <!-- Row 1 - batting and bowling headers -->
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#b0b0b0">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/table_text_padding"
+                android:text=""
+                android:textColor="#000"
+                android:textSize="@dimen/text_size" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/table_text_padding"
+                android:text="Mat"
+                android:gravity="center"
+                android:textColor="#000"
+                android:textSize="@dimen/text_size" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/table_text_padding"
+                android:text="Runs"
+                android:textColor="#000"
+                android:textSize="@dimen/text_size" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/table_text_padding"
+                android:text="HS"
+                android:textColor="#000"
+                android:textSize="@dimen/text_size" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/table_text_padding"
+                android:text="Avg"
+                android:textColor="#000"
+                android:textSize="@dimen/text_size" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/table_text_padding"
+                android:gravity="center"
+                android:text="100"
+                android:textColor="#000"
+                android:textSize="@dimen/text_size" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/table_text_padding"
+                android:gravity="center"
+                android:text="50"
+                android:textColor="#000"
+                android:textSize="@dimen/text_size" />
+        </TableRow>
+
+        <!-- Row 2 - batting and bowling values -->
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#dcdcdc">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/table_text_padding"
+                android:gravity="center"
+                android:text="@string/tests"
+                android:textColor="#000"
+                android:textSize="@dimen/text_size" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/table_text_padding"
+                android:id="@+id/tv_tests_matches"
+                android:textColor="#000"
+                android:textSize="@dimen/text_size" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/table_text_padding"
+                android:id="@+id/tv_tests_runs"
+                android:textColor="#000"
+                android:textSize="@dimen/text_size" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/table_text_padding"
+                android:id="@+id/tv_tests_highest"
+                android:textColor="#000"
+                android:textSize="@dimen/text_size" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/table_text_padding"
+                android:id="@+id/tv_tests_avg"
+                android:gravity="center"
+                android:textColor="#000"
+                android:textSize="@dimen/text_size" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/table_text_padding"
+                android:id="@+id/tv_tests_100s"
+                android:gravity="center"
+                android:textColor="#000"
+                android:textSize="@dimen/text_size" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/table_text_padding"
+                android:id="@+id/tv_tests_50s"
+                android:gravity="center"
+                android:textColor="#000"
+                android:textSize="@dimen/text_size" />
+        </TableRow>
+    </TableLayout>
+</FrameLayout>
