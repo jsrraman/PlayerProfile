@@ -27,6 +27,4 @@ public class ApiDataProviderServiceReceiver extends ResultReceiver {
     public static interface Listener {
         void onReceiveResult(int resultCode, Bundle resultData);
     }
-
 }
-

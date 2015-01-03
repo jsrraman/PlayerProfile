@@ -6,9 +6,15 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.rajaraman.playerprofile.network.data.entities.BatFieldAvg;
+import com.rajaraman.playerprofile.network.data.entities.BatFieldMatchStatistics;
 import com.rajaraman.playerprofile.network.data.entities.CountryEntity;
 import com.rajaraman.playerprofile.network.data.entities.PlayerEntity;
+import com.rajaraman.playerprofile.network.data.parser.BatFieldAvgDeserializer;
+import com.rajaraman.playerprofile.network.data.parser.BatFieldMatchStatisticsDeserializer;
+import com.rajaraman.playerprofile.network.data.parser.PlayerEntityDeserializer;
 import com.rajaraman.playerprofile.utils.AppUtil;
 
 import org.json.JSONArray;
@@ -30,12 +36,16 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
     public static final int GET_COUNTRY_LIST_API = 0;
     public static final int GET_PLAYER_LIST_FOR_COUNTRY_ID_API = 1;
     public static final int SCRAPE_PLAYER_LIST_FOR_COUNTRY_ID_API = 2;
+    public static final int SCRAPE_PLAYER_PROFILE_FOR_PLAYER_ID_API = 3;
+    public static final int GET_PLAYER_PROFILE_FOR_PLAYER_ID_API = 4;
 
     public static final String profilePlayerWebServicesBaseUrl = "http://10.0.0.100:3000";
     public static final String countryListUrl = "/players/countries";
     public static final String playerListUrl = "/players/country?countryId=";
     public static final String scrapePlayerListUrlPart1 = "/scrape/players/country?countryId=";
     public static final String scrapePlayerListUrlPart2 = "&name=";
+    public static final String scrapePlayerProfileUrl = "/scrape/player?playerId=";
+    public static final String playerProfileUrl = "/players?playerId=";
 
     private static PlayerProfileApiDataProvider playerProfileApiDataProvider = null;
 
@@ -110,6 +120,39 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
         this.context.startService(createApiDataProviderServiceIntent(this.apiReqResData));
     }
 
+    // Scrape the player profile data for the given player id
+    public void scrapePlayerProfile(Context context,
+                                           OnDataReceivedListener onDataReceivedListener,
+                                           int playerId) {
+
+        this.context = context;
+        this.onDataReceivedListener = onDataReceivedListener;
+
+        String fullUrl = this.profilePlayerWebServicesBaseUrl + this.scrapePlayerProfileUrl;
+        fullUrl += Integer.toString(playerId);
+
+        this.apiReqResData.setRequestWebServiceApiId(SCRAPE_PLAYER_PROFILE_FOR_PLAYER_ID_API);
+        this.apiReqResData.setRequestUrl(fullUrl);
+
+        this.context.startService(createApiDataProviderServiceIntent(this.apiReqResData));
+    }
+
+    // Scrape the player profile data for the given player id
+    public void getPlayerProfile(Context context,
+                                    OnDataReceivedListener onDataReceivedListener,
+                                    int playerId) {
+
+        this.context = context;
+        this.onDataReceivedListener = onDataReceivedListener;
+
+        String fullUrl = this.profilePlayerWebServicesBaseUrl + this.playerProfileUrl;
+        fullUrl += Integer.toString(playerId);
+
+        this.apiReqResData.setRequestWebServiceApiId(GET_PLAYER_PROFILE_FOR_PLAYER_ID_API);
+        this.apiReqResData.setRequestUrl(fullUrl);
+
+        this.context.startService(createApiDataProviderServiceIntent(this.apiReqResData));
+    }
     private Intent createApiDataProviderServiceIntent(ApiReqResData apiReqResData) {
         Intent i = new Intent(context, ApiDataProviderService.class);
         ApiDataProviderServiceReceiver receiver =
@@ -157,8 +200,9 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
                 break;
             }
 
-            case GET_PLAYER_LIST_FOR_COUNTRY_ID_API: {
-                parsedResponseData = getPlayerListForCountryFromJson(jsonData);
+            case GET_PLAYER_LIST_FOR_COUNTRY_ID_API:
+            case GET_PLAYER_PROFILE_FOR_PLAYER_ID_API:{
+                parsedResponseData = getPlayerProfileFromJson(jsonData);
 
                 if (null == parsedResponseData) {
                     status = false;
@@ -168,6 +212,13 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
             }
 
             case SCRAPE_PLAYER_LIST_FOR_COUNTRY_ID_API: {
+                parsedResponseData = getScrapeResultFromJson(jsonData);
+                status = (boolean)parsedResponseData;
+
+                break;
+            }
+
+            case SCRAPE_PLAYER_PROFILE_FOR_PLAYER_ID_API: {
                 parsedResponseData = getScrapeResultFromJson(jsonData);
                 status = (boolean)parsedResponseData;
 
@@ -206,42 +257,13 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
 
            // convert (Deserialize) JSON string to the equivalent entity object
            countryEntityList = gson.fromJson(countryListJsonString,
-                   new TypeToken<ArrayList<CountryEntity>>(){}.getType());
+                        new TypeToken<ArrayList<CountryEntity>>(){}.getType());
        }catch (Exception e) {
            e.printStackTrace();
        }finally {
           return countryEntityList;
        }
    }
-
-    private ArrayList<PlayerEntity> getPlayerListForCountryFromJson(String jsonData) {
-
-        ArrayList<PlayerEntity> playerEntityList = null;
-
-        Gson gson = new Gson();
-
-        try {
-            // Get the root JSON object
-            JSONObject rootJsonObj = new JSONObject(jsonData);
-
-            // Get the key we are interested in
-            JSONArray playerListKeyJsonArray = rootJsonObj.getJSONArray("result");
-
-            // Convert this again to JSON string so that we can use Gson to
-            // easily convert (deserialize) this to the actual entity object
-            String playerListJsonString = playerListKeyJsonArray.toString();
-
-            //AppUtil.logDebugMessage(TAG, countryListJsonString);
-
-            // convert (Deserialize) JSON string to the equivalent entity object
-            playerEntityList = gson.fromJson(playerListJsonString,
-                    new TypeToken<ArrayList<PlayerEntity>>(){}.getType());
-        }catch (Exception e) {
-            e.printStackTrace();
-        }finally {
-            return playerEntityList;
-        }
-    }
 
     private boolean getScrapeResultFromJson(String jsonData) {
 
@@ -262,31 +284,36 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
         }
     }
 
-    // TODO: Revisit this later. Doing this way would be generic.
-//    private <T> T getParsedEntityObjectFromJson(String jsonData, final Class<T> genericType) {
-//
-//        Gson gson = new Gson();
-//
-//        try {
-//            // Get the root JSON object
-//            JSONObject rootJsonObj = new JSONObject(jsonData);
-//
-//            // Get the key we are interested in
-//            JSONArray playerListKeyJsonArray = rootJsonObj.getJSONArray("result");
-//
-//            // Convert this again to JSON string so that we can use Gson to
-//            // easily convert (deserialize) this to the actual entity object
-//            String playerListJsonString = playerListKeyJsonArray.toString();
-//
-//            //AppUtil.logDebugMessage(TAG, countryListJsonString);
-//
-//            // convert (Deserialize) JSON string to the equivalent entity object
-//            genericType = gson.fromJson(playerListJsonString,
-//                    new TypeToken<genericType>(){}.getType());
-//        }catch (Exception e) {
-//            e.printStackTrace();
-//        }finally {
-//            return genericType;
-//        }
-//    }
+    // Get the player profile from json
+    // Note:
+    // PlayerProfile has nested objects, so it uses JsonDeserializer to parse
+    // the underlying nested objects. Deserializing should not take time, if it takes time
+    // consider pushing the deserialize logic to a worker thread
+    private ArrayList<PlayerEntity> getPlayerProfileFromJson(String jsonData) {
+
+        ArrayList<PlayerEntity> playerEntityList = null;
+
+        GsonBuilder gsonBuilder = new GsonBuilder();
+
+        try {
+            // Register the deserializer objects
+            gsonBuilder.registerTypeAdapter(PlayerEntity.class,
+                                                new PlayerEntityDeserializer());
+            gsonBuilder.registerTypeAdapter(BatFieldAvg.class,
+                                                new BatFieldAvgDeserializer());
+            gsonBuilder.registerTypeAdapter(BatFieldMatchStatistics.class,
+                                                new BatFieldMatchStatisticsDeserializer());
+
+            Gson gson = gsonBuilder.create();
+
+            // Note: As PlayerEntity is a complex type (i.e it has nested objects), the gson.fromJson
+            // conversion is different (i.e PlayerEntity type is passed and PlayerEntityList type is returned)
+            // compared to other simple conversions, eg: getCountryListFromJson
+            playerEntityList = gson.fromJson(jsonData, new TypeToken<PlayerEntity>(){}.getType());
+        }catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            return playerEntityList;
+        }
+    }
 }

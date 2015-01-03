@@ -13,12 +13,12 @@ import com.rajaraman.playerprofile.R;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link com.rajaraman.playerprofile.ui.PlayerProfileBattingAndFieldingAvgFragment.onPlayerProfileBattingAndFieldingAvgFragmentInteraction} interface
+ * {@link PlayerProfileBatFieldAvgFragment.OnPlayerProfileBatFieldAvgFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link com.rajaraman.playerprofile.ui.PlayerProfileBattingAndFieldingAvgFragment#newInstance} factory method to
+ * Use the {@link PlayerProfileBatFieldAvgFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PlayerProfileBattingAndFieldingAvgFragment extends Fragment {
+public class PlayerProfileBatFieldAvgFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -28,7 +28,7 @@ public class PlayerProfileBattingAndFieldingAvgFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private OnPlayerProfileBattingAndFieldingAvgFragmentInteractionListener mListener;
+    private OnPlayerProfileBatFieldAvgFragmentInteractionListener mListener;
 
     /**
      * Use this factory method to create a new instance of
@@ -39,8 +39,8 @@ public class PlayerProfileBattingAndFieldingAvgFragment extends Fragment {
      * @return A new instance of fragment PlayerProfileBattingAndFieldingAvg.
      */
     // TODO: Rename and change types and number of parameters
-    public static PlayerProfileBattingAndFieldingAvgFragment newInstance(String param1, String param2) {
-        PlayerProfileBattingAndFieldingAvgFragment fragment = new PlayerProfileBattingAndFieldingAvgFragment();
+    public static PlayerProfileBatFieldAvgFragment newInstance(String param1, String param2) {
+        PlayerProfileBatFieldAvgFragment fragment = new PlayerProfileBatFieldAvgFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -48,7 +48,7 @@ public class PlayerProfileBattingAndFieldingAvgFragment extends Fragment {
         return fragment;
     }
 
-    public PlayerProfileBattingAndFieldingAvgFragment() {
+    public PlayerProfileBatFieldAvgFragment() {
         // Required empty public constructor
     }
 
@@ -71,7 +71,7 @@ public class PlayerProfileBattingAndFieldingAvgFragment extends Fragment {
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
-            mListener.onPlayerProfileBattingAndFieldingAvgFragmentInteraction(uri);
+            mListener.onPlayerProfileBatFieldAvgFragmentInteraction(uri);
         }
     }
 
@@ -79,7 +79,7 @@ public class PlayerProfileBattingAndFieldingAvgFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnPlayerProfileBattingAndFieldingAvgFragmentInteractionListener) activity;
+            mListener = (OnPlayerProfileBatFieldAvgFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -102,9 +102,9 @@ public class PlayerProfileBattingAndFieldingAvgFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnPlayerProfileBattingAndFieldingAvgFragmentInteractionListener {
+    public interface OnPlayerProfileBatFieldAvgFragmentInteractionListener {
         // TODO: Update argument type and name
-        public void onPlayerProfileBattingAndFieldingAvgFragmentInteraction(Uri uri);
+        public void onPlayerProfileBatFieldAvgFragmentInteraction(Uri uri);
     }
 
 }

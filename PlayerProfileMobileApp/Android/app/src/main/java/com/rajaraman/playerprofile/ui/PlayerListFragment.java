@@ -116,7 +116,10 @@ public class PlayerListFragment extends Fragment implements
         // Get the country id passed as a parameter during this fragment's creation
         int countryId = getArguments().getInt(ARG_PARAM1);
 
-        this.playerProfileApiDataProvider.getPlayerListForCountry(getActivity(), this, countryId);
+       // Test
+       this.playerProfileApiDataProvider.getPlayerListForCountry(getActivity(), this, countryId);
+        //this.playerProfileApiDataProvider.getPlayerProfile(getActivity(), this, 8917);
+       // Test
 
         AppUtil.showProgressDialog(getActivity());
 
@@ -245,7 +248,10 @@ public class PlayerListFragment extends Fragment implements
         // Get the country id passed as a parameter during this fragment's creation
         int countryId = getArguments().getInt(ARG_PARAM1);
 
+        // Test
         this.playerProfileApiDataProvider.getPlayerListForCountry(getActivity(), this, countryId);
+        //this.playerProfileApiDataProvider.getPlayerProfile(getActivity(), this, 8917);
+        // Test
 
         AppUtil.showProgressDialog(getActivity());
     }

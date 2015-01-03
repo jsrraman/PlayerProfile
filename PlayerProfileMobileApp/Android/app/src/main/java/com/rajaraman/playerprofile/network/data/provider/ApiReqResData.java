@@ -41,9 +41,9 @@ public class ApiReqResData implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         // We write the API data information in the parcel
         // Order is important, first request webservice name, requested url and then response data
-        dest.writeInt(requestWebServiceApiId);
-        dest.writeString(requestUrl);
-        dest.writeString(responseData);
+        dest.writeInt(this.requestWebServiceApiId);
+        dest.writeString(this.requestUrl);
+        dest.writeString(this.responseData);
     }
 
     public static final Creator<ApiReqResData> CREATOR = new Creator<ApiReqResData>() {

@@ -1,6 +1,5 @@
 package com.rajaraman.playerprofile.ui;
 
-import android.app.Activity;
 import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -17,21 +16,16 @@ import com.rajaraman.playerprofile.R;
 
 
 public class PlayerProfileActivity extends ActionBarActivity implements
-    PlayerProfileBattingAndFieldingAvgFragment.
-                OnPlayerProfileBattingAndFieldingAvgFragmentInteractionListener,
+    PlayerProfileBatFieldAvgFragment.
+                OnPlayerProfileBatFieldAvgFragmentInteractionListener,
     PlayerProfileBowlingAvgFragment.
                 OnPlayerProfileBowlingAvgFragmentInteractionListener {
 
-    ActionBar.Tab playerProfileBattingAndFieldingAvgTab,
-                                                playerProfileBowlingTab;
-    PlayerProfileBattingAndFieldingAvgFragment playerProfileBattingAndFieldingAvgFragment =
-                                            new PlayerProfileBattingAndFieldingAvgFragment();
-    PlayerProfileBowlingAvgFragment playerProfileBowlingAvgFragment =
-                                            new PlayerProfileBowlingAvgFragment();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_player_profile);
 
         //if (savedInstanceState == null) {
@@ -43,7 +37,8 @@ public class PlayerProfileActivity extends ActionBarActivity implements
             @Override
             public void onClick(View v) {
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.player_profile_avg_fragment_container, new PlayerProfileBattingAndFieldingAvgFragment())
+                        .replace(R.id.player_profile_avg_fragment_container,
+                                new PlayerProfileBatFieldAvgFragment())
                         .commit();
             }
         });
@@ -54,12 +49,12 @@ public class PlayerProfileActivity extends ActionBarActivity implements
             @Override
             public void onClick(View v) {
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.player_profile_avg_fragment_container, new PlayerProfileBowlingAvgFragment())
+                        .replace(R.id.player_profile_avg_fragment_container,
+                                new PlayerProfileBowlingAvgFragment())
                         .commit();
             }
         });
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -83,8 +78,9 @@ public class PlayerProfileActivity extends ActionBarActivity implements
         return super.onOptionsItemSelected(item);
     }
 
+
     @Override
-    public void onPlayerProfileBattingAndFieldingAvgFragmentInteraction(Uri uri) {
+    public void onPlayerProfileBatFieldAvgFragmentInteraction(Uri uri) {
 
     }
 
