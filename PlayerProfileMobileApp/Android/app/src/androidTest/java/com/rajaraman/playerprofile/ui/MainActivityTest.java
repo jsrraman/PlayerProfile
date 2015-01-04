@@ -75,4 +75,12 @@ public class MainActivityTest {
 //        // Check whether the drawer list has at least one item
 //        assertTrue(drawerList.getCount() > 0);
     }
+
+//    @Test
+//    public void testWhetherPlayerProfileActivityIsStarted() throws Exception {
+//        FragmentManager fragmentManager = activity.getSupportFragmentManager();
+//        Fragment playerListFragment = fragmentManager.findFragmentById(R.id.player_list_fragment_container);
+//
+//        assertNotNull(playerListFragment);
+//    }
 }

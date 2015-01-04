@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">PlayerProfile</string>
+    <string name="app_name">Player Profile</string>
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Section 3</string>
@@ -22,8 +22,8 @@
     <string name="bowling">Bowling</string>
     <string name="name">Name</string>
     <string name="country">Country</string>
-    <string name="bat_style">Batting Style</string>
-    <string name="bowl_style">Bowling Style</string>
+    <string name="bat_style">Bat Style</string>
+    <string name="bowl_style">Bowl Style</string>
     <string name="tests">Tests</string>
     <string name="odis">ODIs</string>
 </resources>

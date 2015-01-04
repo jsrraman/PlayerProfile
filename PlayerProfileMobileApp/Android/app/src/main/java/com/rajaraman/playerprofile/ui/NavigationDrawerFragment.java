@@ -316,7 +316,7 @@ public class NavigationDrawerFragment extends Fragment implements
                 mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
 
                 // Select either the default item (0) or the last selected item.
-                //selectItem(mCurrentSelectedPosition);
+                selectItem(mCurrentSelectedPosition);
             }
         }
     }

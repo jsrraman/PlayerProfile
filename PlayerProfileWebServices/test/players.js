@@ -22,7 +22,7 @@ describe("Player Profile REST APIs Unit Test Report", function() {
                 done();
             });
     });
-
+    
     it('should retrieve the profile info for player id = 8917', function(done) {
 
         request(url)

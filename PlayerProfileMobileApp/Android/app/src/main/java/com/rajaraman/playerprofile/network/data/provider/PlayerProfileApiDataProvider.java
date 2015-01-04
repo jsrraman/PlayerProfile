@@ -149,78 +149,9 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
         return i;
     }
 
+
     // Receives the data from ResultReceiver
     @Override
-//    public void onReceiveResult(int resultCode, Bundle resultData) {
-//
-//        AppUtil.logDebugMessage(TAG, "onReceiveResult");
-//
-//        Object responseDataObj = resultData.getParcelable("RESPONSE_DATA");
-//
-//        if (responseDataObj == null) {
-//            AppUtil.logDebugMessage(TAG, "resultData is null. This is unexpected !!!");
-//            this.onDataReceivedListener.
-//                        onDataFetched(false,
-//                                this.apiReqResData.getRequestWebServiceApiId(), null);
-//            return;
-//        }
-//
-//        Object parsedResponseData = null;
-//        boolean status = true;
-//
-//        // Get the parcelable data from the resultData
-//        ApiReqResData apiReqResData = (ApiReqResData) responseDataObj;
-//
-//        // Get the actual response data from the parcelable data
-//        String jsonData = apiReqResData.getResponseData();
-//
-//        switch (resultCode) {
-//            case GET_COUNTRY_LIST_API: {
-//                parsedResponseData = getCountryListFromJson(jsonData);
-//
-//                if (null == parsedResponseData) {
-//                    status = false;
-//                }
-//
-//                break;
-//            }
-//
-//            case GET_PLAYER_LIST_FOR_COUNTRY_ID_API:
-//            case GET_PLAYER_PROFILE_FOR_PLAYER_ID_API:{
-//                parsedResponseData = getPlayerProfileFromJson(jsonData);
-//
-//                if (null == parsedResponseData) {
-//                    status = false;
-//                }
-//
-//                break;
-//            }
-//
-//            case SCRAPE_PLAYER_LIST_FOR_COUNTRY_ID_API: {
-//                parsedResponseData = getScrapeResultFromJson(jsonData);
-//                status = (boolean)parsedResponseData;
-//
-//                break;
-//            }
-//
-//            case SCRAPE_PLAYER_PROFILE_FOR_PLAYER_ID_API: {
-//                parsedResponseData = getScrapeResultFromJson(jsonData);
-//                status = (boolean)parsedResponseData;
-//
-//                break;
-//            }
-//
-//            default: {
-//                break;
-//            }
-//        }
-//
-//        this.onDataReceivedListener.
-//                    onDataFetched(status,
-//                            this.apiReqResData.getRequestWebServiceApiId(),
-//                            parsedResponseData);
-//   }
-
     public void onReceiveResult(int resultCode, Bundle resultData) {
 
         AppUtil.logDebugMessage(TAG, "onReceiveResult");

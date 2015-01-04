@@ -31,7 +31,6 @@ public class BatFieldAvgDeserializer implements JsonDeserializer<BatFieldAvg>
         BatFieldMatchStatistics odis = jdc.deserialize(jsonObject.get("odis"),
                                                                     BatFieldMatchStatistics.class);
 
-
         final BatFieldAvg batFieldAvg = new BatFieldAvg();
 
         batFieldAvg.setTests(tests);

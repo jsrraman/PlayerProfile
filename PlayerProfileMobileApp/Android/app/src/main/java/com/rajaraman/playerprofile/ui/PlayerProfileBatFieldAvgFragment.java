@@ -7,8 +7,13 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 
 import com.rajaraman.playerprofile.R;
+import com.rajaraman.playerprofile.network.data.entities.BatFieldAvg;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -19,32 +24,21 @@ import com.rajaraman.playerprofile.R;
  * create an instance of this fragment.
  */
 public class PlayerProfileBatFieldAvgFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
+    private static final String TAG = PlayerProfileActivity.class.getCanonicalName();
+    private static final String ARG_PARAM1 = "battingAndFieldingAvg";
     private OnPlayerProfileBatFieldAvgFragmentInteractionListener mListener;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment PlayerProfileBattingAndFieldingAvg.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static PlayerProfileBatFieldAvgFragment newInstance(String param1, String param2) {
+    // Factory method to create a new instance of this fragment using the provided parameters.
+    public static PlayerProfileBatFieldAvgFragment newInstance(BatFieldAvg batFieldAvg) {
+
         PlayerProfileBatFieldAvgFragment fragment = new PlayerProfileBatFieldAvgFragment();
+
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putParcelable(ARG_PARAM1, batFieldAvg) ;
+
         fragment.setArguments(args);
+
         return fragment;
     }
 
@@ -55,20 +49,85 @@ public class PlayerProfileBatFieldAvgFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+//        if (getArguments() != null) {
+//            mParam1 = getArguments().getString(ARG_PARAM1);
+//            mParam2 = getArguments().getString(ARG_PARAM2);
+//        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                                                                Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_player_profile_bat_field_avg, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_player_profile_bat_field_avg,
+                                                                            container, false);
+
+        // Get the batting and fielding statistics
+        Bundle bundle = getArguments();
+
+        if ( null == bundle) {
+            return rootView;
+        }
+
+        BatFieldAvg batFieldAvg = bundle.getParcelable(ARG_PARAM1);
+
+        TextView textView = null;
+
+        // Tests
+        // Matches
+        textView = (TextView)rootView.findViewById(R.id.player_profile_bat_field_avg_tv_tests_matches);
+        textView.setText(batFieldAvg.getTests().getMatches());
+
+        // Runs
+        textView = (TextView)rootView.findViewById(R.id.player_profile_bat_field_avg_tv_tests_runs);
+        textView.setText(batFieldAvg.getTests().getRuns());
+
+        // Highest
+        textView = (TextView)rootView.findViewById(R.id.player_profile_bat_field_avg_tv_tests_highest);
+        textView.setText(batFieldAvg.getTests().getHighest());
+
+        // Average
+        textView = (TextView)rootView.findViewById(R.id.player_profile_bat_field_avg_tv_tests_avg);
+        textView.setText(batFieldAvg.getTests().getAverage());
+
+        // 100s
+        textView = (TextView)rootView.findViewById(R.id.player_profile_bat_field_avg_tv_tests_100s);
+        textView.setText(batFieldAvg.getTests().getHundreds());
+
+        // 50s
+        textView = (TextView)rootView.findViewById(R.id.player_profile_bat_field_avg_tv_tests_50s);
+        textView.setText(batFieldAvg.getTests().getFifties());
+
+        // ----------------------------------------------------------------------------------------
+
+        // ODIs
+        textView = (TextView)rootView.findViewById(R.id.player_profile_bat_field_avg_tv_odis_matches);
+        textView.setText(batFieldAvg.getOdis().getMatches());
+
+        // Runs
+        textView = (TextView)rootView.findViewById(R.id.player_profile_bat_field_avg_tv_odis_runs);
+        textView.setText(batFieldAvg.getOdis().getRuns());
+
+        // Highest
+        textView = (TextView)rootView.findViewById(R.id.player_profile_bat_field_avg_tv_odis_highest);
+        textView.setText(batFieldAvg.getOdis().getHighest());
+
+        // Average
+        textView = (TextView)rootView.findViewById(R.id.player_profile_bat_field_avg_tv_odis_avg);
+        textView.setText(batFieldAvg.getOdis().getAverage());
+
+        // 100s
+        textView = (TextView)rootView.findViewById(R.id.player_profile_bat_field_avg_tv_odis_100s);
+        textView.setText(batFieldAvg.getOdis().getHundreds());
+
+        // 50s
+        textView = (TextView)rootView.findViewById(R.id.player_profile_bat_field_avg_tv_odis_50s);
+        textView.setText(batFieldAvg.getOdis().getFifties());
+
+        return rootView;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onPlayerProfileBatFieldAvgFragmentInteraction(uri);

@@ -61,4 +61,17 @@ public class HttpConnectionTest {
 
         assertNotNull(inputStream);
     }
+
+    @Test
+    public void testWhetherPlayerProfileForPlayerWebServiceIsWorking() throws Exception {
+
+        String url = PlayerProfileApiDataProvider.profilePlayerWebServicesBaseUrl;
+        url += PlayerProfileApiDataProvider.playerProfileUrl;
+        url += "8917"; // Moeen Ali
+
+        HttpConnection httpConn = new HttpConnection();
+        InputStream inputStream = httpConn.getData(url);
+
+        assertNotNull(inputStream);
+    }
 }

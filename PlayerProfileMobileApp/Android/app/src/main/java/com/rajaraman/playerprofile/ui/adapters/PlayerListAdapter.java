@@ -38,7 +38,7 @@ public class PlayerListAdapter extends ArrayAdapter<PlayerEntity> {
         View rowView = inflater.inflate(R.layout.fragment_countrylist_list, parent, false);
 
         // Get the thumbnail url from network using NetworkImageView
-        String thumbnailUrl = playerEntityList.get(position).thumbnailUrl;
+        String thumbnailUrl = this.playerEntityList.get(position).getThumbnailUrl();
 
         NetworkImageView imageView = (NetworkImageView)
                 rowView.findViewById(R.id.fragment_countrylist_list_icon_country);
@@ -50,9 +50,9 @@ public class PlayerListAdapter extends ArrayAdapter<PlayerEntity> {
         }
 
         TextView textView = (TextView) rowView.
-                              findViewById(R.id.fragment_countrylist_list_textview_country_name);
+                            findViewById(R.id.fragment_countrylist_list_textview_country_name);
 
-        textView.setText(playerEntityList.get(position).name);
+        textView.setText(this.playerEntityList.get(position).getName());
 
         return rowView;
     }

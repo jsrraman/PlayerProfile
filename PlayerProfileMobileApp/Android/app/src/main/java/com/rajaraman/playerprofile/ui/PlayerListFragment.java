@@ -61,7 +61,8 @@ public class PlayerListFragment extends Fragment implements
     private ListAdapter mAdapter;
     private PlayerProfileApiDataProvider playerProfileApiDataProvider;
 
-    // TODO: Rename and change types of parameters
+    private ArrayList<PlayerEntity> playerEntityList = null;
+
     public static PlayerListFragment newInstance(CountryEntity countryEntity) {
         PlayerListFragment fragment = new PlayerListFragment();
 
@@ -116,10 +117,7 @@ public class PlayerListFragment extends Fragment implements
         // Get the country id passed as a parameter during this fragment's creation
         int countryId = getArguments().getInt(ARG_PARAM1);
 
-       // Test
-       this.playerProfileApiDataProvider.getPlayerListForCountry(getActivity(), this, countryId);
-        //this.playerProfileApiDataProvider.getPlayerProfile(getActivity(), this, 8917);
-       // Test
+        this.playerProfileApiDataProvider.getPlayerListForCountry(getActivity(), this, countryId);
 
         AppUtil.showProgressDialog(getActivity());
 
@@ -152,6 +150,8 @@ public class PlayerListFragment extends Fragment implements
             //mListener.onFragmentInteraction(DummyContent.ITEMS.get(position).id);
 
             Intent intent = new Intent(getActivity(), PlayerProfileActivity.class);
+            intent.putExtra("playerId", this.playerEntityList.get(position).getPlayerId());
+
             startActivity(intent);
         }
     }
@@ -228,29 +228,33 @@ public class PlayerListFragment extends Fragment implements
         }
     }
 
+    // Handles the get player list API response
     private void HandleGetPlayerListResponse(Object responseData) {
 
         // Try getting the data for the country list and show the list
-        ArrayList<PlayerEntity> playerEntityList = (ArrayList<PlayerEntity>)responseData;
+        this.playerEntityList = (ArrayList<PlayerEntity>)responseData;
+
+        if (null == this.playerEntityList) {
+            AppUtil.logDebugMessage(TAG, "Player entity list is null. This is unexpected !!!");
+            return;
+        }
 
         // If there is no player list yet available for this country, first scrape the data
         // and then try getting the data again.
-        if (null != playerEntityList) {
-            if ( 0 == playerEntityList.size() ) {
-                int countryId = getArguments().getInt(ARG_PARAM1);
-                String countryName = getArguments().getString(ARG_PARAM2);
+        if ( 0 == this.playerEntityList.size() ) {
+            int countryId = getArguments().getInt(ARG_PARAM1);
+            String countryName = getArguments().getString(ARG_PARAM2);
 
-                this.playerProfileApiDataProvider.
-                        scrapePlayerListForCountry(getActivity(), this, countryId, countryName);
+            this.playerProfileApiDataProvider.
+                    scrapePlayerListForCountry(getActivity(), this, countryId, countryName);
 
-                AppUtil.showProgressDialog(getActivity());
+            AppUtil.showProgressDialog(getActivity());
 
-                return;
-            }
+            return;
         }
 
         PlayerListAdapter playerListAdapter = new PlayerListAdapter(getActivity(),
-                                                                            playerEntityList);
+                                                                            this.playerEntityList);
 
         mListView.setAdapter(playerListAdapter);
     }

@@ -1,5 +1,6 @@
 package com.rajaraman.playerprofile.ui;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -11,19 +12,34 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
 import com.rajaraman.playerprofile.R;
+import com.rajaraman.playerprofile.network.data.entities.PlayerEntity;
+import com.rajaraman.playerprofile.network.data.provider.DataProvider;
+import com.rajaraman.playerprofile.network.data.provider.PlayerProfileApiDataProvider;
+import com.rajaraman.playerprofile.network.data.provider.VolleySingleton;
+import com.rajaraman.playerprofile.ui.adapters.PlayerListAdapter;
+import com.rajaraman.playerprofile.utils.AppUtil;
+
+import java.util.ArrayList;
 
 
 public class PlayerProfileActivity extends ActionBarActivity implements
-    PlayerProfileBatFieldAvgFragment.
-                OnPlayerProfileBatFieldAvgFragmentInteractionListener,
-    PlayerProfileBowlingAvgFragment.
-                OnPlayerProfileBowlingAvgFragmentInteractionListener {
+            PlayerProfileBatFieldAvgFragment.OnPlayerProfileBatFieldAvgFragmentInteractionListener,
+            PlayerProfileBowlingAvgFragment.OnPlayerProfileBowlingAvgFragmentInteractionListener,
+            PlayerProfileApiDataProvider.OnDataReceivedListener {
+
+    private static final String TAG = PlayerProfileActivity.class.getCanonicalName();
+
+    int playerId = 0;
+    PlayerProfileApiDataProvider playerProfileApiDataProvider = new PlayerProfileApiDataProvider();
+    private ArrayList<PlayerEntity> playerEntityList = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_player_profile);
@@ -31,29 +47,7 @@ public class PlayerProfileActivity extends ActionBarActivity implements
         //if (savedInstanceState == null) {
         //}
 
-        Button buttonBattingFieldingAvg = (Button)findViewById(R.id.button_batting);
-
-        buttonBattingFieldingAvg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.player_profile_avg_fragment_container,
-                                new PlayerProfileBatFieldAvgFragment())
-                        .commit();
-            }
-        });
-
-        Button buttonBowlingAvg = (Button)findViewById(R.id.button_bowling);
-
-        buttonBowlingAvg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.player_profile_avg_fragment_container,
-                                new PlayerProfileBowlingAvgFragment())
-                        .commit();
-            }
-        });
+        prepareUi(getIntent());
     }
 
     @Override
@@ -103,5 +97,149 @@ public class PlayerProfileActivity extends ActionBarActivity implements
             View rootView = inflater.inflate(R.layout.fragment_player_profile, container, false);
             return rootView;
         }
+    }
+
+    // Initializes the UI
+    private void prepareUi(Intent intent) {
+
+        // Get the passed player id
+        this.playerId = intent.getIntExtra("playerId", 0);
+
+        // Get the player profile for the given player id
+        this.playerProfileApiDataProvider.getPlayerProfile(this, this, playerId);
+
+        AppUtil.showProgressDialog(this);
+    }
+
+    @Override
+    public void onDataFetched(int playerProfileApiId, Object responseData) {
+
+        AppUtil.logDebugMessage(TAG, "onDataFetched callback");
+
+        AppUtil.dismissProgressDialog();
+
+        boolean showErrorMessage = false;
+
+        if (null == responseData) {
+            showErrorMessage = true;
+        }
+
+        // Some APIs return boolean as responseData, so check for that as well
+        if (false == showErrorMessage) {
+            // Even though the service would have sent it as boolean, the value would be
+            // autoboxed to Boolean, so it is safe to check like this
+            if ( responseData instanceof Boolean) {
+                boolean status = ((Boolean)responseData).booleanValue();
+                showErrorMessage = !status; // status = true means the API had succeeded
+            }
+        }
+
+        if (showErrorMessage) {
+            // The app has failed to get a response from webservice. Show appropriate error message
+            String message = getString(R.string.response_failed);
+            AppUtil.showDialog(this, message);
+            return;
+        }
+
+        switch (playerProfileApiId) {
+            case PlayerProfileApiDataProvider.GET_PLAYER_PROFILE_FOR_PLAYER_ID_API: {
+                HandleGetPlayerProfileResponse(responseData);
+                break;
+            }
+
+            case PlayerProfileApiDataProvider.SCRAPE_PLAYER_PROFILE_FOR_PLAYER_ID_API: {
+                HandleScrapePlayerProfileResponse(responseData);
+                break;
+            }
+
+            default: break;
+        }
+    }
+
+    // Handles the get player profile API response
+    private void HandleGetPlayerProfileResponse(Object responseData) {
+
+        // Try getting the data for the country list and show the list
+        this.playerEntityList = (ArrayList<PlayerEntity>)responseData;
+
+        if (null == this.playerEntityList) {
+            AppUtil.logDebugMessage(TAG, "Player entity list is null. This is unexpected !!!");
+            return;
+        }
+
+        // Note: We are expecting a detailed player profile, so there will be only
+        // one item in the playerEntityList array.
+        // If there is no player thumnbnail URL yet available for this player, first scrape the
+        // player profile data and then try getting the data again.
+        PlayerEntity playerEntity = this.playerEntityList.get(0);
+        String thumbnailUrl = playerEntity.getThumbnailUrl();
+
+        if ( null == thumbnailUrl ) {
+            this.playerProfileApiDataProvider.scrapePlayerProfile(this, this, this.playerId);
+            AppUtil.showProgressDialog(this);
+            return;
+        }
+
+        // If we have got the detailed player profile, go ahead and construct the UI
+        constructUi(playerEntity);
+    }
+
+    // Player profile scrapped successfully, so try getting the detailed player profile for the
+    // given player again
+    private void HandleScrapePlayerProfileResponse(Object responseData) {
+        this.playerProfileApiDataProvider.getPlayerProfile(this, this, this.playerId);
+        AppUtil.showProgressDialog(this);
+    }
+
+    private void constructUi(final PlayerEntity playerEntity) {
+
+        // Player thumbnail
+        NetworkImageView imageView = (NetworkImageView)
+                                    findViewById(R.id.player_profile_imgview_player_thumbnail);
+
+        ImageLoader imageLoader = VolleySingleton.getInstance().getImageLoader();
+        imageView.setImageUrl(playerEntity.getThumbnailUrl(), imageLoader);
+
+        TextView textView = null;
+
+        // Player name
+        textView = (TextView) findViewById(R.id.player_profile_tv_name);
+        textView.setText(playerEntity.getName());
+
+        // Player country
+        textView = (TextView) findViewById(R.id.player_profile_tv_country);
+        textView.setText(playerEntity.getCountry());
+
+        // Player Batting Style
+        textView = (TextView) findViewById(R.id.player_profile_tv_bat_style);
+        textView.setText(playerEntity.getBattingStyle());
+
+        // Player Bowling Style
+        textView = (TextView) findViewById(R.id.player_profile_tv_bowl_style);
+        textView.setText(playerEntity.getBowlingStyle());
+
+        Button buttonBattingFieldingAvg = (Button)findViewById(R.id.player_profile_button_batting);
+
+        buttonBattingFieldingAvg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.player_profile_avg_fragment_container,
+                        PlayerProfileBatFieldAvgFragment.newInstance(playerEntity.getBatFieldAvg()))
+                    .commit();
+            }
+        });
+
+        Button buttonBowlingAvg = (Button)findViewById(R.id.player_profile_button_bowling);
+
+        buttonBowlingAvg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.player_profile_avg_fragment_container,
+                                new PlayerProfileBowlingAvgFragment())
+                        .commit();
+            }
+        });
     }
 }

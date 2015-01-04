@@ -3,17 +3,17 @@
 package com.rajaraman.playerprofile.network.data.entities;
 
 public class PlayerEntity {
-    public int countryId;
-    public String playerUrl;
-    public String thumbnailUrl;
-    public int playerId;
-    public String name;
-    public String country;
-    public String age;
-    public String battingStyle;
-    public String bowlingStyle;
-    public BatFieldAvg batFieldAvg;
-    public BowlAvg bowlAvg;
+    private int countryId;
+    private String playerUrl;
+    private String thumbnailUrl;
+    private int playerId;
+    private String name;
+    private String country;
+    private String age;
+    private String battingStyle;
+    private String bowlingStyle;
+    private BatFieldAvg batFieldAvg;
+    private BowlAvg bowlAvg;
 
     public int getCountryId() {
         return countryId;
