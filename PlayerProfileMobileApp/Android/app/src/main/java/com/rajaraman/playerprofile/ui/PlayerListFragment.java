@@ -185,18 +185,31 @@ public class PlayerListFragment extends Fragment implements
     }
 
     // Callback for the backend to let this fragment know the player list from the web service
-    public void onDataFetched(boolean status, int playerProfileApiId, Object responseData) {
+    public void onDataFetched(int playerProfileApiId, Object responseData) {
         AppUtil.logDebugMessage(TAG, "onDataFetched callback");
 
         AppUtil.dismissProgressDialog();
 
-        if (false == status) {
-            // The app has failed to get a response from webservice. There is no point in
-            // proceeding further as this is the starting point in the app, so show the error
-            // and quit the app.
+        boolean showErrorMessage = false;
+
+        if (null == responseData) {
+            showErrorMessage = true;
+        }
+
+        // Some APIs return boolean as responseData, so check for that as well
+        if (false == showErrorMessage) {
+            // Even though the service would have sent it as boolean, the value would be
+            // autoboxed to Boolean, so it is safe to check like this
+            if ( responseData instanceof Boolean) {
+                boolean status = ((Boolean)responseData).booleanValue();
+                showErrorMessage = !status; // status = true means the API had succeeded
+            }
+        }
+
+        if (showErrorMessage) {
+            // The app has failed to get a response from webservice. Show appropriate error message
             String message = getActivity().getString(R.string.response_failed);
             AppUtil.showDialog(getActivity(), message);
-
             return;
         }
 
@@ -248,10 +261,7 @@ public class PlayerListFragment extends Fragment implements
         // Get the country id passed as a parameter during this fragment's creation
         int countryId = getArguments().getInt(ARG_PARAM1);
 
-        // Test
         this.playerProfileApiDataProvider.getPlayerListForCountry(getActivity(), this, countryId);
-        //this.playerProfileApiDataProvider.getPlayerProfile(getActivity(), this, 8917);
-        // Test
 
         AppUtil.showProgressDialog(getActivity());
     }

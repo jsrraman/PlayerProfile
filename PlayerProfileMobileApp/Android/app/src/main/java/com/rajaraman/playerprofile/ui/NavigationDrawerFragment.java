@@ -286,14 +286,14 @@ public class NavigationDrawerFragment extends Fragment implements
     }
 
     @Override
-    public void onDataFetched(boolean status, int playerProfileApiId, Object responseData) {
+    public void onDataFetched(int playerProfileApiId, Object responseData) {
         // We have received the notification from PlayerProfileDataProvider so
         // dismiss the progress dialog
         AppUtil.logDebugMessage(TAG, "onDataFetched callback");
 
         AppUtil.dismissProgressDialog();
 
-        if (false == status) {
+        if (null == responseData) {
             // The app has failed to get a response from webservice. There is no point in
             // proceeding further as this is the starting point in the app, so show the error
             // and quit the app.
@@ -316,7 +316,7 @@ public class NavigationDrawerFragment extends Fragment implements
                 mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
 
                 // Select either the default item (0) or the last selected item.
-                selectItem(mCurrentSelectedPosition);
+                //selectItem(mCurrentSelectedPosition);
             }
         }
     }

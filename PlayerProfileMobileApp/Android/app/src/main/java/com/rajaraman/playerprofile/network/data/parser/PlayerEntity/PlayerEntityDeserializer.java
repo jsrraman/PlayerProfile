@@ -1,5 +1,5 @@
 // Created by rajaraman on Jan 01, 2015
-package com.rajaraman.playerprofile.network.data.parser;
+package com.rajaraman.playerprofile.network.data.parser.PlayerEntity;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;

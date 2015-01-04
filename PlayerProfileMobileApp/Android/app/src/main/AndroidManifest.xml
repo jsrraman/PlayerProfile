@@ -12,7 +12,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <service android:name=".network.data.provider.ApiDataProviderService" >
+        <service android:name=".network.data.provider.PlayerProfileApiDataProviderService" >
         </service>
 
         <activity

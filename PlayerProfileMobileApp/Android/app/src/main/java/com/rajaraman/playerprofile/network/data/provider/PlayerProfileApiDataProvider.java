@@ -5,22 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-import com.rajaraman.playerprofile.network.data.entities.BatFieldAvg;
-import com.rajaraman.playerprofile.network.data.entities.BatFieldMatchStatistics;
-import com.rajaraman.playerprofile.network.data.entities.CountryEntity;
-import com.rajaraman.playerprofile.network.data.entities.PlayerEntity;
-import com.rajaraman.playerprofile.network.data.parser.BatFieldAvgDeserializer;
-import com.rajaraman.playerprofile.network.data.parser.BatFieldMatchStatisticsDeserializer;
-import com.rajaraman.playerprofile.network.data.parser.PlayerEntityDeserializer;
 import com.rajaraman.playerprofile.utils.AppUtil;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 /**
  * Created by Rajaraman on 25/12/14.
@@ -154,7 +139,7 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
         this.context.startService(createApiDataProviderServiceIntent(this.apiReqResData));
     }
     private Intent createApiDataProviderServiceIntent(ApiReqResData apiReqResData) {
-        Intent i = new Intent(context, ApiDataProviderService.class);
+        Intent i = new Intent(context, PlayerProfileApiDataProviderService.class);
         ApiDataProviderServiceReceiver receiver =
                                   new ApiDataProviderServiceReceiver(new Handler());
         receiver.setListener(this);
@@ -166,6 +151,76 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
 
     // Receives the data from ResultReceiver
     @Override
+//    public void onReceiveResult(int resultCode, Bundle resultData) {
+//
+//        AppUtil.logDebugMessage(TAG, "onReceiveResult");
+//
+//        Object responseDataObj = resultData.getParcelable("RESPONSE_DATA");
+//
+//        if (responseDataObj == null) {
+//            AppUtil.logDebugMessage(TAG, "resultData is null. This is unexpected !!!");
+//            this.onDataReceivedListener.
+//                        onDataFetched(false,
+//                                this.apiReqResData.getRequestWebServiceApiId(), null);
+//            return;
+//        }
+//
+//        Object parsedResponseData = null;
+//        boolean status = true;
+//
+//        // Get the parcelable data from the resultData
+//        ApiReqResData apiReqResData = (ApiReqResData) responseDataObj;
+//
+//        // Get the actual response data from the parcelable data
+//        String jsonData = apiReqResData.getResponseData();
+//
+//        switch (resultCode) {
+//            case GET_COUNTRY_LIST_API: {
+//                parsedResponseData = getCountryListFromJson(jsonData);
+//
+//                if (null == parsedResponseData) {
+//                    status = false;
+//                }
+//
+//                break;
+//            }
+//
+//            case GET_PLAYER_LIST_FOR_COUNTRY_ID_API:
+//            case GET_PLAYER_PROFILE_FOR_PLAYER_ID_API:{
+//                parsedResponseData = getPlayerProfileFromJson(jsonData);
+//
+//                if (null == parsedResponseData) {
+//                    status = false;
+//                }
+//
+//                break;
+//            }
+//
+//            case SCRAPE_PLAYER_LIST_FOR_COUNTRY_ID_API: {
+//                parsedResponseData = getScrapeResultFromJson(jsonData);
+//                status = (boolean)parsedResponseData;
+//
+//                break;
+//            }
+//
+//            case SCRAPE_PLAYER_PROFILE_FOR_PLAYER_ID_API: {
+//                parsedResponseData = getScrapeResultFromJson(jsonData);
+//                status = (boolean)parsedResponseData;
+//
+//                break;
+//            }
+//
+//            default: {
+//                break;
+//            }
+//        }
+//
+//        this.onDataReceivedListener.
+//                    onDataFetched(status,
+//                            this.apiReqResData.getRequestWebServiceApiId(),
+//                            parsedResponseData);
+//   }
+
     public void onReceiveResult(int resultCode, Bundle resultData) {
 
         AppUtil.logDebugMessage(TAG, "onReceiveResult");
@@ -175,145 +230,19 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
         if (responseDataObj == null) {
             AppUtil.logDebugMessage(TAG, "resultData is null. This is unexpected !!!");
             this.onDataReceivedListener.
-                        onDataFetched(false,
-                                this.apiReqResData.getRequestWebServiceApiId(), null);
+                    onDataFetched(this.apiReqResData.getRequestWebServiceApiId(), null);
             return;
         }
 
         Object parsedResponseData = null;
-        boolean status = true;
 
-        // Get the parcelable data from the resultData
+        // Get the parcelable data from the responseDataObj
         ApiReqResData apiReqResData = (ApiReqResData) responseDataObj;
 
         // Get the actual response data from the parcelable data
-        String jsonData = apiReqResData.getResponseData();
-
-        switch (resultCode) {
-            case GET_COUNTRY_LIST_API: {
-                parsedResponseData = getCountryListFromJson(jsonData);
-
-                if (null == parsedResponseData) {
-                    status = false;
-                }
-
-                break;
-            }
-
-            case GET_PLAYER_LIST_FOR_COUNTRY_ID_API:
-            case GET_PLAYER_PROFILE_FOR_PLAYER_ID_API:{
-                parsedResponseData = getPlayerProfileFromJson(jsonData);
-
-                if (null == parsedResponseData) {
-                    status = false;
-                }
-
-                break;
-            }
-
-            case SCRAPE_PLAYER_LIST_FOR_COUNTRY_ID_API: {
-                parsedResponseData = getScrapeResultFromJson(jsonData);
-                status = (boolean)parsedResponseData;
-
-                break;
-            }
-
-            case SCRAPE_PLAYER_PROFILE_FOR_PLAYER_ID_API: {
-                parsedResponseData = getScrapeResultFromJson(jsonData);
-                status = (boolean)parsedResponseData;
-
-                break;
-            }
-
-            default: {
-                break;
-            }
-        }
+        parsedResponseData = apiReqResData.getResponseData();
 
         this.onDataReceivedListener.
-                    onDataFetched(status,
-                            this.apiReqResData.getRequestWebServiceApiId(),
-                            parsedResponseData);
-   }
-
-   private ArrayList<CountryEntity> getCountryListFromJson(String jsonData) {
-
-       ArrayList<CountryEntity> countryEntityList = null;
-
-       Gson gson = new Gson();
-
-       try {
-           // Get the root JSON object
-           JSONObject rootJsonObj = new JSONObject(jsonData);
-
-           // Get the key we are interested in
-           JSONArray countryListKeyJsonArray = rootJsonObj.getJSONArray("result");
-
-           // Convert this again to JSON string so that we can use Gson to
-           // easily convert (deserialize) this to the actual entity object
-           String countryListJsonString = countryListKeyJsonArray.toString();
-
-           //AppUtil.logDebugMessage(TAG, countryListJsonString);
-
-           // convert (Deserialize) JSON string to the equivalent entity object
-           countryEntityList = gson.fromJson(countryListJsonString,
-                        new TypeToken<ArrayList<CountryEntity>>(){}.getType());
-       }catch (Exception e) {
-           e.printStackTrace();
-       }finally {
-          return countryEntityList;
-       }
-   }
-
-    private boolean getScrapeResultFromJson(String jsonData) {
-
-        boolean status = true;
-
-        try {
-            // Get the root JSON object
-            JSONObject rootJsonObj = new JSONObject(jsonData);
-
-            // Get the status value
-            String statusVal = (String) rootJsonObj.get("status");
-
-            status = statusVal.equalsIgnoreCase("success") ? true : false;
-        }catch (Exception e) {
-            e.printStackTrace();
-        }finally {
-            return status;
-        }
-    }
-
-    // Get the player profile from json
-    // Note:
-    // PlayerProfile has nested objects, so it uses JsonDeserializer to parse
-    // the underlying nested objects. Deserializing should not take time, if it takes time
-    // consider pushing the deserialize logic to a worker thread
-    private ArrayList<PlayerEntity> getPlayerProfileFromJson(String jsonData) {
-
-        ArrayList<PlayerEntity> playerEntityList = null;
-
-        GsonBuilder gsonBuilder = new GsonBuilder();
-
-        try {
-            // Register the deserializer objects
-            gsonBuilder.registerTypeAdapter(PlayerEntity.class,
-                                                new PlayerEntityDeserializer());
-            gsonBuilder.registerTypeAdapter(BatFieldAvg.class,
-                                                new BatFieldAvgDeserializer());
-            gsonBuilder.registerTypeAdapter(BatFieldMatchStatistics.class,
-                                                new BatFieldMatchStatisticsDeserializer());
-
-            Gson gson = gsonBuilder.create();
-
-            // Note: As PlayerEntity is a complex type (i.e it has nested objects), the gson.fromJson
-            // conversion is different (i.e PlayerEntity type is passed and PlayerEntityList type is returned)
-            // compared to other simple conversions, eg: getCountryListFromJson
-            playerEntityList = gson.fromJson(jsonData, new TypeToken<PlayerEntity>(){}.getType());
-        }catch (Exception e) {
-            e.printStackTrace();
-        }finally {
-            return playerEntityList;
-        }
+                onDataFetched(this.apiReqResData.getRequestWebServiceApiId(), parsedResponseData);
     }
 }
