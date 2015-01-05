@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
@@ -44,7 +45,7 @@ public class PlayerListAdapter extends ArrayAdapter<PlayerEntity> {
                 rowView.findViewById(R.id.fragment_countrylist_list_icon_country);
 
         if ((thumbnailUrl == null) || thumbnailUrl.isEmpty()) {
-            imageView.setVisibility(View.GONE);
+           imageView.setDefaultImageResId(R.drawable.ic_launcher);
         }else {
             imageView.setImageUrl(thumbnailUrl, this.imageLoader);
         }

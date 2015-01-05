@@ -326,10 +326,26 @@ PlayersDataScrape.extractPlayerProfileData = function($, docPlayerProfile,
   docPlayerProfile.age = tempData.eq(2).find("span").text().trim();
 
   // Player Batting Style
-  docPlayerProfile.battingStyle = tempData.eq(5).find("span").text().trim();
+  // Find "b" elements and further filter them to find the element that has "Batting style" text
+  var tempElement = tempData.find("b").filter(function() {
+    return $(this).text() == "Batting style";
+  });
 
-  // Player Bowling Style
-  docPlayerProfile.bowlingStyle = tempData.eq(6).find("span").text().trim();
+  // Once we found the element that corresponds to "Batting style", we need to get its parent.
+  // as the value for "Batting style" is its parent's second child.
+  // Following is the html structure for this.
+  // <p>
+  //    <b>Batting Style<b>
+  //    <span>Right-Hand bat<span>
+  // </p>
+  docPlayerProfile.battingStyle = tempElement.parent().children(":nth-child(2)").text().trim();
+
+  // Player Bowling Style (similar to batting style)
+  tempElement = tempData.find("b").filter(function() {
+    return $(this).text() == "Bowling style";
+  });
+
+  docPlayerProfile.bowlingStyle = tempElement.parent().children(":nth-child(2)").text().trim();
 
   // Player Thumbnail
   var thumbnailUrl = $(".pnl490M .ciPlayernametxt").next().
