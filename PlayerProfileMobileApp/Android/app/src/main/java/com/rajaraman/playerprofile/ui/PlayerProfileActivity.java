@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
@@ -231,6 +232,13 @@ public class PlayerProfileActivity extends ActionBarActivity implements
         buttonBattingFieldingAvg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                // Set the selected and not selected button images
+                ((Button)v).setBackgroundResource(R.drawable.tab_selected);
+
+                Button buttonBowlingAvg = (Button)findViewById(R.id.player_profile_button_bowling);
+                buttonBowlingAvg.setBackgroundResource(R.drawable.tab_not_selected);
+
                 getSupportFragmentManager().beginTransaction()
                     .replace(R.id.player_profile_avg_fragment_container,
                         PlayerProfileBatFieldAvgFragment.newInstance(playerEntity.getBatFieldAvg()))
@@ -243,11 +251,21 @@ public class PlayerProfileActivity extends ActionBarActivity implements
         buttonBowlingAvg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                // Set the selected and not selected button images
+                ((Button)v).setBackgroundResource(R.drawable.tab_selected);
+
+                Button buttonBattingAvg = (Button)findViewById(R.id.player_profile_button_batting);
+                buttonBattingAvg.setBackgroundResource(R.drawable.tab_not_selected);
+
                 getSupportFragmentManager().beginTransaction()
                       .replace(R.id.player_profile_avg_fragment_container,
-                        PlayerProfileBowlingAvgFragment.newInstance(playerEntity.getBowlAvg()))
+                              PlayerProfileBowlingAvgFragment.newInstance(playerEntity.getBowlAvg()))
                       .commit();
             }
         });
+
+        // Select the batting statistics by default
+        buttonBattingFieldingAvg.performClick();
     }
 }

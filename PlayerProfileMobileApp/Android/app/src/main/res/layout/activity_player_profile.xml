@@ -7,6 +7,7 @@
         android:id="@+id/player_profile_ll_player_thumbnail"
         android:layout_width="400dp"
         android:layout_height="100dp"
+        android:padding="2dp"
         android:orientation="horizontal">
 
         <com.android.volley.toolbox.NetworkImageView
@@ -23,23 +24,26 @@
                 android:id="@+id/player_profile_tv_label_name"
                 android:layout_width="75dp"
                 android:layout_height="25dp"
-                android:padding="@dimen/textview_padding"
-                android:text="@string/name" />
+                android:padding="@dimen/player_profile_table_text_padding"
+                android:text="@string/name"
+                android:textSize="@dimen/player_profile_text_size" />
 
             <TextView
                 android:id="@+id/player_profile_tv_name"
                 android:layout_width="wrap_content"
                 android:layout_height="25dp"
                 android:layout_toRightOf="@id/player_profile_tv_label_name"
-                android:padding="@dimen/textview_padding" />
+                android:padding="@dimen/player_profile_table_text_padding"
+                android:textSize="@dimen/player_profile_text_size" />
 
             <TextView
                 android:id="@+id/player_profile_tv_label_country"
                 android:layout_width="75dp"
                 android:layout_height="25dp"
                 android:layout_below="@+id/player_profile_tv_label_name"
-                android:padding="@dimen/textview_padding"
-                android:text="@string/country" />
+                android:padding="@dimen/player_profile_table_text_padding"
+                android:text="@string/country"
+                android:textSize="@dimen/player_profile_text_size" />
 
             <TextView
                 android:id="@+id/player_profile_tv_country"
@@ -47,15 +51,17 @@
                 android:layout_height="25dp"
                 android:layout_below="@id/player_profile_tv_name"
                 android:layout_toRightOf="@+id/player_profile_tv_label_country"
-                android:padding="@dimen/textview_padding" />
+                android:padding="@dimen/player_profile_table_text_padding"
+                android:textSize="@dimen/player_profile_text_size" />
 
             <TextView
                 android:id="@+id/player_profile_tv_label_bat_style"
                 android:layout_width="75dp"
                 android:layout_height="25dp"
                 android:layout_below="@+id/player_profile_tv_label_country"
-                android:padding="@dimen/textview_padding"
-                android:text="@string/bat_style" />
+                android:padding="@dimen/player_profile_table_text_padding"
+                android:text="@string/bat_style"
+                android:textSize="@dimen/player_profile_text_size" />
 
             <TextView
                 android:id="@+id/player_profile_tv_bat_style"
@@ -63,15 +69,17 @@
                 android:layout_height="25dp"
                 android:layout_below="@id/player_profile_tv_label_country"
                 android:layout_toRightOf="@+id/player_profile_tv_label_bat_style"
-                android:padding="@dimen/textview_padding" />
+                android:padding="@dimen/player_profile_table_text_padding"
+                android:textSize="@dimen/player_profile_text_size" />
 
             <TextView
                 android:id="@+id/player_profile_tv_label_bowl_style"
                 android:layout_width="75dp"
                 android:layout_height="25dp"
                 android:layout_below="@+id/player_profile_tv_label_bat_style"
-                android:padding="@dimen/textview_padding"
-                android:text="@string/bowl_style" />
+                android:padding="@dimen/player_profile_table_text_padding"
+                android:text="@string/bowl_style"
+                android:textSize="@dimen/player_profile_text_size" />
 
             <TextView
                 android:id="@+id/player_profile_tv_bowl_style"
@@ -79,7 +87,8 @@
                 android:layout_height="25dp"
                 android:layout_below="@id/player_profile_tv_label_bat_style"
                 android:layout_toRightOf="@+id/player_profile_tv_label_bowl_style"
-                android:padding="@dimen/textview_padding" />
+                android:padding="@dimen/player_profile_table_text_padding"
+                android:textSize="@dimen/player_profile_text_size" />
 
         </RelativeLayout>
     </LinearLayout>
@@ -89,19 +98,24 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_below="@id/player_profile_ll_player_thumbnail"
+        android:padding="2dp"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/player_profile_button_batting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/batting_fielding" />
+            android:background="@drawable/tab_not_selected"
+            android:text="@string/batting_fielding"
+            android:textSize="@dimen/player_profile_text_size"/>
 
         <Button
             android:id="@+id/player_profile_button_bowling"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/bowling" />
+            android:background="@drawable/tab_not_selected"
+            android:text="@string/bowling"
+            android:textSize="@dimen/player_profile_text_size"/>
     </LinearLayout>
 
     <FrameLayout xmlns:tools="http://schemas.android.com/tools"
