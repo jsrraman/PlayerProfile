@@ -164,17 +164,25 @@ public class PlayerProfileActivity extends ActionBarActivity implements
 
         if (null == this.playerEntityList) {
             AppUtil.logDebugMessage(TAG, "Player entity list is null. This is unexpected !!!");
+            AppUtil.showDialog(this, getString(R.string.response_failed));
             return;
         }
 
         // Note: We are expecting a detailed player profile, so there will be only
         // one item in the playerEntityList array.
-        // If there is no player thumnbnail URL yet available for this player, first scrape the
-        // player profile data and then try getting the data again.
+        if (0 == playerEntityList.size()) {
+            AppUtil.logDebugMessage(TAG, "Player entity size is 0. This is unexpected !!!");
+            AppUtil.showDialog(this, getString(R.string.response_failed));
+            return;
+        }
+
         PlayerEntity playerEntity = this.playerEntityList.get(0);
+
         String thumbnailUrl = playerEntity.getThumbnailUrl();
 
-        if ( null == thumbnailUrl ) {
+        // If thumnbnail URL is empty for this player, first scrape the
+        // player profile data and then try getting the data again.
+        if ( thumbnailUrl.isEmpty() ) {
             this.playerProfileApiDataProvider.scrapePlayerProfile(this, this, this.playerId);
             AppUtil.showProgressDialog(this);
             return;
@@ -236,9 +244,9 @@ public class PlayerProfileActivity extends ActionBarActivity implements
             @Override
             public void onClick(View v) {
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.player_profile_avg_fragment_container,
-                                new PlayerProfileBowlingAvgFragment())
-                        .commit();
+                      .replace(R.id.player_profile_avg_fragment_container,
+                        PlayerProfileBowlingAvgFragment.newInstance(playerEntity.getBowlAvg()))
+                      .commit();
             }
         });
     }

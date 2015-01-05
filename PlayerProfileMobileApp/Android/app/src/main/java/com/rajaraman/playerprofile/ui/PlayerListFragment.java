@@ -38,14 +38,9 @@ public class PlayerListFragment extends Fragment implements
 
     private static final String TAG = PlayerListFragment.class.getCanonicalName();
 
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "countryId";
     private static final String ARG_PARAM2 = "countryName";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
@@ -236,6 +231,7 @@ public class PlayerListFragment extends Fragment implements
 
         if (null == this.playerEntityList) {
             AppUtil.logDebugMessage(TAG, "Player entity list is null. This is unexpected !!!");
+            AppUtil.showDialog(getActivity(), getActivity().getString(R.string.response_failed));
             return;
         }
 

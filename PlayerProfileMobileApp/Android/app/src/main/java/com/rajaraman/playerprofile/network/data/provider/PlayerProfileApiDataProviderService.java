@@ -13,10 +13,14 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.rajaraman.playerprofile.network.data.entities.BatFieldAvg;
 import com.rajaraman.playerprofile.network.data.entities.BatFieldMatchStatistics;
+import com.rajaraman.playerprofile.network.data.entities.BowlAvg;
+import com.rajaraman.playerprofile.network.data.entities.BowlMatchStatistics;
 import com.rajaraman.playerprofile.network.data.entities.CountryEntity;
 import com.rajaraman.playerprofile.network.data.entities.PlayerEntity;
 import com.rajaraman.playerprofile.network.data.parser.PlayerEntity.BatFieldAvgDeserializer;
 import com.rajaraman.playerprofile.network.data.parser.PlayerEntity.BatFieldMatchStatisticsDeserializer;
+import com.rajaraman.playerprofile.network.data.parser.PlayerEntity.BowlAvgDeserializer;
+import com.rajaraman.playerprofile.network.data.parser.PlayerEntity.BowlMatchStatisticsDeserializer;
 import com.rajaraman.playerprofile.network.data.parser.PlayerEntity.PlayerEntityDeserializer;
 
 import org.json.JSONArray;
@@ -182,12 +186,13 @@ public class PlayerProfileApiDataProviderService extends IntentService {
 
         try {
             // Register the deserializer objects
-            gsonBuilder.registerTypeAdapter(PlayerEntity.class,
-                    new PlayerEntityDeserializer());
-            gsonBuilder.registerTypeAdapter(BatFieldAvg.class,
-                    new BatFieldAvgDeserializer());
+            gsonBuilder.registerTypeAdapter(PlayerEntity.class, new PlayerEntityDeserializer());
+            gsonBuilder.registerTypeAdapter(BatFieldAvg.class, new BatFieldAvgDeserializer());
             gsonBuilder.registerTypeAdapter(BatFieldMatchStatistics.class,
-                    new BatFieldMatchStatisticsDeserializer());
+                                                        new BatFieldMatchStatisticsDeserializer());
+            gsonBuilder.registerTypeAdapter(BowlAvg.class, new BowlAvgDeserializer());
+            gsonBuilder.registerTypeAdapter(BowlMatchStatistics.class,
+                                                        new BowlMatchStatisticsDeserializer());
 
             Gson gson = gsonBuilder.create();
 
@@ -198,7 +203,7 @@ public class PlayerProfileApiDataProviderService extends IntentService {
         }catch (Exception e) {
             e.printStackTrace();
         }finally {
-            return playerEntityList;
+                return playerEntityList;
         }
     }
 }

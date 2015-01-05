@@ -6,6 +6,25 @@ import android.os.Parcelable;
 
 public class BowlAvg implements Parcelable {
 
+    private BowlMatchStatistics tests;
+    private BowlMatchStatistics odis;
+
+    public BowlMatchStatistics getTests() {
+        return tests;
+    }
+
+    public void setTests(BowlMatchStatistics tests) {
+        this.tests = tests;
+    }
+
+    public BowlMatchStatistics getOdis() {
+        return odis;
+    }
+
+    public void setOdis(BowlMatchStatistics odis) {
+        this.odis = odis;
+    }
+
     /**
      * Describe the kinds of special objects contained in this Parcelable's
      * marshalled representation.
@@ -27,6 +46,31 @@ public class BowlAvg implements Parcelable {
      */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-
+        dest.writeParcelable(this.tests, flags);
+        dest.writeParcelable(this.odis, flags);
     }
+
+    public static final Creator<BowlAvg> CREATOR = new Creator<BowlAvg>() {
+        @Override
+        public BowlAvg createFromParcel(Parcel source) {
+            BowlAvg bowlAvg = new BowlAvg();
+
+            ClassLoader classLoader = BowlMatchStatistics.class.getClassLoader();
+
+            BowlMatchStatistics tests =
+                    (BowlMatchStatistics)source.readParcelable(classLoader);
+            bowlAvg.setTests(tests);
+
+            BowlMatchStatistics odis =
+                    (BowlMatchStatistics)source.readParcelable(classLoader);
+            bowlAvg.setOdis(odis);
+
+            return bowlAvg;
+        }
+
+        @Override
+        public BowlAvg[] newArray(int size) {
+            return new BowlAvg[size];
+        }
+    };
 }

@@ -25,7 +25,7 @@ import com.rajaraman.playerprofile.network.data.entities.BatFieldAvg;
  */
 public class PlayerProfileBatFieldAvgFragment extends Fragment {
 
-    private static final String TAG = PlayerProfileActivity.class.getCanonicalName();
+    private static final String TAG = PlayerProfileBatFieldAvgFragment.class.getCanonicalName();
     private static final String ARG_PARAM1 = "battingAndFieldingAvg";
     private OnPlayerProfileBatFieldAvgFragmentInteractionListener mListener;
 
@@ -72,6 +72,10 @@ public class PlayerProfileBatFieldAvgFragment extends Fragment {
 
         BatFieldAvg batFieldAvg = bundle.getParcelable(ARG_PARAM1);
 
+        if ( null == batFieldAvg) {
+            return rootView;
+        }
+
         TextView textView = null;
 
         // Tests
@@ -102,6 +106,7 @@ public class PlayerProfileBatFieldAvgFragment extends Fragment {
         // ----------------------------------------------------------------------------------------
 
         // ODIs
+        // Matches
         textView = (TextView)rootView.findViewById(R.id.player_profile_bat_field_avg_tv_odis_matches);
         textView.setText(batFieldAvg.getOdis().getMatches());
 
@@ -162,8 +167,6 @@ public class PlayerProfileBatFieldAvgFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnPlayerProfileBatFieldAvgFragmentInteractionListener {
-        // TODO: Update argument type and name
         public void onPlayerProfileBatFieldAvgFragmentInteraction(Uri uri);
     }
-
 }

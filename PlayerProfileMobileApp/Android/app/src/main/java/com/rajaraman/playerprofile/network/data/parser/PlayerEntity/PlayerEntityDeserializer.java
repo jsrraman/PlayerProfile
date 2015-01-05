@@ -41,13 +41,13 @@ public class PlayerEntityDeserializer implements JsonDeserializer<ArrayList<Play
 
         int countryId = 0;
         int playerId = 0;
-        String playerUrl = null;
-        String name = null;
-        String country = null;
-        String age = null;
-        String battingStyle = null;
-        String bowlingStyle = null;
-        String thumbnailUrl = null;
+        String playerUrl = "";
+        String name = "";
+        String country = "";
+        String age = "";
+        String battingStyle = "";
+        String bowlingStyle = "";
+        String thumbnailUrl = "";
         BatFieldAvg batFieldAvg = null;
         BowlAvg bowlAvg = null;
 
@@ -64,25 +64,25 @@ public class PlayerEntityDeserializer implements JsonDeserializer<ArrayList<Play
                 playerId = (jsonElementTemp != null) ? jsonElementTemp.getAsInt() : 0;
 
                 jsonElementTemp = jsonObject.get("playerUrl");
-                playerUrl = (jsonElementTemp != null) ? jsonElementTemp.getAsString() : null;
+                playerUrl = (jsonElementTemp != null) ? jsonElementTemp.getAsString() : "";
 
                 jsonElementTemp = jsonObject.get("name");
-                name = (jsonElementTemp != null) ? jsonElementTemp.getAsString() : null;
+                name = (jsonElementTemp != null) ? jsonElementTemp.getAsString() : "";
 
                 jsonElementTemp = jsonObject.get("country");
-                country = (jsonElementTemp != null) ? jsonElementTemp.getAsString() : null;
+                country = (jsonElementTemp != null) ? jsonElementTemp.getAsString() : "";
 
                 jsonElementTemp = jsonObject.get("age");
-                age = (jsonElementTemp != null) ? jsonElementTemp.getAsString() : null;
+                age = (jsonElementTemp != null) ? jsonElementTemp.getAsString() : "";
 
                 jsonElementTemp = jsonObject.get("battingStyle");
-                battingStyle = (jsonElementTemp != null) ? jsonElementTemp.getAsString() : null;
+                battingStyle = (jsonElementTemp != null) ? jsonElementTemp.getAsString() : "";
 
                 jsonElementTemp = jsonObject.get("bowlingStyle");
-                bowlingStyle = (jsonElementTemp != null) ? jsonElementTemp.getAsString() : null;
+                bowlingStyle = (jsonElementTemp != null) ? jsonElementTemp.getAsString() : "";
 
                 jsonElementTemp = jsonObject.get("thumbnailUrl");
-                thumbnailUrl = (jsonElementTemp != null) ? jsonElementTemp.getAsString() : null;
+                thumbnailUrl = (jsonElementTemp != null) ? jsonElementTemp.getAsString() : "";
 
                 // Delegate the deserialization of "battingAndFieldingAvg" to the jdc with BatFieldAvg class
                 jsonElementTemp = jsonObject.get("battingAndFieldingAvg");
@@ -93,14 +93,14 @@ public class PlayerEntityDeserializer implements JsonDeserializer<ArrayList<Play
                 jsonElementTemp = jsonObject.get("bowlingAvg");
                 bowlAvg = (jsonElementTemp != null) ?
                         (BowlAvg) jdc.deserialize(jsonElementTemp, BowlAvg.class) : null;
-
-                PlayerEntity playerEntity = new PlayerEntity(countryId, playerUrl, thumbnailUrl,
-                                                    playerId, name, country, age, battingStyle,
-                                                    bowlingStyle, batFieldAvg, bowlAvg);
-
-                playerEntityList.add(playerEntity);
             }catch (Exception e) {
                 e.printStackTrace();
+            }finally {
+                PlayerEntity playerEntity = new PlayerEntity(countryId, playerUrl, thumbnailUrl,
+                        playerId, name, country, age, battingStyle,
+                        bowlingStyle, batFieldAvg, bowlAvg);
+
+                playerEntityList.add(playerEntity);
             }
         }
 

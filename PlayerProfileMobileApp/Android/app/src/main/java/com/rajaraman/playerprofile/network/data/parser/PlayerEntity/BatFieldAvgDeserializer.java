@@ -21,7 +21,7 @@ public class BatFieldAvgDeserializer implements JsonDeserializer<BatFieldAvg>
                                        JsonDeserializationContext jdc) throws JsonParseException
     {
         // Get the passed Json element as Json object
-        final JsonObject jsonObject = jsonElement.getAsJsonObject();
+        JsonObject jsonObject = jsonElement.getAsJsonObject();
 
         // Delegate the deserialization of "tests" to the jdc with BatFieldMatchStatistics class
         BatFieldMatchStatistics tests = jdc.deserialize(jsonObject.get("tests"),
@@ -31,7 +31,7 @@ public class BatFieldAvgDeserializer implements JsonDeserializer<BatFieldAvg>
         BatFieldMatchStatistics odis = jdc.deserialize(jsonObject.get("odis"),
                                                                     BatFieldMatchStatistics.class);
 
-        final BatFieldAvg batFieldAvg = new BatFieldAvg();
+        BatFieldAvg batFieldAvg = new BatFieldAvg();
 
         batFieldAvg.setTests(tests);
         batFieldAvg.setOdis(odis);

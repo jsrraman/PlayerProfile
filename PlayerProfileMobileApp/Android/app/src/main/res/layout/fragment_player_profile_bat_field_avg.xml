@@ -30,7 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/table_text_padding"
-                android:text="Mat"
+                android:text="@string/matches"
                 android:gravity="center"
                 android:textColor="#000"
                 android:textSize="@dimen/text_size" />
@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="@dimen/table_text_padding"
-                android:text="Runs"
+                android:text="@string/runs"
                 android:textColor="#000"
                 android:textSize="@dimen/text_size" />
 
@@ -49,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="@dimen/table_text_padding"
-                android:text="HS"
+                android:text="@string/highest"
                 android:textColor="#000"
                 android:textSize="@dimen/text_size" />
 
@@ -58,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:padding="@dimen/table_text_padding"
-                android:text="Avg"
+                android:text="@string/average"
                 android:textColor="#000"
                 android:textSize="@dimen/text_size" />
 
@@ -67,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/table_text_padding"
                 android:gravity="center"
-                android:text="100"
+                android:text="@string/hundred"
                 android:textColor="#000"
                 android:textSize="@dimen/text_size" />
 
@@ -76,7 +76,7 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/table_text_padding"
                 android:gravity="center"
-                android:text="50"
+                android:text="@string/fifty"
                 android:textColor="#000"
                 android:textSize="@dimen/text_size" />
         </TableRow>
