@@ -117,7 +117,7 @@ PlayersDataScrape.scrapeAndSavePlayerListForCountry = function(countryId, countr
 
       var docPlayerList = []; // new Array literal syntax :)
 
-      // Filter "all player" data from the html
+      // Try filtering "all player" data from the html assuming it is a test cricket playing country
       $("#rectPlyr_Playerlistall").filter(function () {
 
         // Get the filtered data
@@ -152,9 +152,41 @@ PlayersDataScrape.scrapeAndSavePlayerListForCountry = function(countryId, countr
             }
           });
         });
-      });
+       });
 
-      // If the scrape is successful, docPlayerList should contain the list of players.
+      // If the given country is not a test playing country, try filtering "all player" data from the html
+      // for the non-test cricket playing country
+      if (docPlayerList.length == 0) {
+        // Extract a player's id and name
+        $(".playersTable tbody tr").each(function () {
+
+          $(this).find('td').each(function () {
+
+            var colData = $(this);
+            var playerUrlData = colData.find('a');
+
+            if ((playerUrlData !== null) && (playerUrlData !== undefined)) {
+
+              var docPlayer = {};
+
+              docPlayer.countryId = parseInt(countryId);
+              docPlayer.playerUrl = PlayersDataScrape.baseScrapeUrl + playerUrlData.attr("href");
+
+              var tempIndex1 = playerUrlData.attr("href").lastIndexOf('/');
+              var tempIndex2 = playerUrlData.attr("href").indexOf('.html');
+              docPlayer.playerId = parseInt(playerUrlData.attr("href").substring(tempIndex1 + 1, tempIndex2));
+
+              docPlayer.name = playerUrlData.text();
+
+              //console.log(docPlayer);
+
+              docPlayerList.push(docPlayer);
+            }
+          });
+        });
+      }
+
+      // If either one of the above scrapes is successful, docPlayerList should contain the list of players.
       // If it's empty then send the error back to caller.
       if (docPlayerList.length == 0) {
         fnResponse = "Could not scrape player list for " + countryName;
@@ -331,7 +363,7 @@ PlayersDataScrape.extractPlayerProfileData = function($, docPlayerProfile,
     return $(this).text() == "Batting style";
   });
 
-  // Once we found the element that corresponds to "Batting style", we need to get its parent.
+  // Once we found the element that corresponds to "Batting style", we need to get its parent,
   // as the value for "Batting style" is its parent's second child.
   // Following is the html structure for this.
   // <p>
