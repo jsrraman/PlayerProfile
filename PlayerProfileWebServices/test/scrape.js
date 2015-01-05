@@ -42,7 +42,7 @@ describe('Player Data Scrape Unit Test Report', function() {
     it("should store the list of all players playing for USA successfully", function(done) {
 
         request(url)
-            .get("/scrape/players/country?id=11&name=USA")
+            .get("/scrape/players/country?countryId=11&name=USA")
             .expect(200)
             .end(function (err, res) {
                 if (err) {
