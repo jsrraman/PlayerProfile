@@ -35,5 +35,4 @@
                 android:value="com.rajaraman.playerprofile.ui.MainActivity" />
         </activity>
     </application>
-
 </manifest>
