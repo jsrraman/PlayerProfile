@@ -38,7 +38,7 @@ public class HttpConnectionTest {
     }
 
     @Test
-    public void testWhetherGetCountryListWebServiceIsWorking() throws Exception {
+    public void testGetCountryListWebServiceIsWorking() throws Exception {
 
         String url = PlayerProfileApiDataProvider.profilePlayerWebServicesBaseUrl;
         url += PlayerProfileApiDataProvider.countryListUrl;
@@ -50,7 +50,7 @@ public class HttpConnectionTest {
     }
 
     @Test
-    public void testWhetherPlayerListForEnglandWebServiceIsWorking() throws Exception {
+    public void testGetPlayerListForEnglandWebServiceIsWorking() throws Exception {
 
         String url = PlayerProfileApiDataProvider.profilePlayerWebServicesBaseUrl;
         url += PlayerProfileApiDataProvider.playerListUrl;
@@ -63,7 +63,7 @@ public class HttpConnectionTest {
     }
 
     @Test
-    public void testWhetherPlayerProfileForPlayerWebServiceIsWorking() throws Exception {
+    public void testGetPlayerProfileForPlayerWebServiceIsWorking() throws Exception {
 
         String url = PlayerProfileApiDataProvider.profilePlayerWebServicesBaseUrl;
         url += PlayerProfileApiDataProvider.playerProfileUrl;

@@ -37,7 +37,7 @@ public class PlayerProfileActivityTest {
     }
 
     @Test
-    public void testPlayerProfileActivityNotNull() throws Exception {
+    public void testPlayerProfileActivityIsNotNull() throws Exception {
         assertNotNull(activity);
     }
 }

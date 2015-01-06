@@ -1,15 +1,14 @@
 package com.rajaraman.playerprofile.ui;
 
-import android.app.Activity;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.rajaraman.playerprofile.R;
-import com.rajaraman.playerprofile.ui.MainActivity;
+import com.rajaraman.playerprofile.network.data.entities.CountryEntity;
+import com.rajaraman.playerprofile.network.data.entities.PlayerEntity;
+import com.rajaraman.playerprofile.network.data.provider.PlayerProfileApiDataProvider;
 import com.rajaraman.playerprofile.ui.adapters.CountryListAdapter;
+import com.rajaraman.playerprofile.ui.adapters.PlayerListAdapter;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -17,10 +16,9 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
-import org.robolectric.shadows.ShadowLog;
-import org.robolectric.util.FragmentTestUtil;
 
-import static org.junit.Assert.assertEquals;
+import java.util.ArrayList;
+
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -45,18 +43,79 @@ public class MainActivityTest {
     }
 
     @Test
-    public void testMainActivityNotNull() throws Exception {
+    public void testMainActivityIsNotNull() throws Exception {
         assertNotNull(activity);
     }
 
+
     @Test
-    public void testWhetherNavigationDrawerIsShown() throws Exception {
+    public void testNavigationDrawerFragmentIsNotFilledWithCountryList() throws Exception {
+
+        CountryListAdapter countryListAdapter = getCountryListAdapter(null);
+
+        // Check whether the drawer list is null
+        assertTrue(countryListAdapter == null);
+    }
+
+    @Test
+    public void testNavigationDrawerFragmentIsFilledWithCountryList() throws Exception {
+        // Add a dummy country
+        ArrayList<CountryEntity> countryEntityList = new ArrayList<CountryEntity>();
+        CountryEntity countryEntity = new CountryEntity("http://www.google.com", 1, "australia");
+        countryEntityList.add(countryEntity);
+
+        CountryListAdapter countryListAdapter = getCountryListAdapter(countryEntityList);
+
+        assertNotNull(countryListAdapter);
+
+        // Check whether the drawer list has at least one item
+        assertTrue(countryListAdapter.getCount() > 0);
+    }
+
+    @Test
+    public void testPlayerListFragmentIsNotFilledWithPlayerList() throws Exception {
+
+        // Add a dummy country
+        CountryEntity countryEntity = new CountryEntity("http://www.google.com", 1, "australia");
+
+        PlayerListAdapter playerListAdapter = getPlayerListAdapter(countryEntity, null);
+
+        assertTrue(playerListAdapter == null);
+    }
+
+    @Test
+    public void testPlayerListFragmentIsFilledWithPlayerList() throws Exception {
+        // Add a dummy country
+        CountryEntity countryEntity = new CountryEntity("http://www.google.com", 1, "australia");
+
+        // Add a dummy player
+        ArrayList<PlayerEntity> playerEntityList = new ArrayList<PlayerEntity>();
+
+        PlayerEntity playerEntity = new PlayerEntity();
+
+        // One field is enough for simulation
+        playerEntity.setCountryId(1);
+
+        playerEntityList.add(playerEntity);
+
+        PlayerListAdapter playerListAdapter = getPlayerListAdapter(countryEntity, playerEntityList);
+
+        assertNotNull(playerListAdapter);
+
+        // Check whether the drawer list has at least one item
+        assertTrue(playerListAdapter.getCount() > 0);
+    }
+
+    private CountryListAdapter getCountryListAdapter(ArrayList<CountryEntity> countryEntityList) {
+
         FragmentManager fragmentManager = activity.getSupportFragmentManager();
-        Fragment drawerFragment = fragmentManager.findFragmentById(R.id.navigation_drawer);
 
-        assertNotNull(drawerFragment);
+        NavigationDrawerFragment navDrawerFragment =
+                (NavigationDrawerFragment)fragmentManager.findFragmentById(R.id.navigation_drawer);
 
-        assertTrue(drawerFragment.isInLayout());
+        assertNotNull(navDrawerFragment);
+
+        assertTrue(navDrawerFragment.isInLayout());
 
         // Get the root view (i.e) list view
         // Note: Ideally getView itself should have returned ListView because that is the
@@ -64,23 +123,52 @@ public class MainActivityTest {
         // one mentioned here - http://stackoverflow.com/questions/7318050/classcastexception-when-casting-to-viewpager
         // So when I created an unique id for this view (navigation_drawer_listview) and then
         // retrieve as below it could return ListView.
-        ListView drawerListView = (ListView) drawerFragment.getView().
-                                                  findViewById(R.id.listview_navigation_drawer);
+//        ListView drawerListView = (ListView) navDrawerFragment.getView().
+//                                                  findViewById(R.id.listview_navigation_drawer);
+//        assertNotNull(drawerListView);
+
+        // Simulate the callback that will be triggered on getting the country list
+        navDrawerFragment.onDataFetched(PlayerProfileApiDataProvider.GET_COUNTRY_LIST_API, countryEntityList);
+
+        // Check whether drawer list view is populated
+        ListView drawerListView = (ListView)navDrawerFragment.getView().findViewById(R.id.listview_navigation_drawer);
+
         assertNotNull(drawerListView);
 
-//        CountryListAdapter drawerList = (CountryListAdapter) drawerListView.getAdapter();
-//
-//        assertNotNull(drawerList);
-//
-//        // Check whether the drawer list has at least one item
-//        assertTrue(drawerList.getCount() > 0);
+        CountryListAdapter countryList = (CountryListAdapter) drawerListView.getAdapter();
+
+        return countryList;
     }
 
-//    @Test
-//    public void testWhetherPlayerProfileActivityIsStarted() throws Exception {
-//        FragmentManager fragmentManager = activity.getSupportFragmentManager();
-//        Fragment playerListFragment = fragmentManager.findFragmentById(R.id.player_list_fragment_container);
-//
-//        assertNotNull(playerListFragment);
-//    }
+    private PlayerListAdapter getPlayerListAdapter(CountryEntity countryEntity,
+                                                                        ArrayList<PlayerEntity> playerEntityList) {
+
+        FragmentManager fragmentManager = activity.getSupportFragmentManager();
+
+        fragmentManager.beginTransaction()
+                .replace(R.id.player_list_fragment_container,
+                        PlayerListFragment.newInstance(countryEntity))
+                .commit();
+
+        PlayerListFragment playerListFragment =
+                (PlayerListFragment)fragmentManager.findFragmentById(R.id.player_list_fragment_container);
+
+        assertNotNull(playerListFragment);
+
+        // The below statement does not seem to work for fragments replaced in FrameLayout id
+        // assertTrue(playerListFragment.isInLayout());
+
+        // Simulate the callback that will be triggered on getting the country list
+        playerListFragment.onDataFetched(PlayerProfileApiDataProvider.GET_PLAYER_LIST_FOR_COUNTRY_ID_API,
+                                                                                                playerEntityList);
+
+        // Check whether drawer list view is populated
+        ListView playerListView = (ListView)playerListFragment.getView().findViewById(R.id.listview_playerlist);
+
+        assertNotNull(playerListView);
+
+        PlayerListAdapter playerListAdapter = (PlayerListAdapter) playerListView.getAdapter();
+
+        return playerListAdapter;
+    }
 }

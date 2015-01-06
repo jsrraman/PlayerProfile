@@ -203,10 +203,12 @@ public class PlayerProfileActivity extends ActionBarActivity implements
     private void constructUi(final PlayerEntity playerEntity) {
 
         // Player thumbnail
+        ImageLoader imageLoader = VolleySingleton.getInstance().getImageLoader();
+
         NetworkImageView imageView = (NetworkImageView)
                                     findViewById(R.id.player_profile_imgview_player_thumbnail);
 
-        ImageLoader imageLoader = VolleySingleton.getInstance().getImageLoader();
+        imageView.setDefaultImageResId(R.drawable.ic_launcher);
         imageView.setImageUrl(playerEntity.getThumbnailUrl(), imageLoader);
 
         TextView textView = null;
