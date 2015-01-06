@@ -1,5 +1,6 @@
 package com.rajaraman.playerprofile.ui;
 
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -35,6 +36,7 @@ public class MainActivity extends ActionBarActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
@@ -50,11 +52,9 @@ public class MainActivity extends ActionBarActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-
-        AppUtil.logDebugMessage(TAG, "onResume");
     }
 
-    @Override
+      @Override
     public void onNavigationDrawerItemSelected(int position) {
 
         // Get the country id from the selected item in the navigation drawer
@@ -68,32 +68,20 @@ public class MainActivity extends ActionBarActivity implements
 
         CountryEntity countryEntity = (CountryEntity) countryListAdapter.getItem(position);
 
-        // Update the player content
-        fragmentManager.beginTransaction()
-            .replace(R.id.player_list_fragment_container,
-                                            PlayerListFragment.newInstance(countryEntity))
-            .commit();
-    }
+        // Set the action bar title
+        getSupportActionBar().setTitle(countryEntity.getName());
 
-    public void onSectionAttached(int number) {
-        switch (number) {
-            case 1:
-                mTitle = getString(R.string.title_section1);
-                break;
-            case 2:
-                mTitle = getString(R.string.title_section2);
-                break;
-            case 3:
-                mTitle = getString(R.string.title_section3);
-                break;
-        }
+        // Update the player content
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.player_list_fragment_container, PlayerListFragment.newInstance(countryEntity));
+        ft.commit();
     }
 
     public void restoreActionBar() {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle(mTitle);
+        //actionBar.setTitle(mTitle);
     }
 
 

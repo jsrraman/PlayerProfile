@@ -28,7 +28,6 @@
         <activity
             android:name=".ui.PlayerProfileActivity"
             android:label="@string/title_activity_player_profile"
-            android:parentActivityName=".ui.MainActivity"
             android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

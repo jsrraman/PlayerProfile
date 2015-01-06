@@ -1,7 +1,9 @@
 package com.rajaraman.playerprofile.ui;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -28,7 +30,7 @@ import com.rajaraman.playerprofile.utils.AppUtil;
 import java.util.ArrayList;
 
 
-public class PlayerProfileActivity extends ActionBarActivity implements
+public class PlayerProfileActivity extends FragmentActivity implements
             PlayerProfileBatFieldAvgFragment.OnPlayerProfileBatFieldAvgFragmentInteractionListener,
             PlayerProfileBowlingAvgFragment.OnPlayerProfileBowlingAvgFragmentInteractionListener,
             PlayerProfileApiDataProvider.OnDataReceivedListener {
@@ -82,22 +84,6 @@ public class PlayerProfileActivity extends ActionBarActivity implements
     @Override
     public void onPlayerProfileBowlingAvgFragmentInteraction(Uri uri) {
 
-    }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_player_profile, container, false);
-            return rootView;
-        }
     }
 
     // Initializes the UI

@@ -82,16 +82,19 @@ public class PlayerListFragment extends Fragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        AppUtil.logDebugMessage(TAG, "onCreate");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         mListView = (ListView) inflater.inflate(R.layout.fragment_playerlist, container, false);
 
         mListView.setOnItemClickListener(this);
 
-        // Get the player list
+        // Try getting the player list
         // Get the country id passed as a parameter during this fragment's creation
         int countryId = getArguments().getInt(ARG_PARAM1);
 
