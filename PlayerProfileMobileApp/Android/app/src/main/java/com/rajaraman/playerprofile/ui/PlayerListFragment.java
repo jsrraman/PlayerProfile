@@ -63,8 +63,8 @@ public class PlayerListFragment extends Fragment implements
 
         Bundle args = new Bundle();
 
-        args.putInt(ARG_PARAM1, countryEntity.countryId);
-        args.putString(ARG_PARAM2, countryEntity.name);
+        args.putInt(ARG_PARAM1, countryEntity.getCountryId());
+        args.putString(ARG_PARAM2, countryEntity.getName());
 
         fragment.setArguments(args);
 
@@ -161,7 +161,6 @@ public class PlayerListFragment extends Fragment implements
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         public void onFragmentInteraction(String id);
     }
 

@@ -2,22 +2,15 @@
 <resources>
 
     <string name="app_name">Player Profile</string>
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
     <string name="action_settings">Settings</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
-    <string name="ok">Ok</string>
+    <string name="ok">OK</string>
     <string name="response_failed">Could not retrieve the requested data !!!</string>
     <string name="network_not_available">No network connection</string>
     <string name="quit_application">The call to the remote server has failed. The application cannot proceed further !!!</string>
     <string name="title_activity_player_profile">PlayerProfileActivity</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="batting_fielding">Batting/Fielding</string>
     <string name="bowling">Bowling</string>
     <string name="name">Name</string>
@@ -37,4 +30,5 @@
     <string name="four_wickets_in_innings">4w</string>
     <string name="five_wickets_in_innings">5w</string>
     <string name="ten_wickets_in_match">10</string>
+    <string name="player">Player</string>
 </resources>

@@ -33,28 +33,51 @@ public class PlayerListAdapter extends ArrayAdapter<PlayerEntity> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        LayoutInflater inflater = (LayoutInflater) context
-                                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        // Try getting the reference to the inflated view from convertView, if available
+        View rowView = convertView;
 
-        View rowView = inflater.inflate(R.layout.fragment_countrylist_list, parent, false);
+        // If rowView is null, use a view holder to store the reference of its internal views, so that
+        // it can be reused later (view holder design pattern)
+        if (rowView == null) {
+            LayoutInflater inflater = (LayoutInflater) context
+                                            .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        // Get the thumbnail url from network using NetworkImageView
-        String thumbnailUrl = this.playerEntityList.get(position).getThumbnailUrl();
+            rowView = inflater.inflate(R.layout.fragment_playerlist_list, parent, false);
 
-        NetworkImageView imageView = (NetworkImageView)
-                rowView.findViewById(R.id.fragment_countrylist_list_icon_country);
+            // Configure view holder
+            ViewHolder viewHolder = new ViewHolder();
 
-        if ((thumbnailUrl == null) || thumbnailUrl.isEmpty()) {
-           imageView.setDefaultImageResId(R.drawable.ic_launcher);
-        }else {
-            imageView.setImageUrl(thumbnailUrl, this.imageLoader);
+            // Get the thumbnail url from network using NetworkImageView
+            viewHolder.imageView = (NetworkImageView)
+                    rowView.findViewById(R.id.fragment_playerlist_list_icon_player);
+
+            // Set the default thumbnail image
+            // Note: Set the default image only once, if you do it every time, there seems
+            // to caching issues with volley library and thumbnail images are getting filled
+            // randomly for other rows where thumbnails are empty.
+            viewHolder.imageView.setDefaultImageResId(R.drawable.ic_launcher);
+
+            viewHolder.textView = (TextView) rowView.
+                    findViewById(R.id.fragment_playerlist_list_textview_player_name);
+
+            rowView.setTag(viewHolder);
         }
 
-        TextView textView = (TextView) rowView.
-                            findViewById(R.id.fragment_countrylist_list_textview_country_name);
+        // Fill data
+        ViewHolder viewHolder = (ViewHolder) rowView.getTag();
 
-        textView.setText(this.playerEntityList.get(position).getName());
+        // Set the thumbnail url
+        String thumbnailUrl = this.playerEntityList.get(position).getThumbnailUrl();
+        viewHolder.imageView.setImageUrl(thumbnailUrl, this.imageLoader);
+
+        // Set the country name
+        viewHolder.textView.setText(playerEntityList.get(position).getName());
 
         return rowView;
+    }
+
+    static class ViewHolder {
+        public NetworkImageView imageView;
+        public TextView textView;
     }
 }

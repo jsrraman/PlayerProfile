@@ -6,11 +6,12 @@
     <com.android.volley.toolbox.NetworkImageView
         android:id="@+id/fragment_countrylist_list_icon_country"
         android:src="@drawable/ic_launcher"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:padding="2dp"/>
 
     <TextView
         android:id="@+id/fragment_countrylist_list_textview_country_name"
@@ -18,8 +19,8 @@
         android:layout_height="wrap_content"
         android:layout_alignWithParentIfMissing="true"
         android:gravity="center_vertical"
-        android:text="Country"
-        android:textSize="16sp"
+        android:text="@string/country"
+        android:textSize="12sp"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/fragment_countrylist_list_icon_country"
         android:layout_toEndOf="@+id/fragment_countrylist_list_icon_country" />

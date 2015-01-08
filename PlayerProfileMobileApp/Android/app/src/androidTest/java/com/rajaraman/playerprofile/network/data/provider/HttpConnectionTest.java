@@ -1,26 +1,10 @@
 package com.rajaraman.playerprofile.network.data.provider;
 
-import android.app.Activity;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.util.Log;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-
-import com.rajaraman.playerprofile.R;
-import com.rajaraman.playerprofile.network.data.provider.HttpConnection;
-import com.rajaraman.playerprofile.network.data.provider.PlayerProfileApiDataProvider;
-import com.rajaraman.playerprofile.ui.MainActivity;
-
-import org.apache.tools.ant.taskdefs.condition.Http;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
-import org.robolectric.shadows.ShadowLog;
-import org.robolectric.util.FragmentTestUtil;
 
 import java.io.InputStream;
 
@@ -40,7 +24,7 @@ public class HttpConnectionTest {
     @Test
     public void testGetCountryListWebServiceIsWorking() throws Exception {
 
-        String url = PlayerProfileApiDataProvider.profilePlayerWebServicesBaseUrl;
+        String url = PlayerProfileApiDataProvider.playerProfileWebServicesBaseUrl;
         url += PlayerProfileApiDataProvider.countryListUrl;
 
         HttpConnection httpConn = new HttpConnection();
@@ -52,7 +36,7 @@ public class HttpConnectionTest {
     @Test
     public void testGetPlayerListForEnglandWebServiceIsWorking() throws Exception {
 
-        String url = PlayerProfileApiDataProvider.profilePlayerWebServicesBaseUrl;
+        String url = PlayerProfileApiDataProvider.playerProfileWebServicesBaseUrl;
         url += PlayerProfileApiDataProvider.playerListUrl;
         url += "1"; // England
 
@@ -65,7 +49,7 @@ public class HttpConnectionTest {
     @Test
     public void testGetPlayerProfileForPlayerWebServiceIsWorking() throws Exception {
 
-        String url = PlayerProfileApiDataProvider.profilePlayerWebServicesBaseUrl;
+        String url = PlayerProfileApiDataProvider.playerProfileWebServicesBaseUrl;
         url += PlayerProfileApiDataProvider.playerProfileUrl;
         url += "8917"; // Moeen Ali
 

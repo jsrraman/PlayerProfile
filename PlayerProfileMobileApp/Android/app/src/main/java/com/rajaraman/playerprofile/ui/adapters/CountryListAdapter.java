@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
@@ -31,22 +32,45 @@ public class CountryListAdapter extends ArrayAdapter<CountryEntity> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        LayoutInflater inflater = (LayoutInflater) context
-                                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        // Try getting the reference to the inflated view from convertView, if available
+        View rowView = convertView;
 
-        View rowView = inflater.inflate(R.layout.fragment_countrylist_list, parent, false);
+        // If rowView is null, use a view holder to store the reference of its internal views, so that
+        // it can be reused later (view holder design pattern)
+        if (rowView == null) {
+            LayoutInflater inflater = (LayoutInflater) context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        // Get the thumbnail url from network using NetworkImageView
-        NetworkImageView imageView = (NetworkImageView)
-                              rowView.findViewById(R.id.fragment_countrylist_list_icon_country);
+            rowView = inflater.inflate(R.layout.fragment_countrylist_list, parent, false);
 
-        imageView.setImageUrl(countryEntityList.get(position).thumbnailUrl, this.imageLoader);
+            // Configure view holder
+            ViewHolder viewHolder = new ViewHolder();
 
-        TextView textView = (TextView) rowView.
-                              findViewById(R.id.fragment_countrylist_list_textview_country_name);
+            // Get the thumbnail url from network using NetworkImageView
+            viewHolder.imageView = (NetworkImageView)
+                    rowView.findViewById(R.id.fragment_countrylist_list_icon_country);
 
-        textView.setText(countryEntityList.get(position).name);
+            viewHolder.textView = (TextView) rowView.
+                    findViewById(R.id.fragment_countrylist_list_textview_country_name);
+
+            rowView.setTag(viewHolder);
+        }
+
+        // Fill data
+        ViewHolder viewHolder = (ViewHolder) rowView.getTag();
+
+        // Set the thumbnail url
+        viewHolder.imageView.setImageUrl(countryEntityList.get(position).getThumbnailUrl(),
+                                                                              this.imageLoader);
+
+        // Set the country name
+        viewHolder.textView.setText(countryEntityList.get(position).getName());
 
         return rowView;
+    }
+
+    static class ViewHolder {
+        public NetworkImageView imageView;
+        public TextView textView;
     }
 }

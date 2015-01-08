@@ -10,7 +10,8 @@
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:padding="2dp"/>
 
     <TextView
         android:id="@+id/fragment_playerlist_list_textview_player_name"
@@ -18,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_alignWithParentIfMissing="true"
         android:gravity="center_vertical"
-        android:text="Player"
+        android:text="@string/player"
         android:textSize="12sp"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/fragment_playerlist_list_icon_player"

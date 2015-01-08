@@ -3,9 +3,9 @@
 package com.rajaraman.playerprofile.network.data.entities;
 
 public class CountryEntity {
-    public String thumbnailUrl;
-    public int countryId;
-    public String name;
+    private String thumbnailUrl;
+    private int countryId;
+    private String name;
 
     public String getThumbnailUrl() {
         return thumbnailUrl;

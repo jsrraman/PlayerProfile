@@ -24,7 +24,8 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
     public static final int SCRAPE_PLAYER_PROFILE_FOR_PLAYER_ID_API = 3;
     public static final int GET_PLAYER_PROFILE_FOR_PLAYER_ID_API = 4;
 
-    public static final String profilePlayerWebServicesBaseUrl = "http://10.0.0.100:3000";
+    public static final String playerProfileWebServicesBaseUrl = "http://10.0.0.100:3000";
+    //public static final String playerProfileWebServicesBaseUrl = "https://player-profile.herokuapp.com";
     public static final String countryListUrl = "/players/countries";
     public static final String playerListUrl = "/players/country?countryId=";
     public static final String scrapePlayerListUrlPart1 = "/scrape/players/country?countryId=";
@@ -49,7 +50,7 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
         this.context = context;
         this.onDataReceivedListener = onDataReceivedListener;
 
-        String fullUrl = this.profilePlayerWebServicesBaseUrl + this.countryListUrl;
+        String fullUrl = this.playerProfileWebServicesBaseUrl + this.countryListUrl;
 
         this.apiReqResData.setRequestWebServiceApiId(GET_COUNTRY_LIST_API);
         this.apiReqResData.setRequestUrl(fullUrl);
@@ -65,7 +66,7 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
         this.context = context;
         this.onDataReceivedListener = onDataReceivedListener;
 
-        String fullUrl = this.profilePlayerWebServicesBaseUrl + this.playerListUrl;
+        String fullUrl = this.playerProfileWebServicesBaseUrl + this.playerListUrl;
 
         fullUrl += Integer.toString(countryId);
 
@@ -97,7 +98,7 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
 //            e.printStackTrace();
 //        }
 
-        String fullUrl = this.profilePlayerWebServicesBaseUrl + remainingUrl;
+        String fullUrl = this.playerProfileWebServicesBaseUrl + remainingUrl;
 
         this.apiReqResData.setRequestWebServiceApiId(SCRAPE_PLAYER_LIST_FOR_COUNTRY_ID_API);
         this.apiReqResData.setRequestUrl(fullUrl);
@@ -113,7 +114,7 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
         this.context = context;
         this.onDataReceivedListener = onDataReceivedListener;
 
-        String fullUrl = this.profilePlayerWebServicesBaseUrl + this.scrapePlayerProfileUrl;
+        String fullUrl = this.playerProfileWebServicesBaseUrl + this.scrapePlayerProfileUrl;
         fullUrl += Integer.toString(playerId);
 
         this.apiReqResData.setRequestWebServiceApiId(SCRAPE_PLAYER_PROFILE_FOR_PLAYER_ID_API);
@@ -130,7 +131,7 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
         this.context = context;
         this.onDataReceivedListener = onDataReceivedListener;
 
-        String fullUrl = this.profilePlayerWebServicesBaseUrl + this.playerProfileUrl;
+        String fullUrl = this.playerProfileWebServicesBaseUrl + this.playerProfileUrl;
         fullUrl += Integer.toString(playerId);
 
         this.apiReqResData.setRequestWebServiceApiId(GET_PLAYER_PROFILE_FOR_PLAYER_ID_API);
