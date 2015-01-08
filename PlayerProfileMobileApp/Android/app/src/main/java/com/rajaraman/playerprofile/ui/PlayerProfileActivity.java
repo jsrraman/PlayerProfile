@@ -38,7 +38,6 @@ public class PlayerProfileActivity extends FragmentActivity implements
     private static final String TAG = PlayerProfileActivity.class.getCanonicalName();
 
     int playerId = 0;
-    PlayerProfileApiDataProvider playerProfileApiDataProvider = new PlayerProfileApiDataProvider();
     private ArrayList<PlayerEntity> playerEntityList = null;
 
     @Override
@@ -93,7 +92,7 @@ public class PlayerProfileActivity extends FragmentActivity implements
         this.playerId = intent.getIntExtra("playerId", 0);
 
         // Get the player profile for the given player id
-        this.playerProfileApiDataProvider.getPlayerProfile(this, this, playerId);
+        PlayerProfileApiDataProvider.getInstance().getPlayerProfile(this, this, playerId);
 
         AppUtil.showProgressDialog(this);
     }
@@ -170,7 +169,7 @@ public class PlayerProfileActivity extends FragmentActivity implements
         // If thumnbnail URL is empty for this player, first scrape the
         // player profile data and then try getting the data again.
         if ( thumbnailUrl.isEmpty() ) {
-            this.playerProfileApiDataProvider.scrapePlayerProfile(this, this, this.playerId);
+            PlayerProfileApiDataProvider.getInstance().scrapePlayerProfile(this, this, this.playerId);
             AppUtil.showProgressDialog(this);
             return;
         }
@@ -182,7 +181,7 @@ public class PlayerProfileActivity extends FragmentActivity implements
     // Player profile scrapped successfully, so try getting the detailed player profile for the
     // given player again
     private void HandleScrapePlayerProfileResponse(Object responseData) {
-        this.playerProfileApiDataProvider.getPlayerProfile(this, this, this.playerId);
+        PlayerProfileApiDataProvider.getInstance().getPlayerProfile(this, this, this.playerId);
         AppUtil.showProgressDialog(this);
     }
 

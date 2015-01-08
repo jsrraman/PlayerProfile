@@ -347,12 +347,12 @@ public class NavigationDrawerFragment extends Fragment implements
         }
 
         switch (playerProfileApiId) {
-            case PlayerProfileApiDataProvider.GET_PLAYER_LIST_FOR_COUNTRY_ID_API: {
+            case PlayerProfileApiDataProvider.GET_COUNTRY_LIST_API: {
                 HandleGetCountryListResponse(responseData);
                 break;
             }
 
-            case PlayerProfileApiDataProvider.SCRAPE_PLAYER_LIST_FOR_COUNTRY_ID_API: {
+            case PlayerProfileApiDataProvider.SCRAPE_COUNTRY_LIST_API: {
                 HandleScrapeCountryListResponse(responseData);
                 break;
             }
@@ -370,6 +370,7 @@ public class NavigationDrawerFragment extends Fragment implements
         if (null == countryEntityList) {
             AppUtil.logDebugMessage(TAG, "Country entity list is null. This is unexpected !!!");
             AppUtil.showDialog(getActivity(), getActivity().getString(R.string.response_failed));
+
             return;
         }
 
