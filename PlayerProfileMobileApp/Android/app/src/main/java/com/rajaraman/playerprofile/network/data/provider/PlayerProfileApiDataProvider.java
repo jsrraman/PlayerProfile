@@ -19,19 +19,21 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
     private ApiReqResData apiReqResData = new ApiReqResData();
 
     public static final int GET_COUNTRY_LIST_API = 0;
-    public static final int GET_PLAYER_LIST_FOR_COUNTRY_ID_API = 1;
-    public static final int SCRAPE_PLAYER_LIST_FOR_COUNTRY_ID_API = 2;
-    public static final int SCRAPE_PLAYER_PROFILE_FOR_PLAYER_ID_API = 3;
-    public static final int GET_PLAYER_PROFILE_FOR_PLAYER_ID_API = 4;
+    public static final int SCRAPE_COUNTRY_LIST_API = 1;
+    public static final int GET_PLAYER_LIST_FOR_COUNTRY_ID_API = 2;
+    public static final int SCRAPE_PLAYER_LIST_FOR_COUNTRY_ID_API = 3;
+    public static final int SCRAPE_PLAYER_PROFILE_FOR_PLAYER_ID_API = 4;
+    public static final int GET_PLAYER_PROFILE_FOR_PLAYER_ID_API = 5;
 
     public static final String playerProfileWebServicesBaseUrl = "http://10.0.0.100:3000";
     //public static final String playerProfileWebServicesBaseUrl = "https://player-profile.herokuapp.com";
-    public static final String countryListUrl = "/players/countries";
-    public static final String playerListUrl = "/players/country?countryId=";
+    public static final String scrapeCountryList = "/scrape/countries";
+    public static final String getCountryListUrl = "/players/countries";
+    public static final String getPlayerListUrl = "/players/country?countryId=";
     public static final String scrapePlayerListUrlPart1 = "/scrape/players/country?countryId=";
     public static final String scrapePlayerListUrlPart2 = "&name=";
     public static final String scrapePlayerProfileUrl = "/scrape/player?playerId=";
-    public static final String playerProfileUrl = "/players?playerId=";
+    public static final String getPlayerProfileUrl = "/players?playerId=";
 
     private static PlayerProfileApiDataProvider playerProfileApiDataProvider = null;
 
@@ -44,13 +46,27 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
         return playerProfileApiDataProvider;
     }
 
+    // Scrape country list
+    public void scrapeCountryList(Context context, OnDataReceivedListener onDataReceivedListener) {
+
+        this.context = context;
+        this.onDataReceivedListener = onDataReceivedListener;
+
+        String fullUrl = this.playerProfileWebServicesBaseUrl + this.scrapeCountryList;
+
+        this.apiReqResData.setRequestWebServiceApiId(SCRAPE_COUNTRY_LIST_API);
+        this.apiReqResData.setRequestUrl(fullUrl);
+
+        this.context.startService(createApiDataProviderServiceIntent(this.apiReqResData));
+    }
+
     // Get the country list
     public void getCountryList(Context context, OnDataReceivedListener onDataReceivedListener) {
 
         this.context = context;
         this.onDataReceivedListener = onDataReceivedListener;
 
-        String fullUrl = this.playerProfileWebServicesBaseUrl + this.countryListUrl;
+        String fullUrl = this.playerProfileWebServicesBaseUrl + this.getCountryListUrl;
 
         this.apiReqResData.setRequestWebServiceApiId(GET_COUNTRY_LIST_API);
         this.apiReqResData.setRequestUrl(fullUrl);
@@ -66,7 +82,7 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
         this.context = context;
         this.onDataReceivedListener = onDataReceivedListener;
 
-        String fullUrl = this.playerProfileWebServicesBaseUrl + this.playerListUrl;
+        String fullUrl = this.playerProfileWebServicesBaseUrl + this.getPlayerListUrl;
 
         fullUrl += Integer.toString(countryId);
 
@@ -131,7 +147,7 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
         this.context = context;
         this.onDataReceivedListener = onDataReceivedListener;
 
-        String fullUrl = this.playerProfileWebServicesBaseUrl + this.playerProfileUrl;
+        String fullUrl = this.playerProfileWebServicesBaseUrl + this.getPlayerProfileUrl;
         fullUrl += Integer.toString(playerId);
 
         this.apiReqResData.setRequestWebServiceApiId(GET_PLAYER_PROFILE_FOR_PLAYER_ID_API);

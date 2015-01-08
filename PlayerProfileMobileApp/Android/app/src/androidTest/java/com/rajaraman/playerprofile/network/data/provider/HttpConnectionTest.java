@@ -25,7 +25,7 @@ public class HttpConnectionTest {
     public void testGetCountryListWebServiceIsWorking() throws Exception {
 
         String url = PlayerProfileApiDataProvider.playerProfileWebServicesBaseUrl;
-        url += PlayerProfileApiDataProvider.countryListUrl;
+        url += PlayerProfileApiDataProvider.getCountryListUrl;
 
         HttpConnection httpConn = new HttpConnection();
         InputStream inputStream = httpConn.getData(url);
@@ -37,7 +37,7 @@ public class HttpConnectionTest {
     public void testGetPlayerListForEnglandWebServiceIsWorking() throws Exception {
 
         String url = PlayerProfileApiDataProvider.playerProfileWebServicesBaseUrl;
-        url += PlayerProfileApiDataProvider.playerListUrl;
+        url += PlayerProfileApiDataProvider.getPlayerListUrl;
         url += "1"; // England
 
         HttpConnection httpConn = new HttpConnection();
@@ -50,7 +50,7 @@ public class HttpConnectionTest {
     public void testGetPlayerProfileForPlayerWebServiceIsWorking() throws Exception {
 
         String url = PlayerProfileApiDataProvider.playerProfileWebServicesBaseUrl;
-        url += PlayerProfileApiDataProvider.playerProfileUrl;
+        url += PlayerProfileApiDataProvider.getPlayerProfileUrl;
         url += "8917"; // Moeen Ali
 
         HttpConnection httpConn = new HttpConnection();
