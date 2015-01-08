@@ -37,6 +37,8 @@ public class PlayerProfileApiDataProvider extends DataProvider implements
 
     private static PlayerProfileApiDataProvider playerProfileApiDataProvider = null;
 
+    private PlayerProfileApiDataProvider() {}
+
     public static PlayerProfileApiDataProvider getInstance() {
 
         if (null == playerProfileApiDataProvider) {
