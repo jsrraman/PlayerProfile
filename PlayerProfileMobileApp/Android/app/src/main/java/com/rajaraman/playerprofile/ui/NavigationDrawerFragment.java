@@ -21,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.rajaraman.playerprofile.PlayerProfileApp;
 import com.rajaraman.playerprofile.R;
 import com.rajaraman.playerprofile.network.data.entities.CountryEntity;
 import com.rajaraman.playerprofile.network.data.entities.PlayerEntity;
@@ -37,8 +38,7 @@ import java.util.ArrayList;
  * See the <a href="https://developer.android.com/design/patterns/navigation-drawer.html#Interaction">
  * design guidelines</a> for a complete explanation of the behaviors implemented here.
  */
-public class NavigationDrawerFragment extends Fragment implements
-                                                        DataProvider.OnDataReceivedListener {
+public class NavigationDrawerFragment extends Fragment {
 
     private static final String TAG = NavigationDrawerFragment.class.getCanonicalName();
 
@@ -91,16 +91,21 @@ public class NavigationDrawerFragment extends Fragment implements
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
+
         super.onActivityCreated(savedInstanceState);
+
         // Indicate that this fragment would like to influence the set of actions in the action bar.
         setHasOptionsMenu(true);
+
+        // Select either the default item (0) or the last selected item.
+        selectItem(mCurrentSelectedPosition);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mDrawerListView = (ListView) inflater.inflate(
-                R.layout.fragment_navigation_drawer, container, false);
+                                        R.layout.fragment_navigation_drawer, container, false);
 
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -109,17 +114,22 @@ public class NavigationDrawerFragment extends Fragment implements
             }
         });
 
-        // Get the country names list
-        if (false == AppUtil.isNetworkAvailable(getActivity())) {
-            AppUtil.showDialog(getActivity(),
-                    getActivity().getString(R.string.network_not_available));
+        PlayerProfileApp playerProfileApp = (PlayerProfileApp)getActivity().getApplication();
 
-            return null;
-        }
+        mDrawerListView.setAdapter(playerProfileApp.getCountryListAdapter());
+       // mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
 
-        PlayerProfileApiDataProvider.getInstance().getCountryList(getActivity(), this);
-
-        AppUtil.showProgressDialog(getActivity());
+//        // Get the country names list
+//        if (false == AppUtil.isNetworkAvailable(getActivity())) {
+//            AppUtil.showDialog(getActivity(),
+//                    getActivity().getString(R.string.network_not_available));
+//
+//            return null;
+//        }
+//
+//        PlayerProfileApiDataProvider.getInstance().getCountryList(getActivity(), this);
+//
+//        AppUtil.showProgressDialog(getActivity());
 
         return mDrawerListView;
     }
@@ -135,6 +145,7 @@ public class NavigationDrawerFragment extends Fragment implements
      * @param drawerLayout The DrawerLayout containing this fragment's UI.
      */
     public void setUp(int fragmentId, DrawerLayout drawerLayout) {
+
         mFragmentContainerView = getActivity().findViewById(fragmentId);
         mDrawerLayout = drawerLayout;
 
@@ -203,7 +214,9 @@ public class NavigationDrawerFragment extends Fragment implements
     }
 
     private void selectItem(int position) {
+
         mCurrentSelectedPosition = position;
+
         if (mDrawerListView != null) {
             mDrawerListView.setItemChecked(position, true);
         }
@@ -282,123 +295,6 @@ public class NavigationDrawerFragment extends Fragment implements
 
     private ActionBar getActionBar() {
         return ((ActionBarActivity) getActivity()).getSupportActionBar();
-    }
-
-    @Override
-    public void onDataFetched(int playerProfileApiId, Object responseData) {
-//        // We have received the notification from PlayerProfileDataProvider so
-//        // dismiss the progress dialog
-//        AppUtil.logDebugMessage(TAG, "onDataFetched callback");
-//
-//        AppUtil.dismissProgressDialog();
-//
-//        if (null == responseData) {
-//            // The app has failed to get a response from webservice. There is no point in
-//            // proceeding further as this is the starting point in the app, so show the error
-//            // and quit the app.
-//            String message = getActivity().getString(R.string.quit_application);
-//
-//            AppUtil.showErrorDialogAndQuitApp(getActivity(), message);
-//
-//            return;
-//        }
-//
-//        switch (playerProfileApiId) {
-//            default:
-//            case PlayerProfileApiDataProvider.GET_COUNTRY_LIST_API : {
-//                // Get the data for the country list and show the list
-//                ArrayList<CountryEntity> countryEntityList = (ArrayList<CountryEntity>)responseData;
-//
-//                CountryListAdapter countryListAdapter = new CountryListAdapter(getActivity(),
-//                        countryEntityList);
-//                mDrawerListView.setAdapter(countryListAdapter);
-//                mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
-//
-//                // Select either the default item (0) or the last selected item.
-//                selectItem(mCurrentSelectedPosition);
-//            }
-//        }
-
-        AppUtil.logDebugMessage(TAG, "onDataFetched callback");
-
-        AppUtil.dismissProgressDialog();
-
-        boolean showErrorMessage = false;
-
-        if (null == responseData) {
-            showErrorMessage = true;
-        }
-
-        // Some APIs return boolean as responseData, so check for that as well
-        if (false == showErrorMessage) {
-            // Even though the service would have sent it as boolean, the value would be
-            // autoboxed to Boolean, so it is safe to check like this
-            if ( responseData instanceof Boolean) {
-                boolean status = ((Boolean)responseData).booleanValue();
-                showErrorMessage = !status; // status = true means the API had succeeded
-            }
-        }
-
-        if (showErrorMessage) {
-            // The app has failed to get a response from webservice. Show appropriate error message
-            String message = getActivity().getString(R.string.quit_application);
-            AppUtil.showDialog(getActivity(), message);
-            return;
-        }
-
-        switch (playerProfileApiId) {
-            case PlayerProfileApiDataProvider.GET_COUNTRY_LIST_API: {
-                HandleGetCountryListResponse(responseData);
-                break;
-            }
-
-            case PlayerProfileApiDataProvider.SCRAPE_COUNTRY_LIST_API: {
-                HandleScrapeCountryListResponse(responseData);
-                break;
-            }
-
-            default: break;
-        }
-    }
-
-    // Handles the get player list API response
-    private void HandleGetCountryListResponse(Object responseData) {
-
-        // Try getting the data for the country list and show the list
-        ArrayList<CountryEntity> countryEntityList = (ArrayList<CountryEntity>)responseData;
-
-        if (null == countryEntityList) {
-            AppUtil.logDebugMessage(TAG, "Country entity list is null. This is unexpected !!!");
-            AppUtil.showDialog(getActivity(), getActivity().getString(R.string.response_failed));
-
-            return;
-        }
-
-        // If there is no country list available yet, first scrape the data and then try
-        // getting the data again.
-        if ( 0 == countryEntityList.size() ) {
-            PlayerProfileApiDataProvider.getInstance().scrapeCountryList(getActivity(), this);
-
-            AppUtil.showProgressDialog(getActivity());
-
-            return;
-        }
-
-        CountryListAdapter countryListAdapter = new CountryListAdapter(getActivity(),
-                                                                            countryEntityList);
-        mDrawerListView.setAdapter(countryListAdapter);
-        mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
-
-        // Select either the default item (0) or the last selected item.
-        selectItem(mCurrentSelectedPosition);
-    }
-
-    // Country list scrapped successfully, so try getting the country list again
-    private void HandleScrapeCountryListResponse(Object responseData) {
-
-        PlayerProfileApiDataProvider.getInstance().getCountryList(getActivity(), this);
-
-        AppUtil.showProgressDialog(getActivity());
     }
 
     /**

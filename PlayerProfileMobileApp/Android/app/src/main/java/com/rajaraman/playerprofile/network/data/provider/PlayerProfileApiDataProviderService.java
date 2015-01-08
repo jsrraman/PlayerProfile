@@ -71,6 +71,11 @@ public class PlayerProfileApiDataProviderService extends IntentService {
                     break;
                 }
 
+                case PlayerProfileApiDataProvider.SCRAPE_COUNTRY_LIST_API: {
+                    parsedResponseData = getScrapeResultFromJson(jsonData);
+                    break;
+                }
+
                 case PlayerProfileApiDataProvider.GET_PLAYER_LIST_FOR_COUNTRY_ID_API:
                 case PlayerProfileApiDataProvider.GET_PLAYER_PROFILE_FOR_PLAYER_ID_API:{
                     parsedResponseData = getPlayerProfileFromJson(jsonData);
