@@ -12,7 +12,17 @@ apply plugin: 'com.android.application'
 apply plugin: 'robolectric'
 
 android {
+    signingConfigs {
+        release {
+            storeFile file(rajaramanAndroidKeyStore)
+            storePassword rajaramanAndroidKeyStorePassword
+            keyAlias playerProfileAppKeyAlias
+            keyPassword playerProfileAppKeyPassword
+        }
+    }
+
     compileSdkVersion 21
+
     buildToolsVersion "21.1.2"
 
     defaultConfig {
@@ -27,6 +37,27 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+
+        // Customize build names
+        applicationVariants.all { variant ->
+            variant.outputs.each { output ->
+                // No need to rename unaligned versions of debug and release builds
+                if ( (variant.buildType.name == "debug") ||
+                        variant.buildType.name == "release") {
+                    //def date = new Date();
+                    //def formattedDate = date.format("yyyy_MM_dd")
+                    def actualOutputFile = output.outputFile
+                    def newOutputFileName = new String()
+
+                    // {app_name}-variant.buildType.name-yyyy_MM_dd format
+                    // Eg: PlayerProfile-release-2015_01_09
+                    //newOutputFileName = "PlayerProfile-" + variant.buildType.name + "-" + formattedDate + ".apk"
+                    newOutputFileName = "PlayerProfile-" + variant.buildType.name + ".apk"
+                    output.outputFile = new File(actualOutputFile.parent, newOutputFileName)
+                }
+            }
         }
     }
 }
