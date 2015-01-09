@@ -14,10 +14,22 @@ apply plugin: 'robolectric'
 android {
     signingConfigs {
         release {
-            storeFile file(rajaramanAndroidKeyStore)
-            storePassword rajaramanAndroidKeyStorePassword
-            keyAlias playerProfileAppKeyAlias
-            keyPassword playerProfileAppKeyPassword
+              // Below settings work fine as for the logged user, this would be found
+              // from ~/.gradle/gradle.properties file but in Jenkins CI build, this
+              // would be tried to run as jenkins user and ~/.gradle/gradle.properties file
+              // will not be there making the Jenkins CI build to fail.
+              // So as an alternative read it from system env variables
+//            storeFile file(rajaramanAndroidKeyStore)
+//            storePassword rajaramanAndroidKeyStorePassword
+//            keyAlias playerProfileAppKeyAlias
+//            keyPassword playerProfileAppKeyPassword
+
+            // Read the values from system environmental variables
+            //storeFile file(System.getenv("ANDROID_KEY_STORE")) // This is not working :)
+            storeFile file("/home/rajaraman/Android/keystore/rajaraman-android.keystore.jks")
+            storePassword System.getenv("ANDROID_KEY_STORE_PWD")
+            keyAlias System.getenv("PLAYER_PROFILE_ANDROID_APP_KEY_ALIAS")
+            keyPassword System.getenv("PLAYER_PROFILE_ANDROID_APP_KEY_PWD")
         }
     }
 
