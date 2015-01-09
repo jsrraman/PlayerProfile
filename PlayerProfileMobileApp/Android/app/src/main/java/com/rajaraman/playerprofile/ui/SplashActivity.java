@@ -62,6 +62,10 @@ public class SplashActivity extends Activity implements
         boolean showErrorMessage = false;
 
         if (null == responseData) {
+            // No response data from service, so make sure the application object's
+            // country list adapter is null as well !!!
+            ((PlayerProfileApp)getApplication()).setCountryListAdapter(null);
+
             showErrorMessage = true;
         }
 
@@ -104,6 +108,7 @@ public class SplashActivity extends Activity implements
         ArrayList<CountryEntity> countryEntityList = (ArrayList<CountryEntity>)responseData;
 
         if (null == countryEntityList) {
+
             AppUtil.logDebugMessage(TAG, "Country entity list is null. This is unexpected !!!");
             AppUtil.showDialog(this, getString(R.string.quit_application));
 

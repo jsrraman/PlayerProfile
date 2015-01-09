@@ -6,7 +6,7 @@ var debug = require('debug')('PlayerProfileWebServices');
 
 var PlayersDao = {};
 
-PlayersDao.dbName = "players-profile";
+PlayersDao.dbName = "player-profile";
 PlayersDao.mongoClient = require('mongodb').MongoClient;
 PlayersDao.connectionUrl = "mongodb://localhost:27017/" + PlayersDao.dbName;
 

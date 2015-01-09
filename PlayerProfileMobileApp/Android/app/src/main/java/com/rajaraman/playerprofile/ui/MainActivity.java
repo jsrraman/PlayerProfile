@@ -66,14 +66,15 @@ public class MainActivity extends ActionBarActivity implements
 
         CountryListAdapter countryListAdapter = (CountryListAdapter)navdrawerListView.getAdapter();
 
-        CountryEntity countryEntity = (CountryEntity) countryListAdapter.getItem(position);
+        CountryEntity countryEntity = countryListAdapter.getItem(position);
 
         // Set the action bar title
         getSupportActionBar().setTitle(countryEntity.getName());
 
         // Update the player content
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.player_list_fragment_container, PlayerListFragment.newInstance(countryEntity));
+        ft.replace(R.id.player_list_fragment_container,
+                                                    PlayerListFragment.newInstance(countryEntity));
         ft.commit();
     }
 

@@ -117,19 +117,6 @@ public class NavigationDrawerFragment extends Fragment {
         PlayerProfileApp playerProfileApp = (PlayerProfileApp)getActivity().getApplication();
 
         mDrawerListView.setAdapter(playerProfileApp.getCountryListAdapter());
-       // mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
-
-//        // Get the country names list
-//        if (false == AppUtil.isNetworkAvailable(getActivity())) {
-//            AppUtil.showDialog(getActivity(),
-//                    getActivity().getString(R.string.network_not_available));
-//
-//            return null;
-//        }
-//
-//        PlayerProfileApiDataProvider.getInstance().getCountryList(getActivity(), this);
-//
-//        AppUtil.showProgressDialog(getActivity());
 
         return mDrawerListView;
     }
